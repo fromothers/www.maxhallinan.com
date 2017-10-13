@@ -4,7 +4,7 @@ layout: base
 
 # Max Hallinan
 
-[home](/) / [email](mailto:maxhallinan@riseup.net)
+[email](mailto:maxhallinan@riseup.net)
 
 ## Projects
 
