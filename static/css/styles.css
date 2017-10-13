@@ -1,7 +1,39 @@
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('/static/fonts/courier_prime-webfont.woff2') format('woff2'),
+         url('/static/fonts/courier_prime-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('/static/fonts/courier_prime_italic-webfont.woff2') format('woff2'),
+         url('/static/fonts/courier_prime_italic-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('/static/fonts/courier_prime_bold-webfont.woff2') format('woff2'),
+         url('/static/fonts/courier_prime_bold-webfont.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('/static/fonts/courier_prime_bold_italic-webfont.woff2') format('woff2'),
+         url('/static/fonts/courier_prime_bold_italic-webfont.woff') format('woff');
+    font-weight: 700;
+    font-style: italic;
+}
+
 body {
   color: #222;
-  font-family: monospace;
-  font-size: 18px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 16px;
 }
 
 a,
@@ -9,13 +41,13 @@ a:visited {
   color: rgba(0, 0, 238, 1);
 }
 
+code, 
+pre,
 .highlight {
   background: #eee;
-  margin-left: 0;
-  margin-right: 0;
-
 }
 
-.highlight pre {
-  font-family: monospace;
+.highlight {
+  margin-left: 0;
+  margin-right: 0;
 }
