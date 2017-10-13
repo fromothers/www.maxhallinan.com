@@ -1,0 +1,21 @@
+body {
+  color: #222;
+  font-family: monospace;
+  font-size: 18px;
+}
+
+a,
+a:visited {
+  color: rgba(0, 0, 238, 1);
+}
+
+.highlight {
+  background: #eee;
+  margin-left: 0;
+  margin-right: 0;
+
+}
+
+.highlight pre {
+  font-family: monospace;
+}

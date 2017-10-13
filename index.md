@@ -2,32 +2,70 @@
 layout: base
 ---
 
-# Max Hallinan 
+# Max Hallinan
 
-[github](https://github.com/maxhallinan) / [email](mailto:maxhallinan@riseup.net)
+[home](/) / [github](https://github.com/maxhallinan) / [email](mailto:maxhallinan@riseup.net)
 
+
+netheless, an object is only called *iterable* if it has a `Symbol.iterator` method and that method returns an object conforming to the iterator protocol. The primacy of `Symbol.interator` is understood in the context of iterable consumption.
+
+## Consuming an iterable
+
+Because iterable is not a type, iterable-consuming constructs need a standard way to identify iterables and a standard source for the iterator. `Symbol.iterator` is this standard.
+
+### Built-in iterable consumers
+
+ECMAScript specifies several built-in iterable consumers. These consumers are sugary syntaxes for accessing an object's iterable values. Internally, these constructs first call the iterable's `Symbol.iterator` method and then call `next` on the returned iterator until `done` is `true`. Two commonly used iterable consumers are the `for...of` loop and the spread operator.
+
+#### `for...of` loop
+
+{% highlight javascript %}
+  const arr = ['foo', 'bar', 'baz'];
+
+  const log = x => console.log(x) || x;
+
+  const getIterator = iterable =>
+    iterable[Symbol.iterator] && iterable[Symbol.iterator]();
+
+  const iterate = (callback, iterator) => {
+    const { done, value } = iterator.next();
+
+    if (done) {
+      return value;
+    }
+
+    callback(value);
+
+    return iterate(callback, iterator);
+  };
+
+  iterate(log, getIterator(arr));
+  // 'foo'
+  // 'bar'
+  // 'baz'
+{% endhighlight %}
 
 ## Projects
 
-- [brunfaick](https://github.com/maxhallinan/brunfaick): A Brainfuck interpeter 
+- [brunfaick](https://github.com/maxhallinan/brunfaick): A Brainfuck interpeter
   implemented in JavaScript.
 
-- [git-chipper](https://github.com/maxhallinan/git-chipper): An interactive CLI 
+- [git-chipper](https://github.com/maxhallinan/git-chipper): An interactive CLI
   for batch deleting local branches.
 
-- [kontext](https://github.com/maxhallinan/kontext): A higher-order function that 
+- [kontext](https://github.com/maxhallinan/kontext): A higher-order function that
   proxies context to context-free functions.
 
-- [kreighter](https://github.com/maxhallinan/kreighter): A utility for generating 
+- [kreighter](https://github.com/maxhallinan/kreighter): A utility for generating
   Redux action creators.
 
-- [my-clippings-to-json](https://github.com/maxhallinan/my-clippings-to-json): 
+- [my-clippings-to-json](https://github.com/maxhallinan/my-clippings-to-json):
   Format Kindle clippings as JSON.
 
-- [redeuceur](https://github.com/maxhallinan/redeuceur): A utility for creating 
+- [redeuceur](https://github.com/maxhallinan/redeuceur): A utility for creating
   terse Redux reducers.
 
-- [reshep](https://github.com/maxhallinan/reshep): A higher-order component 
+- [reshep](https://github.com/maxhallinan/reshep): A higher-order component
   that "reshapes" a React component props object.
 
 
