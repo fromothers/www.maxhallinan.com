@@ -2,10 +2,6 @@
 layout: base
 ---
 
-# Max Hallinan
-
-[email](mailto:maxhallinan@riseup.net)
-
 ## Projects
 
 - [brunfaick](https://github.com/maxhallinan/brunfaick): A Brainfuck interpeter
