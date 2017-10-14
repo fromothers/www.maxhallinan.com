@@ -1,3 +1,4 @@
+/*
 @font-face {
     font-family: 'Courier Prime';
     src: url('/static/fonts/courier_prime-webfont.woff2') format('woff2'),
@@ -29,10 +30,12 @@
     font-weight: 700;
     font-style: italic;
 }
+*/
 
 body {
   color: #222;
-  font-family: 'Courier Prime', monospace;
+/*  font-family: 'Courier Prime', monospace; */
+  font-family: monospace;
   font-size: 16px;
 }
 
