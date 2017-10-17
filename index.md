@@ -25,6 +25,8 @@ layout: base
 - [reshep](https://github.com/maxhallinan/reshep): A higher-order component
   that "reshapes" a React component props object.
 
+- [zelektree](https://github.com/maxhallinan/zelektree): Embed selectors in a 
+  Redux state tree.
 
 ## Open source contributions
 
