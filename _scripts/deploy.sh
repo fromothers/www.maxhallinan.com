@@ -13,7 +13,6 @@ echo "\n\nSyncing images and fonts...\n"
 s3cmd sync \
   --acl-public \
   --no-preserve \
-  --exclude ".DS_Store" \
   --exclude "*.*" \
   --add-header="Cache-Control:public, max-age=31557600" \
   --include "*.png" \
