@@ -1,57 +1,93 @@
 /*
-@font-face {
-    font-family: 'Courier Prime';
-    src: url('static/fonts/courier_prime-webfont.woff2') format('woff2'),
-         url('static/fonts/courier_prime-webfont.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-}
+  Modular scale:
+  http://www.modularscale.com/?1,1.5&em&1.25
+ 
+  1:1.25
 
-@font-face {
-    font-family: 'Courier Prime';
-    src: url('static/fonts/courier_prime_italic-webfont.woff2') format('woff2'),
-         url('static/fonts/courier_prime_italic-webfont.woff') format('woff');
-    font-weight: 400;
-    font-style: italic;
-}
+  44.408em
+  35.527em
+  28.422em
+  22.737em
+  18.19em
+  14.552em
+  11.642em
+  9.313em
+  7.451em
+  5.96em
+  4.768em
+  3.815em
+  3.052em
+  2.441em
+  1.953em
+  1.563em
+  1.25em
+  1em
+  0.8em
+  0.64em
+  0.512em
+  0.41em
+  0.328em
+  0.262em
 
-@font-face {
-    font-family: 'Courier Prime';
-    src: url('static/fonts/courier_prime_bold-webfont.woff2') format('woff2'),
-         url('static/fonts/courier_prime_bold-webfont.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-}
+  1.5:1.25
 
-@font-face {
-    font-family: 'Courier Prime';
-    src: url('static/fonts/courier_prime_bold_italic-webfont.woff2') format('woff2'),
-         url('static/fonts/courier_prime_bold_italic-webfont.woff') format('woff');
-    font-weight: 700;
-    font-style: italic;
-}
+  53.291em
+  42.633em
+  34.106em
+  27.285em
+  21.828em
+  17.462em
+  13.97em
+  11.176em
+  8.941em
+  7.153em
+  5.722em
+  4.578em
+  3.662em
+  2.93em
+  2.344em
+  1.875em
+  1.5em
+  1.2em
+  0.96em
+  0.768em
+  0.614em
+  0.492em
+  0.393em
 */
 
 body {
   color: #222;
-  font-family: Menlo, 'Courier Prime', monospace;
+  font-family: Menlo, monospace;
   font-size: 16px;
-  line-height: 1.5;
-}
-
-a,
-a:visited {
-  color: rgba(0, 0, 238, 1);
 }
 
 code, 
 pre,
 .highlight {
   background: #eee;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .highlight {
   margin-left: 0;
   margin-right: 0;
+}
+
+.post {
+  font-family: Georgia, serif;
+  max-width: 44.408rem
+}
+
+.post h1, 
+.post h2, 
+.post h3, 
+.post h4, 
+.post h5, 
+.post h6 {
+  line-height: 1.2em;
+}
+
+.post p {
+  line-height: 1.5em;
 }
