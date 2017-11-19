@@ -1,0 +1,38 @@
+---
+author: Max Hallinan
+layout: post
+permalink: /stories/pingus
+published: true
+thumbnail: /static/img/pingus/thumb.jpg
+title: Pingus
+---
+
+![Pingus hid in the stone pile.](/static/img/pingus/1.jpg)
+
+![On Monday morning the workers came. They were tired. They wished they were asleep.](/static/img/pingus/2.jpg)
+
+![Pingus was asleep. The workers woke him. Pingus heard them say: "Time to build a house."](/static/img/pingus/3.jpg)
+
+!["I am house-less", Pingus thought and said: "Will you build a house for me?"](/static/img/pingus/4.jpg)
+
+!["You need money to build a house," said Worker One. "Get a job you great galumph."](/static/img/pingus/5.jpg)
+
+![Pingus had a smoke...](/static/img/pingus/6.jpg)
+
+![...and considered the job market.](/static/img/pingus/7.jpg)
+
+![Pingus smoking a cigar and looking sad.](/static/img/pingus/8.jpg)
+
+![When the workers saw the smoke, they thought there was a fire.](/static/img/pingus/9.jpg)
+
+!["To the fire!" the workers shouted from the back of the fire truck. Hero-Guy drove as fast as his fear of driving would allow.](/static/img/pingus/10.jpg)
+
+![But when they reached the stone pile, Pingus had finished his cigar. The smoke was beginning to clear.](/static/img/pingus/11.jpg)
+
+![So Hero-Guy left in search of other heroic opportunities. After all, that was his job. If he stopped to talk, he wouldn't get paid.](/static/img/pingus/12.jpg)
+
+![And the workers got back to work. Working was their job. They didn't like it but they needed the money.](/static/img/pingus/13.jpg)
+
+![Only Pingus was unemployed. While everyone was working, Pingus was working on getting back to sleep.](/static/img/pingus/14.jpg)
+
+!["I'm pretty busy these days," Pingus said. "Buying a house will have to wait."](/static/img/pingus/15.jpg)

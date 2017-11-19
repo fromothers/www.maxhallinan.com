@@ -58,14 +58,15 @@
 
 body {
   color: #222;
-  font-family: Menlo, monospace;
-  font-size: 16px;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 18px;
 }
 
 code, 
 pre,
 .highlight {
   background: #eee;
+  font-family: Menlo, monospace;
   font-size: 1rem;
 }
 
@@ -75,7 +76,6 @@ pre,
 }
 
 .post {
-  font-family: Georgia, serif;
   max-width: 44.408rem
 }
 
