@@ -1,7 +1,7 @@
 ---
 author: Max Hallinan
 layout: post
-permalink: /stories/this-is-moon-face
+permalink: /stories/this-is-moon-face/
 published: true
 thumbnail: /static/img/this-is-moon-face/thumb.jpg
 title: This Is Moon-Face

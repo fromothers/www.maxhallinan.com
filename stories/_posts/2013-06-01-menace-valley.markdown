@@ -1,7 +1,7 @@
 ---
 author: Max Hallinan
 layout: post
-permalink: /stories/menace-pile
+permalink: /stories/menace-pile/
 published: true
 thumbnail: /static/img/menace-pile/thumb.jpg
 title: Menace Pile

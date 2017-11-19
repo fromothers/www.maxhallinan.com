@@ -1,7 +1,7 @@
 ---
 author: Max Hallinan
 layout: post
-permalink: /stories/pingus
+permalink: /stories/pingus/
 published: true
 thumbnail: /static/img/pingus/thumb.jpg
 title: Pingus

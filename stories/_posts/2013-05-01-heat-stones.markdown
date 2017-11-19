@@ -2,7 +2,7 @@
 author: Max Hallinan
 layout: post
 published: true
-permalink: /stories/heat-stones
+permalink: /stories/heat-stones/
 thumbnail: /static/img/heat-stones/thumb.jpg
 title: Heat Stones
 ---
