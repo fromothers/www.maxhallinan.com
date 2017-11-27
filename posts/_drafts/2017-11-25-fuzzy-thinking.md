@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Fuzzy thinking&#58; formal grammar and property testing
+title: "Fuzzy thinking: formal grammar and property testing"
 ---
 
 I was recently exploring two things that I thought were unrelated: formal
