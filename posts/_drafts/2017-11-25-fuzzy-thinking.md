@@ -16,8 +16,14 @@ between seemingly unrelated things, whether or not the connection really exists.
 
 ## Hunting for blindspots
 
-We have a function `hexToRgb` that converts a hex color value to an
-rgb value. 
+> But there are innumerable ways of dividing and selecting for 
+> attention the facts and events, the data, required for any prediction or 
+> decision, and thus when the moment comes for a choice there is always the 
+> rankling doubt that important data may have been overlooked.
+>
+> &mdash; Alan Watts, _This Is It and Other Essays on Zen and Spiritual Experience_
+
+We have a function `hexToRgb` that converts a hex color string to a RGB value. 
 The implementation of `hexToRgb` is unimportant.
 We're only interested in the type signature.
 `hexToRgb` takes a string (the hex color value) and returns a `Result` with
@@ -65,29 +71,30 @@ hex string.
 
 This approach to testing is called property testing or "fuzz" testing. 
 Fuzz testing requires us to think more generally about our inputs.
-Instead of writing tests for specific values like `#ffffff`, we write tests
+Instead of writing tests for specific values like `"#ffffff"`, we write tests
 for _kinds_ of values, in this case hex color strings.
 
-The `Fuzz` module from the `elm-community/elm-test` is a library that helps 
+We're going to use the `Fuzz` module from the `elm-community/elm-test` package
+to generate these random inputs.
+Fuzz tests written with `elm-community/elm-test` use a `Fuzzer` to generate
+random values of a certain type.
+For example `Fuzz.string` is a `Fuzzer String` that generates a random string
+of any length.
+Likewise, `Fuzz.int` is a `Fuzzer Int` that generates a random integer.
+If `hexToRgb` took any string or any integer, these Fuzzers would be useful.
+Unfortunately, not every string or every integer is a valid hex color.
+And the `Fuzz` module does not expose a hex color string Fuzzer.
+We have to define our own.
 
-provides a set of tools 
-to help us generate random values.
-
-A `Fuzzer` is what generates 
-The focus of the `Fuzz` module is the `Fuzzer` type.
-A `Fuzzer` generates a random
-The `Fuzzer` type represents 
-
-The `Fuzz` module gives us a set of primitive fuzzers and some helper functions
-that can be used to compose fuzzers to create new fuzzers.
-So we've got a fuzzer that generates a random `Bool`, or `Int`, or `String`, etc.
-None of these are what we want. 
-They're too generic.
-We're going to have to build our own hex color fuzzer.
-We do that by writing smaller fuzzers and composing them.
-So we need to break "valid hex color" into smaller parts that can be represented
-by the tools we have.
-Later, we'll connect these parts into a bigger "valid hex color" fuzzer.
+Defining our own Fuzzer doesn't mean implementing the `Fuzzer` type from 
+scratch. 
+In addition to basic Fuzzers like `Fuzz.string` and `Fuzz.int`, the `Fuzz` 
+module exposes helper functions that can be used to combine small, simple Fuzzers
+into large, complex Fuzzers.
+Our job is to break the concept of a "valid hex color" into smaller parts that 
+can be represented by the tools we have.
+Then, we'll use those tools again to connect these parts.
+The result will be a Fuzzer that generates a random valid hex color string.
 
 
 ## Thinking in patterns with formal grammar
@@ -124,8 +131,8 @@ So I add another item to the list that says "Hex color strings contain no whites
 But now I have to define what I mean by whitespace.
 So the list gets longer and the requirements become more verbose, and 
 misintepretation becomes more likely.
-We find ourselves reaching for a language with less ambiguity, less possible
-meanings, and less words required to say what we mean.
+We find ourselves reaching for a language with fewer possible
+meanings and fewer words required to say what we mean.
 
 This is where a formal grammar becomes useful.
 At this point it feels like we are very far away from our original task,
