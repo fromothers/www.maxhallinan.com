@@ -14,51 +14,69 @@ in isolation.
 between seemingly unrelated things, whether or not the connection really exists.)
 
 
-## The problem
+## Hunting for blindspots
 
-Let's say we have a function `hexToRgb` that converts a hex color value to an
+We have a function `hexToRgb` that converts a hex color value to an
 rgb value. 
-We don't need to know about the implementation of `hexToRgb`.
-We're only interested in the type signature:
+The implementation of `hexToRgb` is unimportant.
+We're only interested in the type signature.
+`hexToRgb` takes a string (the hex color value) and returns a `Result` with
+an error string or a RGB representation:
 
 ```elm
 hexToRgb : String -> Result String (Int, Int, Int)
 ```
 
-`hexToRgb` takes a string (the hex color value) and returns a `Result` with
-a string describing an error or a tuple representing an RGB value.
+Now we want to test `hexToRgb`.
+The first test we write is a unit test that asserts `hexToRgb "#ffffff"` 
+returns `Ok (255, 255, 255)`.
+This test focuses on the correctness of the conversion formula.
+If `hexToRgb` converts `"#ffffff"` to `Ok (0, 0, 0)`, then it's no use at all.
+So this is a reasonable first test to write.
+But once this test passes, we're not done testing.
 
-We're not worried about implementing this function but we are worried
-about testing it.
-We've taken a solid first step by testing that `hexToRgb` converts
-`"#ffffff"` to `Ok (255, 255, 255)`.
-The test passes but we don't feel like we're finished yet.
-How do we know that `hexToRgb` can handle _any_ valid hex color when we've only
-tested it on one?
-Maybe there's an edge case our implementation doesn't account for.
-Maybe `hexToRgb` returns an `Err` for any hex color that isn't `#ffffff`.
-We don't know until we write more tests.
+There are a handful of things that this test doesn't tell us.
+For example, how do we know that `hexToRgb` can really handle _any_ valid hex 
+color strings when we've only tested one?
+We might assume that `hexToRgb` will work for all valid strings if
+it works for `"#ffffff"`.
+But maybe there's an edge case we aren't aware of.
+Or maybe `hexToRgb` returns an `Err` for any hex color that isn't `"#ffffff"`.
+We won't know until we write more tests.
 
-But how do we write tests that account for "kinds" of input like hex colors 
-rather than specific values like `"#ffffff"`?
-We could simply generate all the valid hex color strings and write a test
+We could simply generate all the valid hex color strings and then write a test
 that calls `hexToRgb` on all of them. 
 But there are a lot of hex colors. 
-In fact, there are [`16,777,216 + 4,096`](https://en.wikipedia.org/wiki/Web_colors) 
+In fact, there are [16,781,312](https://en.wikipedia.org/wiki/Web_colors) 
 of them.
-
-Instead, we decide to take this idea and scale it down. 
+So we decide to take this idea and scale it down. 
 Instead of generating millions of hex colors, we generate 75 or a 100. 
 And we generate these hex colors randomly each time the test runs. 
+
 It doesn't matter that the hex colors are different each time the test runs
 because we're not testing the conversion itself.
 We just want to test that nothing unexpected happens when we call `hexToRgb`
 with a valid hex color.
+The test will simply assert that `hexToRgb` returns an `Ok _` for any valid
+hex string.
 
-This method of testing is called property testing or "fuzz" testing. 
+
+## Generating random inputs
+
+This approach to testing is called property testing or "fuzz" testing. 
 Fuzz testing requires us to think more generally about our inputs.
-Instead of defining specific inputs like `#ffffff`, we define something
-that generates a kind of value, in this case, a valid hex color.
+Instead of writing tests for specific values like `#ffffff`, we write tests
+for _kinds_ of values, in this case hex color strings.
+
+The `Fuzz` module from the `elm-community/elm-test` is a library that helps 
+
+provides a set of tools 
+to help us generate random values.
+
+A `Fuzzer` is what generates 
+The focus of the `Fuzz` module is the `Fuzzer` type.
+A `Fuzzer` generates a random
+The `Fuzzer` type represents 
 
 The `Fuzz` module gives us a set of primitive fuzzers and some helper functions
 that can be used to compose fuzzers to create new fuzzers.
@@ -74,28 +92,35 @@ Later, we'll connect these parts into a bigger "valid hex color" fuzzer.
 
 ## Thinking in patterns with formal grammar
 
+>Human thinking can skip over a great deal, leap over small misunderstandings, 
+>can contain ifs and buts in untroubled corners of the mind. But the machine 
+>has no corners.
+>
+>&mdash; Ellen Ullman, _Close to the Machine: Technophilia and Its Discontents_
+
 We can identify these little building blocks by describing a valid hex color.
 How do we describe a valid hex color? 
+
+Let's start with a natural language 
 We can start by listing all the characteristics of a valid hex color in plain English
 (or German or Esperanto or Morse code).
-A hex color is:
 
-- A string.
-- The first character is always `#`.
-- Every character after the first is a valid hexadecimal digit:
-  - numbers 0 to 9;
-  - letters A to F;
-  - alphabetic characters can be upper or lowercase.
-- The hexadecimal is three digits or six digits.
+A hex color is a string. 
+The first character of the string is always `#`.
+Every character after the first character must be a valid hexadecimal digit.
+Hexadecimal digits are the integers 0 through 9 and the characters A through F.
+All of the alphabetic characters can be lowercase or uppercase.
+The hexadecimal string for a hex color is always three digits or six digits long.
 
 This wasn't too hard to describe. 
-But the problem with using natural language is that its meaning can be ambiguous. 
-For example, I forgot to mention in the list above that a hexadecimal number 
-does not include any whitespace. 
-Maybe you knew about the whitespace too. 
-Maybe everyone knows about the whitespace. 
-Or maybe I am the only one who knows about the whitespace.
-So I add another item to the list that says "No whitespace".
+But the problem with using natural language is that its exact meaning is 
+often ambiguous. 
+For example, I forgot to mention in the list above that a hex color 
+string does not include any whitespace. 
+Maybe those who are familiar with hex color strings would "leap over" this "small
+misunderstanding", but I can't be certain that everyone would.
+
+So I add another item to the list that says "Hex color strings contain no whitespace".
 But now I have to define what I mean by whitespace.
 So the list gets longer and the requirements become more verbose, and 
 misintepretation becomes more likely.
@@ -114,7 +139,7 @@ structure our fuzzers.
 A formal grammar uses patterns of symbols to describe a set of valid strings.
 Let's say that I have four strings, "aa", "AA", "aA" and "Aa". 
 I want to say that, in my language, these are the only four "sentences".
-Here's how I would say that with a formal grammar:
+Here's how I would say that with a context-free grammar:
 
 ```
 Start = Char, Char

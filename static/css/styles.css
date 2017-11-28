@@ -59,7 +59,7 @@
 body {
   color: #222;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 code, 
@@ -70,13 +70,18 @@ pre,
   font-size: 1rem;
 }
 
+p code {
+  font-size: 0.8rem;
+}
+
 .highlight {
   margin-left: 0;
   margin-right: 0;
 }
 
 .post {
-  max-width: 44.408rem
+  max-width: 42.633rem;
+  /* max-width: 44.408rem */
 }
 
 .post h1, 
