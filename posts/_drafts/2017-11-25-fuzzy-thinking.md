@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Fuzzy thinking: formal grammar and property testing"
+title: "Fuzzy Thinking: a Formal Grammar and Property Testing Rabbit Hole"
 ---
 
 I was recently exploring two things that I thought were unrelated: formal
@@ -97,7 +97,7 @@ Then, we'll use those tools again to connect these parts.
 The result will be a Fuzzer that generates a random valid hex color string.
 
 
-## Thinking in patterns with formal grammar
+## Thinking in patterns 
 
 >Human thinking can skip over a great deal, leap over small misunderstandings, 
 >can contain ifs and buts in untroubled corners of the mind. But the machine 
@@ -105,43 +105,43 @@ The result will be a Fuzzer that generates a random valid hex color string.
 >
 >&mdash; Ellen Ullman, _Close to the Machine: Technophilia and Its Discontents_
 
-We can identify these little building blocks by describing a valid hex color.
-How do we describe a valid hex color? 
-
-Let's start with a natural language 
-We can start by listing all the characteristics of a valid hex color in plain English
-(or German or Esperanto or Morse code).
-
-A hex color is a string. 
+To find the elements of a hex color, let's think of a hex color string as a 
+pattern of characters:
 The first character of the string is always `#`.
-Every character after the first character must be a valid hexadecimal digit.
-Hexadecimal digits are the integers 0 through 9 and the characters A through F.
-All of the alphabetic characters can be lowercase or uppercase.
+Every character after the first must be a valid hexadecimal digit.
+Hexadecimal digits are the integers `0` through `9` and the characters `A` 
+through `F`.
+Lowercase and uppercase alphabetic characters are both valid.
 The hexadecimal string for a hex color is always three digits or six digits long.
 
-This wasn't too hard to describe. 
-But the problem with using natural language is that its exact meaning is 
-often ambiguous. 
-For example, I forgot to mention in the list above that a hex color 
-string does not include any whitespace. 
-Maybe those who are familiar with hex color strings would "leap over" this "small
-misunderstanding", but I can't be certain that everyone would.
+This pattern doesn't sound too complicated but our description of the pattern is
+ambiguous.
+For example, we forgot to mention that a hex number does not include any 
+whitespace. 
+Maybe those who are familiar with hex color strings would "leap over" this 
+"small misunderstanding" but we can't be certain that everyone would.
 
-So I add another item to the list that says "Hex color strings contain no whitespace".
-But now I have to define what I mean by whitespace.
-So the list gets longer and the requirements become more verbose, and 
+So we add another item to the list that says "Hex color strings do not contain 
+whitespace".
+But now we have to define whitespace.
+Is whitespace just a space character? Or spaces and tabs?
+What about linebreaks?
+In this way, the list gets longer, the requirements become more verbose, and 
 misintepretation becomes more likely.
-We find ourselves reaching for a language with fewer possible
-meanings and fewer words required to say what we mean.
+Exact meanings are hard to express with natural language.
+We find ourselves reaching for a language with fewer possible meanings and 
+fewer words required to say what we mean.
+This is when formal grammar becomes useful.
 
-This is where a formal grammar becomes useful.
-At this point it feels like we are very far away from our original task,
-which was to generate some random valid hex values.
-We don't really need a formal grammar for that, do we?
-We can get the job done without it.
-That's absolutely true.
-It's a worthwhile exercise because it will give us an intuition for how to 
-structure our fuzzers.
+It's starting to feel like we are drifting from our original task, which is to 
+generate some random hex colors.
+Do we really need a more exact specification before we start building a hex 
+color Fuzzer?
+We could just address latent ambiguities as they arise.
+While this is true, writing a formal grammar for hex color strings is
+a worthwhile exercise.
+The grammar won't just help to expose ambiguities.
+It will also give us an intuition for how to structure our Fuzzers.
 
 A formal grammar uses patterns of symbols to describe a set of valid strings.
 Let's say that I have four strings, "aa", "AA", "aA" and "Aa". 
