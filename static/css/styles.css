@@ -4,6 +4,7 @@
  
   1:1.25
 
+  55.51em
   44.408em
   35.527em
   28.422em
@@ -56,6 +57,10 @@
   0.393em
 */
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   color: #222;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -65,12 +70,8 @@ body {
 code, 
 pre,
 .highlight {
-  background: #eee;
+  background: #f6f8fa;
   font-family: Menlo, monospace;
-  font-size: 1rem;
-}
-
-p code {
   font-size: 0.8rem;
 }
 
@@ -79,9 +80,14 @@ p code {
   margin-right: 0;
 }
 
+pre.highlight {
+  padding: 1rem;
+}
+
 .post {
-  max-width: 42.633rem;
-  /* max-width: 44.408rem */
+  margin: 0 auto;
+  max-width: 55.51rem;
+  padding: 1.953rem;
 }
 
 .post h1, 
@@ -90,9 +96,33 @@ p code {
 .post h4, 
 .post h5, 
 .post h6 {
+  border-bottom: 1px solid #eee;
   line-height: 1.2em;
+  margin: 0 0 1rem;
+  padding: 0 0 0.492rem;
+}
+
+.post h1 {
+  font-size: 1.563rem;
+}
+
+.post h2 {
+  font-size: 1.25rem;
+}
+
+.post h3 {
+  font-size: 1.2rem;
 }
 
 .post p {
   line-height: 1.5em;
+  margin: 0 0 1.5rem;
 }
+
+.post blockquote {
+  color:#6a737d;
+  border-left: 0.262rem solid #dfe2e5;
+  margin: 0 0 1.5rem;
+  padding: 0 0 0 1rem
+}
+
