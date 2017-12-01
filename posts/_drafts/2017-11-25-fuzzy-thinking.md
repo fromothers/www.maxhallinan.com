@@ -16,7 +16,8 @@ This article retraces those paths.
 >
 > &mdash; Alan Watts, _This Is It and Other Essays on Zen and Spiritual Experience_
 
-Let's say we have a function `hexToRgb` that converts a hex color string to a RGB value. 
+Let's say we have a function `hexToRgb` that converts a hex color string to a 
+RGB value. 
 The implementation of `hexToRgb` is unimportant.
 We're only interested in the type signature.
 `hexToRgb` takes a string (the hex color value) and returns a `Result` with
@@ -127,7 +128,7 @@ fewer words required to say what we mean.
 This is when formal grammar becomes useful.
 
 
-## Formal grammar
+## What is formal grammar
 
 It might feel like we are drifting from the original task of generating random
 hex colors.
@@ -192,15 +193,17 @@ grammar.
 
 ## A formal grammar for hex colors
 
-Now let's jump into writing a context-free grammar for a hex color string.
-We'll start with the basic pieces, the terminal symbols, and work our way up
-to the `Start` symbol.
+Now let's write a context-free grammar for a hex color string.
+We'll start with our atomic elements, the terminal symbols, and work up to 
+the `Start` symbol.
 
 All hex colors are hexadecimal numbers.
-So to write a grammar for a hex color, we first have to write a grammar
-for a hexadecimal number.
-A hexadecimal number is any combination of sixteen digits.
-These digits are the integers 0 through 9 and the letters A through F.
+To write a hex color grammar, we must first write a grammar for hexadecimal 
+numbers.
+A hexadecimal number is base 16 which means that there are sixteen digits, 
+instead of the usual 10 digits.
+These digits are represented by the integers `0` through `9` and the letters `A` 
+through `F`.
 Let's start by creating a nonterminal symbol called `Num`.
 
 ```
@@ -217,11 +220,10 @@ Num =
   | "9"
 ```
 
-That's easy enough.
-
-The letters are slightly more complicated because any letter can be lowercase
-or uppercase. We describe this by creating a nonterminal symbol for each
-letter and then joining these in an `Alpha` symbol. 
+The alphabetic digits are slightly more complicated because any letter can be 
+lowercase or uppercase. 
+We describe this by creating a nonterminal symbol for each letter and then 
+joining these in an `Alpha` symbol. 
 
 ```
 A = "A" | "a"
@@ -245,8 +247,8 @@ Alpha
   | F
 ```
 
-In a similar fashion, we join `Num` and `Alpha` in a `HexDigit` symbol, our
-first building block.
+In a similar fashion, we join `Num` and `Alpha` in a `HexDigit` symbol. 
+This is our first hex color building block.
 
 ```
 Hex1
@@ -254,20 +256,19 @@ Hex1
  | Num
 ```
 
-Another low-hanging fruit is the `#` symbol.
-Every hex color (in our grammar) starts with a hash sign.
-This will be our second building block.
+Another atomic element of a hex color string is the `#` symbol.
+Every hex color (in our grammar) starts with this character.
+This is our second hex color building block.
 
 ```
 Hash = "#"
 ```
 
-Now we start building patterns. Hex colors can use a six-digit or a three-digit
-format.
-Both formats are different patterns of our `Hash` and `Hex1` building
-blocks.
+Now that we've described the atomic elements of a hex color string, we can
+start to describe the string itself.
+Hex colors come in three-digit and a six-digit formats.
 We'll worry about adding the hash later. 
-For now, we'll focus on building the patterns of hex digits.
+For now, we'll focus on describing these three and six digit patterns.
 
 ```
 Hex3 = Hex1, Hex1, Hex1
@@ -275,7 +276,11 @@ Hex3 = Hex1, Hex1, Hex1
 Hex6 = Hex3, Hex3
 ```
 
-So now we have all the building blocks we need to construct our start symbol.
+To describe the three-digit format, we simply repeat the `Hex1` symbol three 
+times.
+And to describe the six-digit format, we simply repeat the `Hex3` symbol 
+two times.
+Now we have all the building blocks we need to define the `Start` symbol.
 
 ```
 Start 
@@ -286,17 +291,17 @@ Start
 All together, here is the grammar:
 
 ```
-HexColor 
+Start 
   = Hash, Digit3
   | Hash, Digit6
 
 Hash = "#"
 
-Digit6 = Digit3, Digit3
+Hex6 = Hex3, Hex3
 
-Digit3 = Digit1, Digit1, Digit1
+Hex3 = Hex1, Hex1, Hex1
 
-Digit1 = Num | Alpha
+Hex1 = Num | Alpha
 
 Num  
   = "1" 
@@ -329,6 +334,7 @@ E = "E" | "e"
 
 F = "F" | "f"
 ```
+
 
 ## From formal grammar to Fuzzer
 
@@ -495,26 +501,3 @@ pattern and each of the smaller patterns that the large pattern is composed of.
 By starting with the simplest patterns first and combining them, it becomes 
 relatively easy to create fuzzers that generate random values within 
 complex constraints.
-<!--
-All formal grammars define a set of constraints within which patterns must 
-be formed.
-These grammars are organized into a hierarchy based on the relative strictness
-of these constraints.
-The base level of this hierarchy is "regular" or "linear" grammar.
-Patterns formed with a regular grammar are the most constrained.
-The top level of the hierarchy is "context-sensitive" grammar, which is the least
-constrained.
-The level of constraint corresponds to the ease with which a computer program
-can test whether a string is valid according to the grammar.
-Our hex color grammar will be a context-free grammar, which is moderately
-constrained.
-
-`Start` and `Char` are the nonterminal symbols. 
-`"A"` and `"a"` are the terminal symbols.
-The game of replacement begins at the `Start` nonterminal symbol.
-In any formal grammar, you will find a special symbol called `Start`, `Root`, or
-something to that effect.
-This is the entry point to the grammar.
-
--->
-
