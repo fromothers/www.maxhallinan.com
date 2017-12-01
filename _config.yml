@@ -21,6 +21,7 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  maxhallinan
 
 # Build settings
+highlighter: pygments
 markdown: kramdown
 
 # Exclude from processing.
@@ -35,5 +36,3 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
-
-permalink: /:categories/:title/

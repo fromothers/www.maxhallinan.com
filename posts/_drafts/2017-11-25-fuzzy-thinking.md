@@ -26,9 +26,9 @@ We're only interested in the type signature.
 `hexToRgb` takes a string (the hex color value) and returns a `Result` with
 an error string or an RGB representation:
 
-```
+{% highlight elm %}
 hexToRgb : String -> Result String (Int, Int, Int)
-```
+{% endhighlight %}
 
 Now we want to test `hexToRgb`.
 The first test we write is a unit test that asserts `hexToRgb "#ffffff"` 
@@ -131,7 +131,7 @@ fewer words required to say what we mean.
 This is when formal grammar becomes useful.
 
 
-## What is formal grammar
+## What is formal grammar?
 
 It might feel like we are drifting from the original task of generating random
 hex colors.
@@ -162,11 +162,11 @@ Only these four strings are valid in this language.
 Here's how we can describe that language with a 
 [context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar):
 
-```
-Start = Char, Char
+{% highlight ebnf %}
+Start = Char, Char;
 
-Char = "A" | "a"
-```
+Char = "A" | "a";
+{% endhighlight %}
 
 Let's walk through the process of testing whether `"aA"` is a valid sentence
 according to our grammar.
@@ -209,63 +209,45 @@ These digits are represented by the integers `0` through `9` and the letters `A`
 through `F`.
 Let's start by creating a nonterminal symbol called `Num`.
 
-```
-Num =
-  = "0"
-  | "1" 
-  | "2" 
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-```
+{% highlight ebnf %}
+Num = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+{% endhighlight %}
 
 The alphabetic digits are slightly more complicated because any letter can be 
 lowercase or uppercase. 
 We describe this by creating a nonterminal symbol for each letter and then 
 joining these in an `Alpha` symbol. 
 
-```
-A = "A" | "a"
+{% highlight ebnf %}
+A = "A" | "a";
 
-B = "B" | "b"
+B = "B" | "b";
 
-C = "C" | "c"
+C = "C" | "c";
 
-D = "D" | "d"
+D = "D" | "d";
 
-E = "E" | "e"
+E = "E" | "e";
 
-F = "F" | "f"
+F = "F" | "f";
 
-Alpha
-  = A
-  | B
-  | C
-  | D
-  | E
-  | F
-```
+Alpha = A | B | C | D | E | F;
+{% endhighlight %}
 
 In a similar fashion, we join `Num` and `Alpha` in a `HexDigit` symbol. 
 This is our first hex color building block.
 
-```
-Hex1
- = Alpha
- | Num
-```
+{% highlight ebnf %}
+Hex1 = Alpha | Num;
+{% endhighlight %}
 
 Another atomic element of a hex color string is the `#` symbol.
 Every hex color (in our grammar) starts with this character.
 This is our second hex color building block.
 
-```
-Hash = "#"
-```
+{% highlight ebnf %}
+Hash = "#";
+{% endhighlight %}
 
 Now that we've described the atomic elements of a hex color string, we can
 start to describe the string itself.
@@ -273,11 +255,11 @@ Hex colors come in three-digit and a six-digit formats.
 We'll worry about adding the hash later. 
 For now, we'll focus on describing these three and six digit patterns.
 
-```
-Hex3 = Hex1, Hex1, Hex1
+{% highlight ebnf %}
+Hex3 = Hex1, Hex1, Hex1;
 
-Hex6 = Hex3, Hex3
-```
+Hex6 = Hex3, Hex3;
+{% endhighlight %}
 
 To describe the three-digit format, we simply repeat the `Hex1` symbol three 
 times.
@@ -285,59 +267,43 @@ And to describe the six-digit format, we simply repeat the `Hex3` symbol
 two times.
 Now we have all the building blocks we need to define the `Start` symbol.
 
-```
+{% highlight ebnf %}
 Start 
   = Hash, Hex3 
-  | Hash, Hex6
-```
+  | Hash, Hex6;
+{% endhighlight %}
 
 All together, here is the grammar:
 
-```
+{% highlight ebnf %}
 Start 
   = Hash, Hex3
-  | Hash, Hex6
+  | Hash, Hex6;
 
-Hash = "#"
+Hash = "#";
 
-Hex6 = Hex3, Hex3
+Hex6 = Hex3, Hex3;
 
-Hex3 = Hex1, Hex1, Hex1
+Hex3 = Hex1, Hex1, Hex1;
 
-Hex1 = Num | Alpha
+Hex1 = Num | Alpha;
 
-Num  
-  = "1" 
-  | "2" 
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
+Num  = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 
-Alpha
-  = A
-  | B
-  | C
-  | D
-  | E
-  | F
+Alpha = A | B | C | D | E | F;
 
-A = "A" | "a"
+A = "A" | "a";
 
-B = "B" | "b"
+B = "B" | "b";
 
-C = "C" | "c"
+C = "C" | "c";
 
-D = "D" | "d"
+D = "D" | "d";
 
-E = "E" | "e"
+E = "E" | "e";
 
-F = "F" | "f"
-```
-
+F = "F" | "f";
+{% endhighlight %}
 
 ## From formal grammar to fuzzers
 
@@ -359,7 +325,7 @@ Then we can use `Fuzz.oneOf` to combine each of these hex digit fuzzers.
 The result is a fuzzer that generates a single, random hex digit.
 Note that the Elm code closely resembles our context-free grammar.
 
-```
+{% highlight elm %}
 hex1 : Fuzzer String
 hex1 =
   Fuzz.oneOf
@@ -399,15 +365,15 @@ num =
         , Fuzz.constant "8"
         , Fuzz.constant "9"
         ]
-```
+{% endhighlight %}
 
 We can also use `Fuzz.constant` to create a fuzzer for the `"#"` character.
 
-```
+{% highlight elm %}
 hash : Fuzzer String
 hash =
     Fuzz.constant "#"
-```
+{% endhighlight %}
 
 Once again, we have our basic building blocks and we want to start combining
 them into more complex patterns. 
@@ -420,15 +386,15 @@ the value that the type represents.
 For a 3-digit hex number, we'll use `Fuzz.map3` to apply the concatenation 
 operator to three random hex digits:
 
-```
+{% highlight elm %}
 hex3 : Fuzzer String
 hex3 =
   Fuzz.map3 (\a b c -> a ++ b ++ c) hex1 hex1 hex1
-```
+{% endhighlight %}
 
 Before we go any further, let's take a moment to extract some helper functions.
 
-```
+{% highlight elm %}
 repeat2 : Fuzzer String -> Fuzzer String
 repeat2 fuzzer =
     Fuzz.map2 (++) fuzzer fuzzer
@@ -436,12 +402,12 @@ repeat2 fuzzer =
 repeat3 : Fuzzer String -> Fuzzer String
 repeat3 fuzzer =
     Fuzz.map2 (++) fuzzer <| repeat2 fuzzer
-```
+{% endhighlight %}
 
 Now we can use these abstractions to simplify the `digit3` fuzzer and create 
 a `digit6` fuzzer.
 
-```
+{% highlight elm %}
 hex3 : Fuzzer String
 hex3 =
     repeat3 hex1
@@ -449,38 +415,38 @@ hex3 =
 hex6 : Fuzzer String
 hex6 =
     repeat2 hex3
-```
+{% endhighlight %}
 
 Again, note how closely our Elm code resembles our hex color string grammar:
 
-```
-Hex3 = Hex1, Hex1, Hex1
+{% highlight ebnf %}
+Hex3 = Hex1, Hex1, Hex1;
 
-Hex6 = Hex3, Hex3`
-```
+Hex6 = Hex3, Hex3;
+{% endhighlight %}
 
-`hex3` and `hex6` are then combined in a single fuzzer that randomizes the 
+`hex3` and `hex6` are then combined to create a single fuzzer that randomizes the 
 3-digit or 6-digit format.
-This fuzzer generates a hex number but not just any hex number; it generates
-a hex number that lies within the hex color range.
+This is our ultimate hex number fuzzer; a fuzzer that generates a hex number 
+within the hex color range.
 
-```
+{% highlight elm %}
 hex : Fuzzer String
 hex =
   Fuzz.oneOf
     [ hex3
     , hex6
     ]
-```
+{% endhighlight %}
 
 Finally, we prepend this random hexadecimal string with the `"#"` character.
 Now we have a fuzzer that randomly generates a valid hex color string.
 
-```
+{% highlight elm %}
 hexColor : Fuzzer String
 hexColor =
       Fuzz.map2 (++) hash hex 
-```
+{% endhighlight %}
 
 
 ## Formal grammar is Fuzzy thinking
