@@ -3,16 +3,9 @@ layout: post
 title: "Fuzzy Thinking: Property Testing and Formal Grammar"
 ---
 
-I was recently exploring two things that I thought were unrelated: formal
-grammars and property (or "fuzz") testing.
-At some point, I started to feel like my newfound understanding of formal grammar 
-was helping me to write fuzz testers.
-I want to describe that connection here because it seems to me that knowing
-a little about both subjects made them each a little easier to understand 
-in isolation.
-(I'm also writing this because it's fun to play around with the possible connections 
-between seemingly unrelated things, whether or not the connection really exists.)
-
+There are two rabbit holes here: property testing and formal grammar. 
+I traveled down both simultaneously and found that they converged.
+This article retraces those paths.
 
 ## Hunting for blindspots
 
