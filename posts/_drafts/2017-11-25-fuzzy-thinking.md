@@ -1,11 +1,14 @@
 ---
 layout: post
-title: "Fuzzy Thinking: Property Testing and Formal Grammar"
+title: "Fuzzy Thinking: Fuzz Testing and Formal Grammar"
 ---
 
-There are two rabbit holes here: property testing and formal grammar. 
+There are two rabbit holes here: fuzz testing and formal grammar. 
 I traveled down both simultaneously and found that they converged.
 This article retraces those paths.
+The examples are written in Elm code but the ideas are not specific to that
+language.
+
 
 ## Hunting for blindspots
 
@@ -16,12 +19,12 @@ This article retraces those paths.
 >
 > &mdash; Alan Watts, _This Is It and Other Essays on Zen and Spiritual Experience_
 
-Let's say we have a function `hexToRgb` that converts a hex color string to a 
+Let's say we have a function `hexToRgb` that converts a hex color string to an 
 RGB value. 
 The implementation of `hexToRgb` is unimportant.
 We're only interested in the type signature.
 `hexToRgb` takes a string (the hex color value) and returns a `Result` with
-an error string or a RGB representation:
+an error string or an RGB representation:
 
 ```
 hexToRgb : String -> Result String (Int, Int, Int)
@@ -63,32 +66,32 @@ hex string.
 
 ## Generating random inputs
 
-This approach to testing is called property testing or "fuzz" testing. 
+This approach to testing is called "fuzz" testing.
 Fuzz testing requires us to think more generally about our inputs.
 Instead of writing tests for specific values like `"#ffffff"`, we write tests
 for _kinds_ of values, in this case hex color strings.
 
 We're going to use the `Fuzz` module from the `elm-community/elm-test` package
 to generate these random inputs.
-Fuzz tests written with `elm-community/elm-test` use a `Fuzzer` to generate
+Fuzz tests written with `elm-community/elm-test` use a fuzzer to generate
 random values of a certain type.
 For example `Fuzz.string` is a `Fuzzer String` that generates a random string
 of any length.
 Likewise, `Fuzz.int` is a `Fuzzer Int` that generates a random integer.
-If `hexToRgb` took any string or any integer, these Fuzzers would be useful.
+If `hexToRgb` took any string or any integer, these fuzzers would be useful.
 Unfortunately, not every string or every integer is a valid hex color.
-And the `Fuzz` module does not expose a hex color string Fuzzer.
+And the `Fuzz` module does not expose a hex color string fuzzer.
 We have to define our own.
 
-Defining our own Fuzzer doesn't mean implementing the `Fuzzer` type from 
+Defining our own fuzzer doesn't mean implementing the `Fuzzer` type from 
 scratch. 
-In addition to basic Fuzzers like `Fuzz.string` and `Fuzz.int`, the `Fuzz` 
-module exposes helper functions that can be used to combine small, simple Fuzzers
-into large, complex Fuzzers.
+In addition to basic fuzzers like `Fuzz.string` and `Fuzz.int`, the `Fuzz` 
+module exposes helper functions that can be used to combine small, simple fuzzers
+into large, complex fuzzers.
 Our job is to break the concept of a "valid hex color" into smaller parts that 
 can be represented by the tools we have.
 Then, we'll use those tools again to connect these parts.
-The result will be a Fuzzer that generates a random valid hex color string.
+The result will be a fuzzer that generates a random valid hex color string.
 
 
 ## Thinking in patterns 
@@ -133,12 +136,12 @@ This is when formal grammar becomes useful.
 It might feel like we are drifting from the original task of generating random
 hex colors.
 Do we really need a more exact specification? 
-We could start building our hex color `Fuzzer` and address latent ambiguities as 
+We could start building our hex color fuzzer and address latent ambiguities as 
 they arise.
 While this is true, writing a formal grammar for hex color strings is
 a worthwhile exercise.
 In addition to exposing ambiguities, our hex color grammar will show us how to
-structure our `Fuzzer`s.
+structure our fuzzers.
 
 A formal grammar is a notation that uses patterns of symbols to describe a set 
 of valid strings.
@@ -336,24 +339,24 @@ F = "F" | "f"
 ```
 
 
-## From formal grammar to `Fuzzer`
+## From formal grammar to fuzzers
 
 You might have noticed that our formal grammar made liberal use of two powerful
 logical patterns: recursion and combination.
 Nonterminal symbols are resolved to terminal symbols recursively.
 Smaller patterns are combined to create larger patterns.
-We can use the same approach to create a hex color `Fuzzer`.
+We can use the same approach to create a hex color fuzzer.
 
 Again, let's start with the smallest pieces: letters and numbers.
 `Fuzz.string` and `Fuzz.int` aren't much help because they generate _any_ 
 `String` or `Int`, respectively.
 This might include characters that aren't hex digits or numbers that are out of
 the hex color range.
-Instead we can use `Fuzz.constant` to create a `Fuzzer` for each hexadecimal 
+Instead we can use `Fuzz.constant` to create a fuzzer for each hexadecimal 
 digit.
-For example, `Fuzzer.constant "1"` is a `Fuzzer` that always generates a `"1"`.
-Then we can use `Fuzz.oneOf` to combine each of these hex digit `Fuzzer`s.
-The result is a `Fuzzer` that generates a single, random hex digit.
+For example, `Fuzzer.constant "1"` is a fuzzer that always generates a `"1"`.
+Then we can use `Fuzz.oneOf` to combine each of these hex digit fuzzers.
+The result is a fuzzer that generates a single, random hex digit.
 Note that the Elm code closely resembles our context-free grammar.
 
 ```
@@ -398,7 +401,7 @@ num =
         ]
 ```
 
-We can also use `Fuzz.constant` to create a `Fuzzer` for the `"#"` character.
+We can also use `Fuzz.constant` to create a fuzzer for the `"#"` character.
 
 ```
 hash : Fuzzer String
@@ -410,7 +413,7 @@ Once again, we have our basic building blocks and we want to start combining
 them into more complex patterns. 
 In the syntax of our context-free grammar, `,` is the concatenation operator.
 Elm also provides a string concatenation operator: `(++)`.
-But we can't apply this operator directly to the `Fuzzer`s in the way we applied 
+But we can't apply this operator directly to the fuzzers in the way we applied 
 `,` to the nonterminal symbols.
 Like any algebraic data type, we have to use operators like `map` to transform
 the value that the type represents.
@@ -448,8 +451,7 @@ hex6 =
     repeat2 hex3
 ```
 
-These `Fuzzer` definitions look quite similar to the `Hex3` and `Hex6` 
-nonterminal symbols from our context-free grammar:
+Again, note how closely our Elm code resembles our hex color string grammar:
 
 ```
 Hex3 = Hex1, Hex1, Hex1
@@ -457,10 +459,10 @@ Hex3 = Hex1, Hex1, Hex1
 Hex6 = Hex3, Hex3`
 ```
 
-What's left is combining `hex3` and `hex6` to create a `hex` `Fuzzer`. 
-This `Fuzzer` will only generate a three-digit or a six-digit hexadecimal number,
-the only kinds of hexadecimal numbers that we consider to be valid.
-
+`hex3` and `hex6` are then combined in a single fuzzer that randomizes the 
+3-digit or 6-digit format.
+This fuzzer generates a hex number but not just any hex number; it generates
+a hex number that lies within the hex color range.
 
 ```
 hex : Fuzzer String
@@ -472,7 +474,7 @@ hex =
 ```
 
 Finally, we prepend this random hexadecimal string with the `"#"` character.
-Now we have a fuzzer that generates random, valid hexadecimal color strings.
+Now we have a fuzzer that randomly generates a valid hex color string.
 
 ```
 hexColor : Fuzzer String
@@ -484,12 +486,18 @@ hexColor =
 ## Formal grammar is Fuzzy thinking
 
 Formal grammar provides a useful mental model for structuring fuzzers.
-Each fuzzer is equivalent to a nonterminal symbol.
-The easiest fuzzers are the most general, such as `Fuzz.string` and `Fuzz.int`.
-More specific values require more complex fuzzers.
-To build up complexity, create smaller fuzzers and combine them.
-Thinking in terms of nonterminal and terminal symbols helps to identify the overall
-pattern and each of the smaller patterns that the large pattern is composed of.
+Each fuzzer is equivalent to a nonterminal symbol. 
+The value generated by the fuzzer is equivalent to a terminal symbol.
+Fuzzers can be combined in the same way that nonterminal symbols are combined.
+
+The value generated by the fuzzer is a terminal symbol.
+Thinking in terms of nonterminal and terminal symbols helps to identify the 
+overall pattern and each of the smaller patterns that the large pattern is 
+composed of.
 By starting with the simplest patterns first and combining them, it becomes 
 relatively easy to create fuzzers that generate random values within 
 complex constraints.
+
+The easiest fuzzers are the most general, such as `Fuzz.string` and `Fuzz.int`.
+More specific values require more complex fuzzers.
+To build up complexity, create smaller fuzzers and combine them.
