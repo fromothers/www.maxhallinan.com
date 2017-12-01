@@ -126,27 +126,44 @@ whitespace".
 But now we have to define whitespace.
 Is whitespace just a space character? Or spaces and tabs?
 What about linebreaks?
-In this way, the list gets longer, the requirements become more verbose, and 
+In this way, the requirements become more verbose and 
 misintepretation becomes more likely.
 Exact meanings are hard to express with natural language.
 We find ourselves reaching for a language with fewer possible meanings and 
 fewer words required to say what we mean.
 This is when formal grammar becomes useful.
 
-It's starting to feel like we are drifting from our original task, which is to 
-generate some random hex colors.
-Do we really need a more exact specification before we start building a hex 
-color Fuzzer?
-We could just address latent ambiguities as they arise.
+
+## Formal grammar
+
+It might feel like we are drifting from the original task of generating random
+hex colors.
+Do we really need a more exact specification? 
+We could start building our hex color Fuzzer and address latent ambiguities as 
+they arise.
 While this is true, writing a formal grammar for hex color strings is
 a worthwhile exercise.
-The grammar won't just help to expose ambiguities.
-It will also give us an intuition for how to structure our Fuzzers.
+In addition to exposing ambiguities, our hex color grammar will show us how to
+structure our Fuzzers.
 
-A formal grammar uses patterns of symbols to describe a set of valid strings.
-Let's say that I have four strings, "aa", "AA", "aA" and "Aa". 
-I want to say that, in my language, these are the only four "sentences".
-Here's how I would say that with a context-free grammar:
+A formal grammar is a notation that uses patterns of symbols to describe a set 
+of valid strings.
+The patterns of symbols are the "grammar of" whatever you are describing.
+There are two types of symbols in formal grammar: terminal and nonterminal.
+The names terminal and nonterminal imply action or movement.
+A terminus is where something stops or ends.
+In this case, the action or movement is replacement.
+Given a nonterminal symbol, we want to replace it with a terminal symbol.
+A string is valid if the nonterminal symbols can be replaced with terminal 
+symbols in a way which produces that string.
+
+Formal grammar is a theoretical subject but we can learn what we need to know
+by looking at an example.
+Let's say that we have four strings: `"aa"`, `"AA"`, `"aA"` and `"Aa"`.
+These strings form our language.
+Only these four strings are valid in this language.
+Here's how we can describe that language with a 
+[context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar):
 
 ```
 Start = Char, Char
@@ -154,42 +171,35 @@ Start = Char, Char
 Char = "A" | "a"
 ```
 
-There are two types of symbols in formal grammar: terminal and nonterminal.
-The names terminal and nonterminal imply action or movement.
-A terminus is where something stops or ends.
-In this case, the action or movement is replacement.
-Given a nonterminal symbol, we want to replace it with a terminal symbol.
-
-This game of replacement begins at the `Start` nonterminal symbol.
-In any formal grammar, you will find a special symbol called something
-like `Start` or `Root`.
-This is the entry point to the grammar.
-All valid strings converge at that symbol.
-
 Let's walk through the process of testing whether `"aA"` is a valid sentence
-in the language we've described.
+according to our grammar.
 We take the first character in `"aA"` which is `"a"`.
-Then we look at the right side of the start symbol, moving left to right.
-The first thing we encounter is the nonterminal symbol `Char`. 
+Then we look at the right side of the `Start` symbol, moving left to right.
+First we encounter the nonterminal symbol `Char`.
 In order to test whether `"a"` matches `Char`, we have to replace `Char` with
 a terminal symbol.
 To do this, we go down to the definition of `Char`. 
 On the right side of `Char`, we first find `"A"`. 
 `"A"` does not match `"a"`. 
 But `"A"` is not our only option. 
-The pipe operator (`|`) is the logical OR. 
-So `Char` can also be replaced with `"a"`.
-`"a"` matches `Char`. 
-Now we repeat the process for the second `Char` on the right side of`Start`.
-In the same way, we find that `"A"` matches `Char`.
-And the concatenation operator (`,`) indicates that both `Char`s in `Start` are
-part of one string.
-So, `"aA"` is a valid sentence in our language.
-`"bA"` is not, because there's no way to replace any of the nonterminal symbols
-in our grammar with the terminal symbol `"b"`.
+`|` is the logical OR.
+So `Char` can be replaced with `"A"` or `"a"`.
+`"a"` matches `Char`.
+So far, so good.
+
+Now we need to test the second character in our string: `"A"`.
+We return to `Start` and move right, finding a second nonterminal symbol `Char`.
+In the same way that we tested `"a"`, we find that `"A"` matches `Char`.
+And now we are out of characters to test and nonterminal symbols to replace.
+Our string ends where are pattern ends.
+The pattern of characters in our string match the pattern of symbols in our
+grammar.
+`"aA"` is a valid sentence in our language.
 
 
-Now let's jump into writing a formal grammar for a hex color string.
+## A formal grammar for hex colors
+
+Now let's jump into writing a context-free grammar for a hex color string.
 We'll start with the basic pieces, the terminal symbols, and work our way up
 to the `Start` symbol.
 
@@ -327,7 +337,7 @@ E = "E" | "e"
 F = "F" | "f"
 ```
 
-## Structuring patterns with Fuzzer combinators
+## From formal grammar to Fuzzer
 
 You might have noticed that our formal grammar made liberal use of two powerful
 patterns: recursion and composition.
@@ -492,3 +502,26 @@ pattern and each of the smaller patterns that the large pattern is composed of.
 By starting with the simplest patterns first and combining them, it becomes 
 relatively easy to create fuzzers that generate random values within 
 complex constraints.
+<!--
+All formal grammars define a set of constraints within which patterns must 
+be formed.
+These grammars are organized into a hierarchy based on the relative strictness
+of these constraints.
+The base level of this hierarchy is "regular" or "linear" grammar.
+Patterns formed with a regular grammar are the most constrained.
+The top level of the hierarchy is "context-sensitive" grammar, which is the least
+constrained.
+The level of constraint corresponds to the ease with which a computer program
+can test whether a string is valid according to the grammar.
+Our hex color grammar will be a context-free grammar, which is moderately
+constrained.
+
+`Start` and `Char` are the nonterminal symbols. 
+`"A"` and `"a"` are the terminal symbols.
+The game of replacement begins at the `Start` nonterminal symbol.
+In any formal grammar, you will find a special symbol called `Start`, `Root`, or
+something to that effect.
+This is the entry point to the grammar.
+
+-->
+

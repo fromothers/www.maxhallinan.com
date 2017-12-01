@@ -70,7 +70,7 @@ body {
 code, 
 pre,
 .highlight {
-  background: #f6f8fa;
+  background: #f5f8fa;
   font-family: Menlo, monospace;
   font-size: 0.8rem;
 }
@@ -85,9 +85,11 @@ pre.highlight {
 }
 
 .post {
-  margin: 0 auto;
-  max-width: 55.51rem;
-  padding: 1.953rem;
+  /* margin: 0 auto; */
+  /* max-width: 55.51rem; */
+  max-width: 53.291em;
+  padding: 1.953rem 0;
+  /* padding: 1.953rem; */
 }
 
 .post h1, 
