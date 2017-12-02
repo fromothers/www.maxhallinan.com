@@ -23,6 +23,7 @@ github_username:  maxhallinan
 # Build settings
 highlighter: pygments
 markdown: kramdown
+permalink: /:categories/:year/:month/:day/:title/
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
