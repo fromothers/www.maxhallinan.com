@@ -306,6 +306,7 @@ E = "E" | "e";
 F = "F" | "f";
 {% endhighlight %}
 
+
 ## From formal grammar to fuzzers
 
 You might have noticed that our formal grammar made liberal use of two powerful
