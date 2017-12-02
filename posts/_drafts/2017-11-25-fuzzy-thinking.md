@@ -454,7 +454,7 @@ hexColor =
 {% endhighlight %}
 
 
-## Formal grammar is Fuzzy thinking
+## Formal grammar is fuzzy thinking
 
 String fuzzers can be used like a formal grammar to describe patterns of 
 characters.
