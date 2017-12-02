@@ -388,7 +388,6 @@ For a 3-digit hex number, we'll use `Fuzz.map3` to apply the concatenation
 operator to three random hex digits:
 
 {% highlight elm %}
-```
 hex3 : Fuzzer String
 hex3 =
     Fuzz.map3 (\a b c -> a ++ b ++ c) hex1 hex1 hex1
@@ -405,7 +404,6 @@ repeat2 fuzzer =
 repeat3 : Fuzzer String -> Fuzzer String
 repeat3 fuzzer =
     Fuzz.map2 (++) fuzzer <| repeat2 fuzzer
-```
 {% endhighlight %}
 
 Now we can use these abstractions to simplify the `digit3` fuzzer and create 
