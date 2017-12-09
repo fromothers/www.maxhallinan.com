@@ -1,6 +1,9 @@
+#!/usr/bin/env bash
+
 echo "Building site locally...\n"
+pwd
 rm -rf _site
-jekyll build \
+bundle exec jekyll build \
   --config "_config.yml,_config.maxhallinan.com.yml"
 
 # echo "\n\nCompressing the files...\n"
