@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
-echo "Building site locally...\n"
+echo "Building site locally..."
 pwd
 rm -rf _site
 bundle exec jekyll build \
   --config "_config.yml,_config.maxhallinan.com.yml"
 
-# echo "\n\nCompressing the files...\n"
+# echo "Compressing the files..."
 # for i in `find ./_site | grep -E "\.html$|\.css$|\.js$|\.json|\.xml$"`;
 #   do gzip --verbose "$i"; \
 #   mv "$i.gz" "$i"; 
 # done
 
-echo "\n\nSyncing images and fonts...\n"
+echo "Syncing images and fonts..."
 s3cmd sync \
   --acl-public \
   --no-preserve \
@@ -30,7 +30,7 @@ s3cmd sync \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
 
-echo "\n\nSyncing html...\n"
+echo "Syncing html..."
 s3cmd put \
   --acl-public \
   --no-preserve \
@@ -42,7 +42,7 @@ s3cmd put \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
 
-echo "\n\nSyncing css...\n"
+echo "Syncing css..."
 s3cmd put \
   --acl-public \
   --no-preserve \
@@ -54,7 +54,7 @@ s3cmd put \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
 
-echo "\n\nSyncing js...\n"
+echo "Syncing js..."
 s3cmd sync \
   --acl-public \
   --no-preserve \
@@ -65,7 +65,7 @@ s3cmd sync \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
 
-echo "\n\nSyncing json...\n"
+echo "Syncing json..."
 s3cmd sync \
   --acl-public \
   --no-preserve \
@@ -76,7 +76,7 @@ s3cmd sync \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
 
-echo "\n\nSyncing xml...\n"
+echo "Syncing xml..."
 s3cmd sync \
   --acl-public \
   --no-preserve \
@@ -87,7 +87,7 @@ s3cmd sync \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
 
-echo "\n\nOverwriting index.html with short expires time...\n"
+echo "Overwriting index.html with short expires time..."
 s3cmd put \
   --acl-public \
   --no-preserve \
@@ -97,7 +97,7 @@ s3cmd put \
   -c .s3cmd \
   _site/index.html s3://maxhallinan.com
 
-echo "\n\nSyncing remaining and cleaning up...\n"
+echo "Syncing remaining and cleaning up..."
 s3cmd sync \
   --acl-public \
   --no-preserve \
