@@ -2,6 +2,13 @@
 layout: base
 ---
 
+## Posts
+
+{% for post in site.categories.posts %}
+  - {{post.date | date_to_string }},  [{{post.title}}]({{post.url}})
+{% endfor %}
+
+
 ## Projects
 
 - [brunfaick](https://github.com/maxhallinan/brunfaick): A Brainfuck interpeter
