@@ -1,7 +1,7 @@
 ---
 author: Max Hallinan
 layout: post
-published: true
+published: false
 thumbnail: /static/img/heat-stones/thumb.jpg
 title: Heat Stones
 ---

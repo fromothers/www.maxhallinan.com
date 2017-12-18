@@ -4,12 +4,15 @@
   <body>
     <header>
       <h1>Max Hallinan</h1>
-      <a href="/">Home</a> /
-      <a href="/posts">Posts</a> /
-      {% comment %}
-      <a href="/stories">Stories</a> /
-      {% endcomment %}
-      <a href="mailto:maxhallinan@riseup.net">Email</a>
+      <nav>
+        <a href="/">Home</a> /
+        <a href="/posts">Posts</a> /
+        {% comment %}
+        <a href="/stories">Stories</a> /
+        {% endcomment %}
+        <a href="mailto:maxhallinan@riseup.net">Email</a> /
+        <a href="/feed.xml">Atom feed</a>
+      </nav>
     </header>
     {{content}}
   </body>

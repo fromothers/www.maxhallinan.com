@@ -1,6 +1,7 @@
 ---
 layout: base
 title: Stories
+published: false
 ---
 
 ## Stories
