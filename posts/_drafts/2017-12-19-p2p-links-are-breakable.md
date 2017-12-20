@@ -93,7 +93,8 @@ of peers or artificially, by location on a small number of resilient hosts,
 e.g. a VPS.
 While the HTTP web suffers from silos of information, where the data is trapped
 in a proprietary system, a peer-to-peer web could suffer from "silos of
-stardom", where data that is not popular enough effectively doesn't exist.
+stardom", where data is effectively constrained by a popularity requirement.
+where data that is not popular enough effectively doesn't exist.
 I think of this as a distortion because it is not an intended effect of the
 network architecture if that intention is to promote availability and openness.
 
