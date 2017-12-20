@@ -10,15 +10,14 @@ shortly before I wake up.
 That's not true of everything; some web-based conversations span multiple days,
 are reactions to current events that occur at odd times relative to American
 timezones, or are populated by a non-American majority.
-Nonetheless, the pattern of things taking shape on the American web as my day
-is ending and these things concluding shortly before I wake up is more common 
-than I expected to find when I moved to Germany.
+Nonetheless, things tend to take shape on the American web as my day is ending 
+and conclude shortly before I wake up.
 Simply put: I can tell when America is sleeping.
 
 The [Peer-to-Peer Web/ Los Angeles](https://peer-to-peer-web.com/los-angeles) 
 event was one of those things.
-I was unable to watch the livestream because it started at 22:00 on a Sunday 
-night.
+I was unable to watch the livestream because it started at 22:00 local time
+on a Sunday night.
 Later that week, I received an email from the organizers with a link to an 
 archive of the livestream.
 I received this email at 2:00 local time and followed a link to the archives
@@ -32,10 +31,10 @@ The peer had disappeared.
 It's possible that this was someone in Los Angeles who had just powered down
 their computer and gone to bed.
 I kept Beaker open at work, checking in from time to time.
-Sometime in the middle of the afternoon, maybe around 14:00 or 15:00, a couple 
-of peers appeared.
-This is also the same time window during which I generally start to sense that
-Americans are waking and logging on to the internet.
+Sometime in the middle of the afternoon, maybe around 15:00, a couple of peers 
+appeared.
+This is also the same time window during which I generally start to sense (100% 
+unscientifically) that Americans are waking and logging on to the internet.
 The availability of the livestream archive was following the pattern of American
 web traffic.
 By the end of the day, I had 9 peers and downloaded the archive without 
@@ -57,7 +56,7 @@ stored.
 If that computer cannot provide the resource, the resource ceases to exist.
 
 On peer-to-peer networks like dat, a resource is identified by
-_what is is_ (content addressed) instead of _where it is_ (location addressed).
+_what is is_ (content-addressed) instead of _where it is_ (location-addressed).
 When a resource is content-addressed, it is independent from its location.
 A single resource could be hosted in multiple locations at once.
 The network understands that copies of the resource, though physically 
@@ -66,6 +65,53 @@ This means that any host can go offline without effecting the resource's
 availability.
 Except if all hosts go offline.
 Then a link to the resource is broken, at least for the time being.
+
+The availability of a resource on a peer-to-peer network correlates with the 
+popularity of that resource.
+As more people download and seed the resource, the probability rises that the
+resource will be available at any given time.
+In this sense, peer-to-peer networks are less vulnerable to link rot than 
+networks like HTTP where a resource is tied to a single origin.
+If a server goes down on a peer-to-peer network, 
+But what happens to resources that are not popular yet or never will be?
+When I first started using bittorrent to pirate videos, shortly after the 
+network was started, I found that often the videos I watched weren't as much
+the videos I wanted to watch as they were the videos that were available.
+There was an address for a video I was interested in but no one was seeding that
+address.
+The most reliable videos were recent Hollywood blockbusters or videos with a 
+significant cult following, e.g. _Monthy Python and the Holy Grail_.
+I lost interest in the Bittorrent network because I could never find the content
+I was really looking for.
+I found myself being funneled into what was available rather than what I desired.
+Some years later, around 2012, I gave Bittorrent a second try.
+While there was definitely more content, I found that the same pattern emerged.
+I would think of a movie I wanted to watch, find a torrent address for it, and
+then find that no one was seeding.
+So I'd be forced to think of a different movie and maybe a third, until I found
+one I was actually able to download.
+The movies I watched then were always a compromise with the network and that 
+compromise rarely yielded my first choice.
+I accepted this as the constraint of getting something for free illegally. 
+It seemed absurd to complain about it in the same way that it would be absurd
+for a thief to complain that the store does not have the inventory he wishes 
+to steal.
+But if the future of the web is a peer-to-peer network, this problem of low
+availability for less popular content (common in my experience) suddenly seems 
+very important.
+
+
+Broken links, "the 404 problem", are one of the major concerns that drive 
+development of the dat network and, more broadly, the peer-to-peer web movement.
+
+I am interested in the possibility that peer-to-peer networks are a remedy to 
+some (perhaps many) of the imperfectons of http networks.
+With that background, I found this experience extra interesting.
+As I thought about what had happened, it started to seem that availability on 
+a peer-to-peer network is more vulnerable to break than I had first considered.
+And that peer-to-peer networks are vulnerable to certain distortions
+which are not found on an http network, exactly because of the difference in 
+a resource's availability.
 
 The more I think about this, the more of a problem it seems to me.
 
@@ -100,15 +146,6 @@ but that self-hosted things are not reliable.
 
 But the person who puts something onto the network, 
 
-
-I am interested in the possibility that peer-to-peer networks are a remedy to 
-some (perhaps many) of the imperfectons of http networks.
-With that background, I found this experience extra interesting.
-As I thought about what had happened, it started to seem that availability on 
-a peer-to-peer network is more vulnerable to break than I had first considered.
-And that users of a peer-to-peer networks are vulnerable to certain distortions
-which are not found on an http network, exactly because of the difference in 
-a resource's availability.
 
 Especially in the early days of Bittorrent, it is important to remember that the
 movies I downloaded from the network weren't always the movies I wanted to watch
