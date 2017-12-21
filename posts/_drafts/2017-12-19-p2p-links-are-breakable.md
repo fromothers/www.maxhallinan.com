@@ -1,45 +1,68 @@
 ---
 layout: post
-title: "The Silo of Stardom: An Availability Dilemma on p2p Networks"
+title: "The Silo of Obscurity: an Availability Dilemma on p2p Networks"
 ---
 
 Because I live in Germany, I am often out of sync with world wide web traffic
 emanating from America.
-The heaviest web traffic starts as I'm winding down for the day and ends 
-sometime shortly before I wake up.
+The heaviest traffic starts as I'm winding down for the day and ends sometime 
+shortly before I wake up.
 That's not true of everything; some web-based conversations span multiple days,
 are reactions to current events that occur at odd times relative to American
 timezones, or are populated by people who don't live in America.
-Nonetheless, things tend to take shape on the American web as my day is ending
-and conclude shortly before I wake up.
-Simply put: I can tell when America is sleeping.
+Nonetheless, my perception is that websites I visit are updated more frequently
+as my day is ending and that these updates taper off shortly before I wake up.
+Simply put: there are times when it feels to me like parts of the web are 
+asleep.
 
-The [Peer-to-Peer Web/ Los Angeles](https://peer-to-peer-web.com/los-angeles)
-event was one of those things.
-I was unable to watch the livestream because it started at 22:00 local time
-on a Sunday night.
-Later that week, I received an email from the organizers with a link to an
-archive of the livestream.
-I received this email at 2:00 local time and followed a link to the archives
-sometime around 7:00.
-Citing the expense of hosting and bandwidth, the Peer-to-Peer Web / Los Angeles
-organizer opted to host the videos on the dat network.
-I opened the dat url in Beaker browser (a web browser that is also a dat 
-client).
-So I started to stream the first video from 1 peer but the stream was broken 
-sometime shortly after. 
-The peer had disappeared.
-It's possible that this was someone in Los Angeles who had just powered down
-their computer and gone to bed.
-I kept Beaker open at work, checking in from time to time.
-Sometime in the middle of the afternoon, maybe around 15:00, a couple of peers
+One example of this (perhaps purely subjective) experience was online activity 
+connected to the [Peer-to-Peer Web](https://peer-to-peer-web.com/los-angeles)
+event held in Los Angeles on December 10th, 2017.
+I didn't watch the livestream because it started at 22:00 local time on a 
+Sunday night.
+Later that week, I received an email from the Jon-Kyle Mohr, the event's 
+organizer, with a link to an archive of the livestream.
+I received this email at 02:23 local time and followed a link to the archives
+sometime around 07:00.
+Citing the expense of hosting and bandwidth, Mohr had opted to host the videos 
+on the [Dat network](https://datproject.org/), a relatively new and really
+interesting peer-to-peer network.
+I opened the Dat url in [Beaker browser](https://beakerbrowser.com/) 
+(a web browser that is also a Dat client), connected to 1 seeder, and started 
+streaming one of the livestream recordings.
+But after 5 or 10 minutes, the stream stopped because the peer had gone offline.
+Was this someone in Los Angeles who had powered down and gone to bed?
+I checked the network a few more times during the day.
+Sometime in the middle of the afternoon, maybe around 15:00, a couple of seeders
 appeared.
-This is also the same time window during which I generally start to sense (100%
-unscientifically) that Americans are waking and logging on to the internet.
-The availability of the livestream archive seemed to follow the pattern of 
-American web traffic.
+This is also the same window of time during which I generally start to sense 
+(100% unscientifically) that Americans are waking up and logging on to the 
+internet.
+The availability of the livestream archive seemed to follow this percieved 
+pattern of American web traffic.
 By the end of the day, I had 9 peers and downloaded the archive without
 interruption.
+
+This wasn't my first experience with the peer-to-peer web.
+I use Beaker browser frequently to explore projects that experiment with Dat 
+as an alternative to HTTP.
+Many of these projects, like the Rotonde social network, depend on Dat and 
+aren't easily accessed in a mainstream web browser.
+As I spent the day trying to access the livestream archive, I realized that I 
+had compartmentalized my experiences on the HTTP web and the peer-to-peer web.
+That day was the first time I had attempted to access content on the 
+peer-to-peer web with the same urgency, the same expectation that I could have
+it instantly, as I routinely have done on the HTTP web.
+I had always regarded Dat, Beaker browser, and the projects in their domain as
+experimental.
+Not only did I think of them as experimental, they are experiments I would 
+like to be succeed.
+So I made exceptions for them that I don't for the mainstream HTTP-based web
+platform and operated on a half-conscious bias that the peer-to-peer web
+would be "better".
+The effectively broken Dat link caused me to wonder if peer-to-peer
+networks could negatively effect users of the web in a way not possible on 
+an HTTP network.
 
 Broken links are a common problem on HTTP networks.
 Links break for many reasons: the owner of the resource can't afford the
@@ -56,26 +79,31 @@ Every web address is first the address of the computer where that resource is
 stored.
 If that computer cannot provide the resource, the resource ceases to exist.
 
-On peer-to-peer networks like dat, a resource is identified by
+On peer-to-peer networks like Dat, a resource is identified by
 _what is is_ (content-addressed) instead of _where it is_ (location-addressed).
 When a resource is content-addressed, it is independent from its location.
 A single resource could be hosted in multiple locations at once.
 The network understands that copies of the resource, though physically
 different, are logically the same.
-This means that any host can go offline without effecting the resource's
-availability.
-Except if all hosts go offline.
-Then a link to the resource is broken, at least for the time being.
+This means that one host can go offline without effecting the resource's
+availability if it is also available on another host.
+All hosts must go offline to break a links to that resource.
+Even though it is possible for resources to disappear from the network, the 
+ability to guard against this possibility by duplicating the resource is still 
+a significant improvement on HTTP.
 
-Popular resources are more likely to be available on a peer-to-peer network.
+This means that popular resources will generally enjoy higher levels of 
+availability.
 As more peers download and seed the resource, the probability rises that the
 resource will be available at any given time.
 But this does not mean that link rot is not a real problem.
-In my experience, it's not even an uncommon problem.
+Until my experience downloading the livestream archive, I hadn't considered
+something I knew well from my experiences with Bittorrent: unavailability is not 
+an uncommon problem on peer-to-peer networks.
 I rarely pirate movies because I often find that the movies available to
 download are not the movies I want to watch.
-What I end up watching is often a compromise between my tastes and what was 
-available to download.
+What I end up watching is often a compromise between my tastes and what is 
+available to download at the time.
 As a media pirate, I have nothing to say about torrents that are perpetually
 lacking seeders.
 When I got to the store to steal a wrench, I don't complain when the wrenches
@@ -84,19 +112,81 @@ But I'm also someone who is interested in the possiblity that peer-to-peer
 networks are a remedy to some (perhaps many) of the imperfections of http
 networks.
 As that person, I think it's worth considering the plight of the unpopular
-resource on a world wide web backed by a peer-to-peer network.
+resource on the peer-to-peer web.
 
 My primary concern is that such a network could be distorted through a process
 that resembles natural selection: available resources will be those that have
 proved their fitness, either organically through propagation to a large number
 of peers or artificially, by location on a small number of resilient hosts,
 e.g. a VPS.
-While the HTTP web suffers from silos of information, where the data is trapped
+The HTTP web suffers from "silos of information", a situation where data is
+unavailable on the open network because it's trapped in a closed system.
+This isn't possible on a peer-to-peer web because there's no exclusive location
+of the data.
+But could a peer-to-peer network suffer from "silos of obscurity", where data
+is effectively unavailable because it's not well-known?
+I think of this as a distortion because it is not an intended effect of the
+network architecture if that intention is to promote an egalitarian ideal of
+availability.
+
+Karisa McElvy, one of the Dat founders, writes that the Dat community must 
+cooperate to stabilize low-availability resources:
+
+> Decentralization of data produces challenges though — just like a torrent, 
+> data that is decentralized can go offline if there aren’t any stable and 
+> trusted peers... To mitigate it, we invoke the human part of a commons — the 
+> data will be commonly managed... When a dat becomes less healthy, the 
+> community can be alerted and make sure the resource does not go down. 
+> Decentralized tech and decentralized humans working together to use commons 
+> methodology in practice.
+>
+> ["The Web of Commons"](https://blog.datproject.org/2017/09/21/dat-commons/)
+
+I think this is a reasonable approach to things like scientific research, where
+a common understanding and belief in the value of the data is more likely.
+But I'm less confident that the community can be relied on to voluntarily save 
+a Dat archive of something banal like a web gallery of drawings I built in
+middle school.
+One could say that a lack of demand on the network for this data indicates
+that it's not worth saving.
+It's true that supply and demand can be used to efficiently allocate resources
+and that there's some need for prioritization while storage space is finite.
+The problem is that the future value of data is not always knowable in advance.
+This is part of the implied perspective of the Internet Archive: save everything
+on the web because you'll never know what you'll need later.
+I too feel that destroying or losing information should be avoided, even when 
+the present demand for that information is low.
+
+I don't have a specific solution in mind. 
+There are two in addition to community coordination that occur to me.
+The first is that the Internet Archive and organizations like it will continue
+to exist, continue to back up information that no one cares about.
+They will know have the added benefit of being able to have other volunteers
+replicate their archives.
+The other idea is to incentivize the community to replicate data indiscriminately
+by rewarding them in proportion to that data's scarcity.
+People would be incentivized to replicate the least popular data.
+As that data is more replicated, the reward would decrease.
+A kind of entropy would be reached where data would be replicated at the same
+rate.
+
+Reference Snow Crash about the guys that vacuum up information.
+
+
+
+
+
+
+
+
+While the HTTP web suffers from silos of information, where data is unavailable
+on the open network because it's trapped in a closed system, a peer-to-peer web
+could suffer from "silos of stardom", where data is effectively
+
+trapped
 in a proprietary system, a peer-to-peer web could suffer from "silos of
 stardom", where data is effectively constrained by a popularity requirement.
 where data that is not popular enough effectively doesn't exist.
-I think of this as a distortion because it is not an intended effect of the
-network architecture if that intention is to promote availability and openness.
 
 
 
