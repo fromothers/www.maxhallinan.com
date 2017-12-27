@@ -7,8 +7,7 @@ subtitle: "A dilemma of availability on peer-to-peer networks"
 Many peer-to-peer networks address a resource by _what_ it is and not _where_ 
 it is.
 This is called content addressing.
-On a content-addressed, peer-to-peer network, a resource is not tied to a
-single host.
+A content-addressed resource is not tied to a single host.
 Any node that downloads the resource is capable of hosting it.
 Multiple nodes can host the same data simultaneously.
 If one host goes offline, the resource is still accessible from other hosts.
@@ -18,19 +17,26 @@ Meanwhile, the address of the resource remains the same.
 Links to the resource do not break when the location of the resource changes.
 
 For these reasons among others, peer-to-peer networks have recently been 
-celebrated as a solution to "information silos", a situation on client-server 
-networks where data is stored in a closed system and access to the data is 
-controlled.
-Personal data accessed over social networks like Facebook or Instagram is a 
-common example.
-Location of the data on a central host enables this control.
-Without an exclusive location for data on a peer-to-peer network, access to and
-replication of the data becomes harder to control.
+celebrated as a solution to the "information silos" and "walled gardens" of the
+contemporary world wide web. 
+These terms broadly describe conditions on a client-server network where data is 
+stored in a closed system and access to the data is controlled.
+Platforms like Facebook and publicly-funded research published behind a 
+paywall are both common examples.
+In both cases, the data is not directly exposed to the public.
+The public must go through a controlling authority to access the data and access
+occurs under terms set by that authority.
+Client-server networks enable this control by using the location of a host to 
+identify a resource.
+The data is tied to the host and whoever controls the host controls the data.
+This kind of control is harder to achieve on a peer-to-peer network because 
+the data is not identified by or tied to a location.
+If a host tries to control access to the data, a client can route around this 
+host and access the same data at another location.
 The intent is to embed the ideal of openness in the network architecture by 
-making it much harder (perhaps impossible) to create a closed system of siloed
-data.
+making it much harder (perhaps impossible) to own publicly accessed data.
 
-But better availability on peer-to-peer networks does not mean guaranteed 
+But better availability on peer-to-peer networks does not guarantee 
 availability.
 Given a valid address, a client can wait eternally for a host to connect to the 
 network.

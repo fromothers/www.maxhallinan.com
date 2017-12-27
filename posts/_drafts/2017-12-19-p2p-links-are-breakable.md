@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "The Silo of Obscurity: an Availability Dilemma on p2p Networks"
+published: false
 ---
 
 Because I live in Germany, I am often out of sync with world wide web traffic
