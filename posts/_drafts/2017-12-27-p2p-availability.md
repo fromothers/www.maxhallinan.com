@@ -16,7 +16,7 @@ happening decreases as the number of hosts grow.
 Meanwhile, the address of the resource remains the same.
 Links to the resource do not break when the location of the resource changes.
 
-For these among other reasons, peer-to-peer networks have recently been 
+For these reasons among others, peer-to-peer networks have recently been 
 celebrated as a solution to the "information silos" and "walled gardens" of the
 contemporary world wide web. 
 These terms broadly describe conditions on a client-server network where data is 
