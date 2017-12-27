@@ -1,6 +1,7 @@
 ---
 layout: post
 title: When to Learn
+published: false
 ---
 
 I recently authored ["When should I learn Redux?"](http://redux.js.org/docs/faq/General.html#general-when-to-learn) for the Redux FAQ. My answer to this question summarizes several sources compiled by the Redux maintainers. In that sense, the words are mine but the ideas are not. I am grateful for the opportunity to contribute to a project I love and I'm not unhappy with my contribution, but I feel uncomfortable with a premise of the argument my contribution makes.
