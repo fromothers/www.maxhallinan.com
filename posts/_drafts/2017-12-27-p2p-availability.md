@@ -52,15 +52,23 @@ hosts.
 As the number of hosts grows in some rough proportion to the demand, the 
 popular resources generally enjoy greater availability.
 
-My primary concern is that this effect could distort a peer-to-peer web through 
-a process that resembles natural selection: available resources will be those 
-that have proven their fitness, either organically through propagation to a 
-large number of peers or artificially, by location on a small number of 
+My primary concern is that this effect could distort the peer-to-peer web 
+through a process that resembles natural selection: available resources will be 
+those that have proven their fitness, either organically through propagation to 
+a large number of peers or artificially, by location on a small number of 
 resilient hosts, e.g. a VPS.
-When human subjectivity, expressed through the acts of downloading and hosting
-some data and not other data, influences the availability of the data, then 
-the network becomes weighted towards the bias of its users.
-While this is no worse than the client-server web of today, it is inconsistent
+Inevitably, the availability of data will be decided to some degree by patterns 
+of selective downloading and hosting. 
+Some people will simply select the data that is the easiest to acccess, just as 
+I have often chosen to pirate movies that mildly interest me because those 
+movies are the fastest downloads.
+If I choose to seed that movie after downloading, as some routinely do, then 
+the movie will have propagated to another host simply because it was the most 
+available to begin with.
+As the pattern self-reinforces, the network can become weighted towards and 
+amplify the bias of its users, especially the bias that informed the earliest 
+selections.
+However this compares to the client-server web of today, it is inconsistent
 with the egalitarian ideal of free information that the peer-to-peer web is 
 intended to manifest.
 Like the virulent echo chambers that have emerged on social networks, a web 
@@ -68,7 +76,7 @@ based on such a network could become more a tool for confirming bias than
 for deepening understanding.
 The silos of information will only be replaced with silos of subjectivity.
 
-I have no evidence that this could or will happen.
+I have no evidence that this will or even could really happen.
 Nonetheless, I would like to explore approaches to this dilemma even if this 
 dilemma is purely a straw man.
 Doing so is an opportunity to think about what I desire for the peer-to-peer 
