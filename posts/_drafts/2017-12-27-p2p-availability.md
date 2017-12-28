@@ -59,6 +59,8 @@ a large number of peers or artificially, by location on a small number of
 resilient hosts, e.g. a VPS.
 Inevitably, the availability of data will be decided to some degree by patterns 
 of selective downloading and hosting. 
+Some data will be selected because it is the easiest to access, just as I have
+often 
 Some people will simply select the data that is the easiest to acccess, just as 
 I have often chosen to pirate movies that mildly interest me because those 
 movies are the fastest downloads.
@@ -108,7 +110,7 @@ Dat community must cooperate to stabilize vulnerable data:
 >
 > ["The Web of Commons"](https://blog.datproject.org/2017/09/21/dat-commons/)
 
-Karisa's blog post and the accompanying talk note that technology alone cannot
+McElvy's blog post and the accompanying talk note that technology alone cannot
 achieve the aims of the network.
 A collective sense of responsibility for the network is as necessary as the 
 network itself for achieving those aims.
@@ -129,16 +131,16 @@ But the future value of data is not always knowable in advance.
 The same artwork might come to be valued widely, as is the case with the work of
 many artists who only found posthumous success.
 
-If the community as a whole is not capable of total preservation, 
-the second approach is to form smaller organizations like the Internet Archive
-that are dedicated to this cause.
+If the community as a whole is not capable of total preservation, the second 
+approach is to form smaller organizations like the Internet Archive that are 
+dedicated to this cause.
 Such an organization would aim to archive everything on the publicly available
 peer-to-peer web.
 Even the most obscure bits of data would enjoy stable hosting once that data
 was archived.
 And because the data is content-addressed, there wouldn't be a need to access
 the data through an archive interface.
-The archive would ensure the continued availability of the data simply by 
+The archive would simply ensure the continued availability of the data by 
 hosting a copy of the data on a stable archive node.
 The Internet Archive demonstrates that this level of archiving is 
 possible and doesn't require active involvement from the entire community of 
