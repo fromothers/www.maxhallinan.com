@@ -1,4 +1,4 @@
-# maxhallinan.com
+# www.maxhallinan.com
 
 Install:
 
