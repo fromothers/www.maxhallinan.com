@@ -5,34 +5,34 @@ layout: base
 ## Posts
 
 {% for post in site.categories.posts %}
-  - {{ post.date | date_to_string }}, [{{post.title}}]({{post.url}})
+  - {{ post.date | date_to_string }} - [{{post.title}}]({{post.url}})
 {% endfor %}
 
 
 ## Projects
 
-- [brunfaick](https://github.com/maxhallinan/brunfaick): A Brainfuck interpeter
+- [brunfaick](https://github.com/maxhallinan/brunfaick) - A Brainfuck interpeter
   implemented in JavaScript.
 
-- [git-chipper](https://github.com/maxhallinan/git-chipper): An interactive CLI
+- [git-chipper](https://github.com/maxhallinan/git-chipper) - An interactive CLI
   for batch deleting local branches.
 
-- [kontext](https://github.com/maxhallinan/kontext): A higher-order function that
+- [kontext](https://github.com/maxhallinan/kontext) - A higher-order function that
   proxies context to context-free functions.
 
-- [kreighter](https://github.com/maxhallinan/kreighter): A utility for generating
+- [kreighter](https://github.com/maxhallinan/kreighter) - A utility for generating
   Redux action creators.
 
-- [my-clippings-to-json](https://github.com/maxhallinan/my-clippings-to-json):
+- [my-clippings-to-json](https://github.com/maxhallinan/my-clippings-to-json) -
   Format Kindle clippings as JSON.
 
-- [redeuceur](https://github.com/maxhallinan/redeuceur): A utility for creating
+- [redeuceur](https://github.com/maxhallinan/redeuceur) - A utility for creating
   terse Redux reducers.
 
-- [reshep](https://github.com/maxhallinan/reshep): A higher-order component
+- [reshep](https://github.com/maxhallinan/reshep) - A higher-order component
   that "reshapes" a React component props object.
 
-- [zelektree](https://github.com/maxhallinan/zelektree): Embed selectors in a 
+- [zelektree](https://github.com/maxhallinan/zelektree) - Embed selectors in a 
   Redux state tree.
 
 
