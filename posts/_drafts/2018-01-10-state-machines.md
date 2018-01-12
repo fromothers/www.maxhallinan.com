@@ -91,7 +91,8 @@ The result is a system that is robust by default.
 `RemoteData` insufficiently models the domain of remote data.
 Imagine an application that displays a list of "foos".
 The first request is to `/api/foos`.
-This returns a list of foos each in an abbreviated form.
+This API responds with a list of foos.
+To save bandwidth, each foo is abbreviated.
 The application correctly sets `model.foos` first to `NotAsked`, then
 to `Loading`, and finally to `Success (List Foo)`.
 Meanwhile, the user interface transitions from an empty screen to a loading 
