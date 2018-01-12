@@ -7,6 +7,24 @@ _The examples here are written in Elm, the original language of the `RemoteData`
 pattern. Like the pattern itself, the thinking can be generalized to other 
 languages._
 
+# I. Code memes
+
+Code memes are units of thought spread through the discourse of programmers by 
+rigid imitation.
+Each of these units is a readymade response to a shared experience.
+The shared experience tends to be problem solving.
+Perhaps the most well-known code meme is the "Hello World" program.
+"Hello World" is a response to the experience of writing a program in a new 
+language for the first time.
+The problem is "What program should I write?" and the readymade response is the
+"Hello World" program.
+
+Rigid imitation across contexts is what makes memes more specific than shared 
+understanding in general.
+Not every use of a programming pattern is mimetic.
+The application of some patterns involves significant adaptation of the pattern
+to the problem.
+The pattern informs but does not dictate the result.
 
 ## II. What is RemoteData?
 
