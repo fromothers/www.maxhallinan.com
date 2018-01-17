@@ -132,25 +132,35 @@ These states include:
 Union types are an excellent way to model a finite number of states.
 
 ```elm
-type Cache =
-    = Collection (Dict String x)
-    | Item x
+type Cache a b c
+    = Empty (Health a) (Sync b)
+    | Filled (Health a) (Sync b) c
+
+
+type Health a
+    = Valid
+    | Invalid a
+
+
+type Sync a
+    = Complete
+    | Pending a
+```
+
+```elm
+type alias Model =
+    { foos : Cache Error Source (List Foo)
+    }
+
 
 type Error 
     = General String
-    | Specific (Dict String String)
+    | Specific (Int, String)
 
-type Target
+
+type Source
     = Collection
-    | Item String
-
-type RemoteData 
-    = Empty
-    | EmptyInvalid Error 
-    | EmptyInvalidLoading Error Target
-    | Primed Cache
-    | PrimedInvalid Error Cache
-    | PrimedInvalidLoading Error Target Cache
+    | Item Int
 ```
 
 <!--
