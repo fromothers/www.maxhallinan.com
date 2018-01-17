@@ -101,16 +101,15 @@ The result is a system that is robust by default.
 
 `RemoteData` models a _stateful_ cache of data in terms of a _stateless_ 
 transfer of data, REST.
+The current state of a `RemoteData` value preserves none of its prior state.
 For example, the transformation of `Success d` to `Loading` means that the 
 information in `d` is lost.
-To carry that information from `Success` to `Loading` requires us to update
+To carry that information from `Success d` to `Loading` requires us to update
 the `Loading` constructor to `Loading d` or `Loading (Maybe d)`.
 
 Here we must recall the old adage: user interfaces are state machines.
-Displaying a loading indicator at the bottom of a list while fetching the next 
-page of data demands continuity of context.
-Displaying an error message next to an invalid form field also demands 
-continuity of context.
+Many common features demand a continuity of context.
+For example, infinite scroll is a combination of `Success d` and `Loading`.
 By breaking this continuity, `RemoteData` makes it impossible to model many 
 legitimate states.
 These states include:
@@ -130,61 +129,36 @@ These states include:
 - Data cached, error for a subset of the data, and request pending for a subset 
   of the data
 
-We can attempt to salvage the `RemoteData` pattern by modeling the optional 
-cached error and cached data:
+Union types are an excellent way to model a finite number of states.
 
 ```elm
+type Cache =
+    = Collection (Dict String x)
+    | Item x
+
+type Error 
+    = General String
+    | Specific (Dict String String)
+
+type Target
+    = Collection
+    | Item String
+
 type RemoteData 
-    = NotAsked
-    | Loading (Maybe e) (Maybe (List x))
-    | Failure e (Maybe (List x))
-    | Success (Maybe e) (List x)
+    = Empty
+    | EmptyInvalid Error 
+    | EmptyInvalidLoading Error Target
+    | Primed Cache
+    | PrimedInvalid Error Cache
+    | PrimedInvalidLoading Error Target Cache
 ```
-
-To associate the error or the loading state with a subset of the data (e.g. 
-one item in the collection), we have to include an optional id.
-
-```elm
-type RemoteData 
-    = NotAsked
-    | Loading Maybe (Maybe Int, e) (Maybe Int) (Maybe (List x)) 
-    | Failure (Maybe Int, e) (Maybe (List x)) 
-    | Success Maybe (Maybe Int, e) (List x)
-```
-
-For the sake of readability, this gets refactored to a couple of states:
-
-```elm
-type alias LoadingState = 
-    { xs : Maybe (List x)
-    , error : (Maybe Int, Maybe e)
-    , id : Maybe Int -- Just Int when loading one item
-    }
-
-type alias FailureState =
-    { xs : Maybe (List x)
-    , error : (Maybe Int, e) -- (Just Int, e) when the error is for one item
-    }
-
-type alias SuccessState = 
-    { xs : List x
-    , error : (Maybe Int, Maybe e)
-    }
-
-type RemoteData
-    = NotAsked
-    | Loading LoadingState
-    | Failure FailureState
-    | Success SuccessState
-```
-
-Unfortunately, the model has regressed from explicit to implicit representation
-of the cache's state.
 
 <!--
+We can attempt to salvage the `RemoteData` pattern by modeling an optional 
+cached error and cached data:
+
 `RemoteData` effectively demonstrates the power of union types.
 The power of union types is well-demonstrated by the `RemoteData` pattern.
--->
 
 ```
 +-------------------------------+
@@ -246,6 +220,7 @@ idea every time I want to try a language out.
 
 for sampling the flavor of a language, even if the pattern itself is not really
 useful, at least 
+-->
 
 **Notes**
 
@@ -286,4 +261,7 @@ useful, at least
       </a>
     </fn>
   </li>
+  <!--
+  note about how it took me a long time to understand what "a user interface is a state machine" means
+  -->
 </ol>
