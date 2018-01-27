@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Fuzzy Thinking
+title: "Fuzzy Thinking: Fuzz Testing and Formal Grammar"
 ---
 
 There are two rabbit holes here: fuzz testing and formal grammar. 

@@ -52,9 +52,9 @@ The current state is derived from a model with roughly this shape:
 
 ```elm
 type alias Model = 
-  { xs : List x
+  { xs : List X
   , isLoading : Bool
-  , error : e
+  , error : Error
   }
 ```
 
@@ -63,15 +63,16 @@ states explicit.
 The state of the data is encoded into the data's type:
 
 ```elm
-type alias Model = 
-    { xs : RemoteData
+type alias Model =
+    { xs : RemoteData Error (List X)
     }
 
-type RemoteData 
+
+type RemoteData a b
     = NotAsked
     | Loading
-    | Failure e
-    | Success (List x)
+    | Failure a
+    | Success (List b)
 ```
 
 Making the state explicit has two benefits. 
@@ -81,16 +82,19 @@ Second, consumers of the data are required to handle every state:
 
 ```elm
 view : Model -> Html a
-view { xs } =
-    case xs of
+view model =
+    case model.xs of
         NotAsked ->
-            --... 
+            emptyView
+
         Loading ->
-            --... 
+            loadingView
+
         Failure error ->
-            --... 
+            errorView error
+
         Success data ->
-            --... 
+            successView data
 ```
 
 This code will not compile unless the patterns of the case statement cover 
@@ -109,59 +113,91 @@ the `Loading` constructor to `Loading d` or `Loading (Maybe d)`.
 
 Here we must recall the old adage: user interfaces are state machines.
 Many common features demand a continuity of context.
-For example, infinite scroll is a combination of `Success d` and `Loading`.
+For example, infinite scroll is a combination of `Success a` and `Loading`.
 By breaking this continuity, `RemoteData` makes it impossible to model many 
 legitimate states.
 These states include:
 
-- Empty, general error, and request pending
-- Empty, general error, and request pending for a subset of the data
-- Empty, error for a subset of the data, and request pending
-- Empty, error for a subset of the data, and request pending for a subset of the 
-  data
-- Data cached and general error
-- Data cached and error for a subset of the data
-- Data cached and request pending
-- Data cached and request pending for a subset of the data
-- Data cached, general error, and request pending
-- Data cached, general error, and request pending for a subset of the data
-- Data cached, error for a subset of the data, and request pending
-- Data cached, error for a subset of the data, and request pending for a subset 
+- empty, general error, and request pending
+- empty, general error, and request pending for a subset of the data
+- empty, error for a subset of the data, and request pending
+- empty, error for a subset of the data, and request pending for a subset of the 
+  Data
+- data cached and general error
+- data cached and error for a subset of the data
+- data cached and request pending
+- data cached and request pending for a subset of the data
+- data cached, general error, and request pending
+- data cached, general error, and request pending for a subset of the data
+- data cached, error for a subset of the data, and request pending
+- data cached, error for a subset of the data, and request pending for a subset 
   of the data
 
-Union types are an excellent way to model a finite number of states.
+<!--
+This pattern has been useful for writing blog posts, tweets, and even a library. 
+But it is hard for me to understand how anyone found it useful for writing user 
+interfaces.
+-->
+
+We can attempt to salvage the `RemoteData` pattern by adding nullable error and
+data parameters to the `Loading` and `Failure` states.
 
 ```elm
-type Cache a b c
-    = Empty (Health a) (Sync b)
-    | Filled (Health a) (Sync b) c
-
-
-type Health a
-    = Valid
-    | Invalid a
-
-
-type Sync a
-    = Complete
-    | Pending a
+type RemoteData a b
+    = NotAsked
+    | Loading (Maybe a) (Maybe b)
+    | Failure a (Maybe b)
+    | Success (Maybe a) b
 ```
+
+This enables us to model states that are a mix of loading, error, and data.
+For example, the "data cached, general error, and request pending" state would
+look like this:
 
 ```elm
-type alias Model =
-    { foos : Cache Error Source (List Foo)
-    }
-
-
-type Error 
-    = General String
-    | Specific (Int, String)
-
-
-type Source
-    = Collection
-    | Item Int
+Loading (Just error) (Just xs)
 ```
+
+and the "empty, general error, and request pending" state would look like this:
+
+```elm
+Loading (Just error) Nothing
+```
+
+We can use a similar approach to associate the loading and error states with a 
+subset of the data.
+Here we assume a collection of items where each item is uniquely identified by a
+string.
+The relationship between the state and an item in the collection is made by 
+adding a nullable string parameter to the `Loading` and `Failure` states.
+
+```elm
+type RemoteData a b
+    = NotAsked
+    | Loading (Maybe String) (Maybe a) (Maybe b)
+    | Failure (Maybe String) a (Maybe b)
+    | Success (Maybe a) b
+```
+
+But this approach only enables us to associate the error state or the loading 
+state with one item at a time.
+The approach does not enable us to relate a mix of states with multiple items in
+the collection.
+Nor can we relate multiple states to the same item at the same time. 
+`Loading (Maybe String) (Maybe a) (Maybe b)` must become 
+`Loading (Maybe String) (Maybe String, Maybe a) (Maybe b)` to associate both the
+error and the loading state with an item in the collection.
+
+We could continue to cram more information into the `RemoteData` type. 
+Instead of using `Maybe a` for errors, we could use `Dict String a` for a 
+collection of errors, keyed by item id.
+And so on.
+But I don't recommend it.
+This path leads directly back to implicit states.
+Any code that consumes a value of the `RemoteData` type will explode with the 
+nested case statements required to derive the current state.
+
+## IV.
 
 <!--
 We can attempt to salvage the `RemoteData` pattern by modeling an optional 
