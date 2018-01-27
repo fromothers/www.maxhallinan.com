@@ -218,13 +218,15 @@ problem.
 So here is an alternative approach to modeling these states. 
 This is an experimental approach. 
 I'm not sure that it is a sane approach. 
-I'd really like for someone to tell me about a better way.
+I am always suspicious that there is a simpler way and always happy to hear when
+there is.
 
-This approach models a cache of remote data as a state machine.
-A simple state machine has three components: state, events, and transitions.
-A state machine is prompted by an event to transition from the current state to 
-a new state.
-Elm's update function is essentially a state machine: 
+This approach models a cache of remote data as a finite state machine (FSM).
+A simple finite state machine has three components: state, events, and 
+transitions.
+An event prompts the state machine to transition from its current state to a 
+new state.
+A simplified Elm `update` function closely resembles a simple state machine: 
 
 ```elm
 type Msg
@@ -250,10 +252,31 @@ update msg model =
             0
 ```
 
-The `Msg` is an event, the `Model` is the state, and each branch of the case
-expression is a transition from the current state to the next state.
+The `Msg` is like an event, the `Model` is like a state, and each branch of the 
+case expression is a transition from the current state to the next state.
+The difference between the `update` function and a finite state machine is that 
+the `update` function can produce an infinite number of states.
+Without upper and lower bounds, `update` can return any member of the infinitely
+large set of integers.
 
-Our state machine looks a little bit different.
+A finite state machine fits our remote data cache problem because the states of
+that cache are finite.
+Let's start by enumerating those states.
+Ultimately we want both general states and states that are specific to a subset of 
+the data.
+We'll focus first on the general states:
+
+```elm
+type Cache a b
+    = Empty
+    | EmptyInvalid a
+    | EmptySyncing
+    | EmptyInvalidSyncing a
+    | Filled b
+    | FilledSyncing b
+    | FilledInvalid a b
+    | FilledInvalidSyncing a b
+```
 
 **Notes**
 
