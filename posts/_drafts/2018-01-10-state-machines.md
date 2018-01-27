@@ -133,12 +133,6 @@ These states include:
 - data cached, error for a subset of the data, and request pending for a subset 
   of the data
 
-<!--
-This pattern has been useful for writing blog posts, tweets, and even a library. 
-But it is hard for me to understand how anyone found it useful for writing user 
-interfaces.
--->
-
 We can attempt to salvage the `RemoteData` pattern by adding nullable error and
 data parameters to the `Loading` and `Failure` states.
 
@@ -214,75 +208,52 @@ As programmers, we should be wary of code memes.
 The inefficient-meme hypothesis suggests that the code meme masters multitudes
 by leaving some of those multitudes out.
 
+## V. An alternative 
 
-<!--
-We can attempt to salvage the `RemoteData` pattern by modeling an optional 
-cached error and cached data:
+It is tempting to sign off here, at the conclusion of my critique.
+But the critique does not solve the problem of modeling these complex states.
+I work a lot on user interfaces.
+Whether or not I use the remote data pattern, I still want to solve that 
+problem.
+So here is an alternative approach to modeling these states. 
+This is an experimental approach. 
+I'm not sure that it is a sane approach. 
+I'd really like for someone to tell me about a better way.
 
-`RemoteData` effectively demonstrates the power of union types.
-The power of union types is well-demonstrated by the `RemoteData` pattern.
+This approach models a cache of remote data as a state machine.
+A simple state machine has three components: state, events, and transitions.
+A state machine is prompted by an event to transition from the current state to 
+a new state.
+Elm's update function is essentially a state machine: 
 
-```
-+-------------------------------+
-| Empty Pending                 |<-+-----+-----+
-+-------------------------------+  |     |     |
-                                   |     |     |
-Pending----------------------------+     |     |
-Success------------------------------+   |     |
-Error----------------------------------+ |     |
-                                     | | |     |
-                                     | | |     |
-+-------------------------------+    | | |     |
-| Empty Valid                   |    | | |     |
-+-------------------------------+    | | |     |
-                                     | | |     |
-Pending----------------------------------+     |
-Success------------------------------------+   |
-Error----------------------------------------+ |
-                                     | |   | | |
-                                     | |   | | | 
-+-------------------------------+    | |   | | |
-| Empty (Invalid e)             |<-----+-----+-----+
-+-------------------------------+    |     |   |   |
-                                     |     |   |   |
-Pending----------------------------------------+   |
-Success------------------------------------------+ |
-Error----------------------------------------------+
-                                     |     |     |
-                                     |     |     |
-+-------------------------------+    |     |     |
-| Primed Pending Collection     |<---------------|---+-----+-----+
-+-------------------------------+    |     |     |   |     |     |
-                                     |     |     |   |     |     |
-Pending----------------------------------------------+     |     |
-Success------------------------------------------------+   |     |
-Error----------------------------------------------------+ |     |
-                                     |     |     |     | | |     |
-                                     |     |     |     | | |     |
-+-------------------------------+    |     |     |     | | |     | 
-| Primed (Valid d) Collection   |<---+-----+-----+-----+-|-|-+---|-+
-+-------------------------------+                        | | |   | |
-                                                         | | |   | |
-Pending----------------------------------------------------+ |   | |
-Success------------------------------------------------------+   | |
-Error----------------------------------------------------------+ | |
-                                                         |     | | |
-                                                         |     | | |
-+-------------------------------+                        |     | | |
-| Primed (Invalid e) Collection |<-----------------------+-----+-|-|-+
-+-------------------------------+                                | | |
-                                                                 | | |
-Pending----------------------------------------------------------+ | |
-Success------------------------------------------------------------+ |
-Error----------------------------------------------------------------+
+```elm
+type Msg
+    = Increment
+    | Decrement
+    | Reset
+
+
+type alias Model =
+    Int
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        Increment ->
+            model + 1
+
+        Decrement ->
+            model - 1
+
+        Reset ->
+            0
 ```
 
-I find _Hello World_ useful exactly because I don't have to cast about for an 
-idea every time I want to try a language out.
+The `Msg` is an event, the `Model` is the state, and each branch of the case
+expression is a transition from the current state to the next state.
 
-for sampling the flavor of a language, even if the pattern itself is not really
-useful, at least 
--->
+Our state machine looks a little bit different.
 
 **Notes**
 
