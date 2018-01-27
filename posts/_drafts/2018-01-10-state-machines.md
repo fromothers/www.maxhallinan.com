@@ -197,7 +197,23 @@ This path leads directly back to implicit states.
 Any code that consumes a value of the `RemoteData` type will explode with the 
 nested case statements required to derive the current state.
 
-## IV.
+## IV. Inefficient-meme hypothesis
+
+The efficient-market hypothesis states that prices always reflect all available 
+information.
+I propose an inefficient-meme hypothesis: a meme never reflects all available 
+information.
+As an idea becomes more and more memetic, it is a map corresponding less and 
+less to the terrain.
+
+Edsger Dijkstra famously defined programming as "the art of organizing 
+complexity, of mastering multitude".
+In organizing complexity, we cannot make our programs less complex than they 
+need to be.
+As programmers, we should be wary of code memes.
+The inefficient-meme hypothesis suggests that the code meme masters multitudes
+by leaving some of those multitudes out.
+
 
 <!--
 We can attempt to salvage the `RemoteData` pattern by modeling an optional 
@@ -310,4 +326,8 @@ useful, at least
   <!--
   note about how it took me a long time to understand what "a user interface is a state machine" means
   -->
+  <li>
+  https://en.wikiquote.org/wiki/Edsger_W._Dtra
+  </li>
 </ol>
+
