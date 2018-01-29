@@ -97,7 +97,7 @@ view model =
             successView data
 ```
 
-This code will not compile unless the patterns of the case statement cover 
+This code will not compile unless the patterns of the case statement covers 
 every possible state.
 The result is a system that is robust by default.
 
@@ -197,8 +197,8 @@ The efficient-market hypothesis states that prices always reflect all available
 information.
 I propose an inefficient-meme hypothesis: a meme never reflects all available 
 information.
-As an idea becomes more and more memetic, it is a map corresponding less and 
-less to the terrain.
+As an utterance becomes more and more memetic, it is a map corresponding less 
+and less to the terrain.
 
 Edsger Dijkstra famously defined programming as "the art of organizing 
 complexity, of mastering multitude".
@@ -208,7 +208,7 @@ As programmers, we should be wary of code memes.
 The inefficient-meme hypothesis suggests that the code meme masters multitudes
 by leaving some of those multitudes out.
 
-## V. An alternative 
+## V. An alternative
 
 It is tempting to sign off here, at the conclusion of my critique.
 But the critique does not solve the problem of modeling the states of a remote 
@@ -222,102 +222,86 @@ I'm not sure that it is a sane approach.
 I am always suspicious that there is a simpler way and glad to hear when there 
 is.
 
-A remote data cache has two responsibilities. 
-The cache should enumerate every possible state explicitly.
-;w:qa
-The cache should define an explicit state for every possible state of the cahce. 
-of the states listed above.
-The set of this states will be larger than the set of `RemoteData` states but
-they will not be infinitely more.
-All states are knowable in advance
-First, the cache should define a limited number of discrete cache states.
-These are general states such as empty, loading, and error; states applicable 
-describe any data from a remote data source that is cached by the application.
+The core of this problem is an insufficient number of states.
+Even a relatively simple user interface requires many more than the four states 
+of `RemoteData`.
+There are two kinds of missing state.
+The first kind of missing state is compound state.
+Even a relatively simple user interface displays states that are a mix of 
+"empty", "loading", "error", and "success".
+Let's start by defining those states.
+
+```elm
+type Cache a b
+    = Empty
+    | EmptyInvalid a
+    | EmptySyncing
+    | EmptyInvalidSyncing a
+    | Filled b
+    | FilledSyncing b
+    | FilledInvalid a b
+    | FilledInvalidSyncing a b
+```
+
+The second kind of missing state is specific state.
+The state of a collection and the state of an item in that collection are not 
+always the same.
+For example, an application might load a list of data first and then later make 
+a request for details about one item in that list.
+Then only the state of the item, and not the collection, should be 
+`FilledSyncing`.
+
+General and specific states are achieved by creating a cache of caches.
+Imagine that we are fetching data from a People API.
+For every `Person`, we'll create a `PersonCache`.
+Then we'll store each `PersonCache` in a `Dict` keyed by `Person` id.
+Finally, we'll create a `Cache` for this `PersonCollection`.
+General states are managed by the outer cache.
+Specific states are managed by the inner caches.
+
+```elm
+type alias Person =
+    { name : String
+    }
 
 
-,could be any states that make sense for the application.
-These states will be more than the four states of `RemoteData` but they will not
-be infinitely more.
-All states are knowable in advance.
-Second, the cache should know how to change the current state to the next state 
-in response to external input.
-The focus of the cache is on the states of the data and not the data itself.
-The cache should be compatible with any kind of data whose state is reasonably 
-described by the states of the cache.
+type alias PersonCache =
+    Cache Http.Error Person
 
 
-
-`NotAsked`, `Loading`, `Failure a`, and `
-Our remote data cache should:
-
-- Define a limited number of discrete states.
-- Change the current state to a new one of these states in response to external 
-input.
+type alias PersonCollection =
+    Dict String PersonCache
 
 
-- know a limited number of explicit states
-- know the conditions for each of these states
+type alias Model =
+    { persons : Cache Http.Error PersonCollection
+    }
+```
 
-- Define the conditions 
-- Change the current state to the next one of those state
+All possible states are represented.
+But when will the cache change its current state?
+The cache will change its state in response to a `CacheEvent`.
+Our cache will respond to three events: the start of a request to the remote 
+data source, and the resolution of that request to an error or data.
 
-The remote data cache should be focused on the state of the 
-is on the state of the cached data, not the 
-data itself and not errors related to the data.
-Our cache system should be compatibile with any type of data and any type of 
-error.
-The sole responsibility of the cache system is defining a current state of 
-the cache and changing that state.
+```elm
+type CacheEvent a b
+    = Sync
+    | Error a
+    | Update b
+```
 
+## VI. What is a state machine?
 
-Our remote data cache should know:
-
-- the current state of the data
-- change the current state of the data
-- a single explicit state of re
-- define a single explicit state
--
-- define explicit cache states
-- define explicit states of the data
-- change the state of the data
-
-The cache is not responsible for updating the data itself and should
-The cache is solely responsible for managing state of the data. 
-
-The cache should not know about the type of that data, should not need 
-
-The cache should not know how to update the data.
-The cache should be able to handle any type of data
-
-
-The single responsibility of the remote data cache is 
-Our remote data cache is focused on 
-
-
-This approach models a cache of remote data as a finite state machine.
-A finite state machine is useful 
-A remote data cache has a relatively small number of states 
-The remote data cache is always in a 
-is always in a single state
-A finite state machine is a 
-A finite state machine is an pattern used to model the state of a system that 
-exists in one state at a time
-
-State machines are used for systems
+We have defined what the states are and when the state changes.
+The last question is "how does the state change?"
+Our answer to this question will take inspiration from finite state machines.
 A finite state machine has three components: states, events, and transitions.
-
-A simple finite state machine has three components: states, events, and 
-transitions.
-
-
-A finite state machine is a system comprised of one or more states.
-The finite
-A finite state machine is a system that exists in one of several states
-a system that can exist in one of 
-
-
 An event prompts the state machine to transition from its current state to a 
 new state.
+The state machine makes the correct transition by testing conditions at the 
+time of the event.
+
 A simplified Elm `update` function closely resembles a simple state machine: 
 
 ```elm
@@ -346,29 +330,12 @@ update msg model =
 
 The `Msg` is like an event, the `Model` is like a state, and each branch of the 
 case expression is a transition from the current state to the next state.
-The difference between the `update` function and a finite state machine is that 
-the `update` function can produce an infinite number of states.
+A major difference between this `update` function and a finite state machine is 
+that `update` can produce an infinite number of states.
 Without upper and lower bounds, `update` can return any member of the infinitely
 large set of integers.
 
-A finite state machine fits the remote data cache problem because the states of
-that cache are finite.
-Let's start by enumerating those states.
-Ultimately we want both general states and states that are specific to a subset of 
-the data.
-We'll focus first on the general states:
-
-```elm
-type Cache a b
-    = Empty
-    | EmptyInvalid a
-    | EmptySyncing
-    | EmptyInvalidSyncing a
-    | Filled b
-    | FilledSyncing b
-    | FilledInvalid a b
-    | FilledInvalidSyncing a b
-```
+## VII. A remote-data cache is a state machine
 
 **Notes**
 
@@ -416,4 +383,48 @@ type Cache a b
   https://en.wikiquote.org/wiki/Edsger_W._Dtra
   </li>
 </ol>
+
+<!--
+Now we have represented all the states of our cache.
+This becomes it's own 
+
+Like the `RemoteData` pattern, our remote data cache is a system for tagging
+data from a remote data source with one of a limited number of states.
+This cache has two requirements.
+First, the cache must represent every possible state explicitly.
+Second, the cache must change that state in response to external input.
+The cache is not responsible for updating the data itself and it should not 
+depend on any one type of data.
+
+define an explicit state
+enumerate every possible state explicitly.
+The cache should define an explicit state for every possible state of the cahce. 
+of the states listed above.
+The set of this states will be larger than the set of `RemoteData` states but
+they will not be infinitely more.
+All states are knowable in advance
+First, the cache should define a limited number of discrete cache states.
+These are general states such as empty, loading, and error; states applicable 
+describe any data from a remote data source that is cached by the application.
+
+
+,could be any states that make sense for the application.
+These states will be more than the four states of `RemoteData` but they will not
+be infinitely more.
+All states are knowable in advance.
+Second, the cache should know how to change the current state to the next state 
+in response to external input.
+The focus of the cache is on the states of the data and not the data itself.
+The cache should be compatible with any kind of data whose state is reasonably 
+described by the states of the cache.
+
+This approach models a cache of remote data as a finite state machine.
+A finite state machine is useful 
+A remote data cache has a relatively small number of states 
+The remote data cache is always in a 
+is always in a single state
+A finite state machine is a 
+A finite state machine is an pattern used to model the state of a system that 
+exists in one state at a time
+-->
 
