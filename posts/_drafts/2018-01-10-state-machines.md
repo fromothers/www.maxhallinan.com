@@ -331,7 +331,7 @@ update msg model =
 The `Msg` is like an event, the `Model` is like a state, and each branch of the 
 case expression is a transition from the current state to the next state.
 A major difference between this `update` function and a finite state machine is 
-that `update` can produce an infinite number of states.
+that `update` produces an infinite number of states.
 Without upper and lower bounds, `update` can return any member of the infinitely
 large set of integers.
 
