@@ -211,19 +211,111 @@ by leaving some of those multitudes out.
 ## V. An alternative 
 
 It is tempting to sign off here, at the conclusion of my critique.
-But the critique does not solve the problem of modeling these complex states.
+But the critique does not solve the problem of modeling the states of a remote 
+data cache.
 I work a lot on user interfaces.
 Whether or not I use the remote data pattern, I still want to solve that 
 problem.
 So here is an alternative approach to modeling these states. 
 This is an experimental approach. 
 I'm not sure that it is a sane approach. 
-I am always suspicious that there is a simpler way and always happy to hear when
-there is.
+I am always suspicious that there is a simpler way and glad to hear when there 
+is.
 
-This approach models a cache of remote data as a finite state machine (FSM).
-A simple finite state machine has three components: state, events, and 
+A remote data cache has two responsibilities. 
+The cache should enumerate every possible state explicitly.
+;w:qa
+The cache should define an explicit state for every possible state of the cahce. 
+of the states listed above.
+The set of this states will be larger than the set of `RemoteData` states but
+they will not be infinitely more.
+All states are knowable in advance
+First, the cache should define a limited number of discrete cache states.
+These are general states such as empty, loading, and error; states applicable 
+describe any data from a remote data source that is cached by the application.
+
+
+,could be any states that make sense for the application.
+These states will be more than the four states of `RemoteData` but they will not
+be infinitely more.
+All states are knowable in advance.
+Second, the cache should know how to change the current state to the next state 
+in response to external input.
+The focus of the cache is on the states of the data and not the data itself.
+The cache should be compatible with any kind of data whose state is reasonably 
+described by the states of the cache.
+
+
+
+`NotAsked`, `Loading`, `Failure a`, and `
+Our remote data cache should:
+
+- Define a limited number of discrete states.
+- Change the current state to a new one of these states in response to external 
+input.
+
+
+- know a limited number of explicit states
+- know the conditions for each of these states
+
+- Define the conditions 
+- Change the current state to the next one of those state
+
+The remote data cache should be focused on the state of the 
+is on the state of the cached data, not the 
+data itself and not errors related to the data.
+Our cache system should be compatibile with any type of data and any type of 
+error.
+The sole responsibility of the cache system is defining a current state of 
+the cache and changing that state.
+
+
+Our remote data cache should know:
+
+- the current state of the data
+- change the current state of the data
+- a single explicit state of re
+- define a single explicit state
+-
+- define explicit cache states
+- define explicit states of the data
+- change the state of the data
+
+The cache is not responsible for updating the data itself and should
+The cache is solely responsible for managing state of the data. 
+
+The cache should not know about the type of that data, should not need 
+
+The cache should not know how to update the data.
+The cache should be able to handle any type of data
+
+
+The single responsibility of the remote data cache is 
+Our remote data cache is focused on 
+
+
+This approach models a cache of remote data as a finite state machine.
+A finite state machine is useful 
+A remote data cache has a relatively small number of states 
+The remote data cache is always in a 
+is always in a single state
+A finite state machine is a 
+A finite state machine is an pattern used to model the state of a system that 
+exists in one state at a time
+
+State machines are used for systems
+A finite state machine has three components: states, events, and transitions.
+
+A simple finite state machine has three components: states, events, and 
 transitions.
+
+
+A finite state machine is a system comprised of one or more states.
+The finite
+A finite state machine is a system that exists in one of several states
+a system that can exist in one of 
+
+
 An event prompts the state machine to transition from its current state to a 
 new state.
 A simplified Elm `update` function closely resembles a simple state machine: 
@@ -259,7 +351,7 @@ the `update` function can produce an infinite number of states.
 Without upper and lower bounds, `update` can return any member of the infinitely
 large set of integers.
 
-A finite state machine fits our remote data cache problem because the states of
+A finite state machine fits the remote data cache problem because the states of
 that cache are finite.
 Let's start by enumerating those states.
 Ultimately we want both general states and states that are specific to a subset of 
