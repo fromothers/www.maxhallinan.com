@@ -362,17 +362,17 @@ large set of integers.
 ## VI. A remote data cache as a finite state machine
 
 Thinking of a remote data cache as a finite state machine does not necessitate
-one particular implementation. 
-States, events, and transitions should be reflect the needs of the application.
+any particular implementation. 
+States, events, and transitions should reflect the needs of the application.
 And state machines themselves come in several varieties.
 My primary purpose is to make the conceptual connection.
 Nontheless, it is not enough to say "just use a finite state machine".
-Implementing the cache state machine was not straightforward, so I want to touch
-on a few of the details.
+Implementing the remote data cache as a state machine was not straightforward 
+so I want to touch on a few of the details.
 
 The first step is to define an `updateCache` function.
 This is the heart of the cache system.
-This function takes a current `Cache` state and a `CacheEvent` event, and 
+`updateCache` takes a `CacheEvent` event and a current `Cache` state, and 
 returns a new `Cache` state according to the rules defined in the state change 
 table above.
 
@@ -380,27 +380,30 @@ table above.
 updateCache : -> CacheEvent a c -> Cache a b -> Cache a b
 ```
 
-Before we implement `updateCache`, we must remember this cache system should be
-compatible with different types of data.
-But when the state of the cache changes, it is sometimes necessary to change the 
+Before we implement `updateCache`, we must remember that this cache system 
+should be compatible with different types of data.
+There is one problem here.
+When the state of the cache changes, it is sometimes necessary to change the 
 data itself.
 For example, the `Update b` event might require us to merge new data with 
 existing data if the state of the cache is `Filled b`.
 How the data changes is probably specific to the type of data.
-So the cache has to be able to do type-specific transformations without being 
-tied to any type.
+So the cache must do some type-specific transformations while remaining 
+uncoupled to any type.
 
-The solution is to pass a set of transitions into the state machine.
+The solution is to pass transitions into the state machine.
 These transitions are hooks for moments in the process of changing the state.
 The state machine knows how and when to call these hooks but does not know what 
 they do.
-This enables the caller to provide transformations that are specific to the 
-type of cached data when changing the state of that cache.
+This keeps type-specific logic out of the cache while enabling type-specific
+transformations.
 
-For the moment, let's give our remote data cache two transitions: one that is 
-called when an empty cache is updated with data and a second that is called when
-a filled cache is updated with data. 
+For the moment, let's provide two of these transitions.
+This first is `updateEmpty`, a transition that is called when an empty cache 
+changes to a filled cache.
 `updateEmpty` is called with data from the `Update a` cache event.
+The second is `updateFilled`, a transition that is called when a filled cache 
+changes to a filled cache.
 `updateFilled` is called with data from the `Update a` cache event and data that
 is already in the cache.
 
@@ -414,16 +417,66 @@ type alias Transitions a b =
 updateCache : Transitions c b -> CacheEvent a c -> Cache a b -> Cache a b
 ```
 
-We have structured our cache as a cache of caches.
-Now it becomes clear that we have no way to update the inner caches.
-Updating the inner cache begins as an update to the outer cache.
-How does the outer cache know that the event and the resulting state change are
-specific to one of the inner caches?
+Recall that our Person cache example is structured as a cache of caches.
+As we move forward with the implementation, we realize that there is no way to 
+update the inner caches.
+Updating the inner cache should begin as an update to the outer cache.
+But how can the outer cache know that the event and the resulting state change 
+are specific to one of the inner caches?
 In our system, it cannot.
 
-## VIII. Updating specific states
+Again, the cache should not know the structure of the cached data.
+This means that the cache should not even know about the inner caches.
+Any cache just needs to know the difference between a change to all of the 
+cached data and a change to a piece of the cached data.
+Events are the medium of communication with the state machine.
+If the `Update b` event signals a change to all of the cached data, we need to 
+add a new event that signals a change to a subset of the data.
+We'll call this event `Patch c`.
 
-## IX. View states
+```elm
+type CacheEvent a b c
+    = Sync
+    | Error a
+    | Update b
+    | Patch c
+```
+
+Changing the data in response to `Update b` is different from changing the data
+in response to `Patch c`.
+For example, merging two lists of data in response to `Update b` is one
+transformation.
+Merging two copies of one item in that list in response to `Patch c` is a second
+transformation.
+To account for this difference, we'll add a `patchFilled` transition.
+This transition is called with data from the `Patch c` event and all of the
+cached data.
+`patchFilled`, not the state machine, is responsible for selecting the subset of 
+data to transform.
+
+```elm
+type alias Transitions a b c =
+    { updateEmpty : a -> b
+    , updateFilled : a -> b -> b
+    , patchFilled : c -> b -> b
+    }
+```
+
+We will send a `Patch c` event to the outer cache when we want to update the 
+state of an inner cache.
+The value in `Patch c` will be a second `CacheEvent`.
+That event is our message to the inner cache.
+`updateCache` passes this event and the cached data to `patchFilled`.
+Continuing the example of the `Person` cache, this data is a 
+`Dict String (Cache Http.Error Person)`.
+`patchFilled` will call `updateCache` on the selected inner cache, sending it
+the event from `Patch c`.
+`updateCache` updates the Person cache.
+Then `patchFilled` inserts the updated Person cache back into the collection.
+Finally, the outer call to `updateCache` tags the patched collection with the 
+correct state of the collection cache.
+
+## IX. Mediating state explosion
 
 A function that translates the many states of the cache to fewer states of the 
 view.
