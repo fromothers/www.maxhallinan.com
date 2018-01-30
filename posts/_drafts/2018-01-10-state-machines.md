@@ -478,10 +478,87 @@ correct state of the collection cache.
 
 ## IX. Mediating state explosion
 
-A function that translates the many states of the cache to fewer states of the 
-view.
+Any consumer of the remote data cache is required to handle every cache state.
+Depending on the pattern matching capabilities of the language, explicit states 
+result in verbose code.
+The code becomes especially noisy when many states are handled in the same way.
 
-## X. Conclusion
+View functions are prone to suffer in this way.
+Many of these functions represent aspects of a user interface that have a binary
+nature.
+A loading icon is displayed when the cache is in a loading state.
+Otherwise no loading icon is displayed.
+An error message is displayed when the cache is in an error state.
+Otherwise no error message is displayed.
+View functions responsible for these features do not need to know all varieties
+of cache state.
+It is advisable to reduce the many states of the cache to a set of fewer states
+for the view.
+
+```elm
+type Visibility a
+    = Show a
+    | Hide
+```
+
+Each kind of view defines its own reduction of `Cache` to `Visibility`.
+For example, an error view function can be composed with a reduction of 
+`Cache Http.Error a` to `Visibility Http.Error`.
+
+```elm
+errorVisibility : Cache Http.Error a -> Visibility Http.Error
+errorVisibility cache =
+    case cache of
+        Empty ->
+            Hide
+
+        -- etc.
+```
+
+This approach is further augmented by a higher-order function that handles the
+`Hide` case.
+
+```elm
+visibilityToHtml : (a -> Html b) -> Visibility a -> Html b
+visibilityToHtml toHtml visibility =
+    case visibility of
+        Show x ->
+            toHtml x
+
+        Hide ->
+            text ""
+```
+
+## X. Stories told in order to live
+
+There is a lot of information here and I'm not convinced that any of it is good.
+This is, emphatically, an experiment.
+While `RemoteData` was too simple, this approach is in danger of becoming too
+complicated.
+Please let me know when you find the middle path.
+
+As programmers, we tell each other that simplicity is achievable.
+And I have worked with a few programmers who do achieve simplicity.
+But their simple code is not always tweetable; it is not always summarized by a 
+few paragraphs of blog post; it is not always understood in an instant.
+Their code is simple because it tolerates change.
+A domain model is revised, protocols rise and fall, someone has a feature 
+request.
+Code that feels simple to me is code that leaves a little space for these and 
+other unknown futures.
+And that space seems to come from understanding that different things are 
+different and should be treated differently.
+Lines drawn along those differences are the seams in the sidewalk that permit 
+the concrete to expand and contract.
+This does not exclude the possibility that some things are the same, that some
+abstractions are correct.
+But maybe it does mean that the tidiest abstractions warrant the most doubt. 
+
+<!--
+I am still not sure that a code meme is a real entity and not a straw man of my
+own creation.
+-->
+
 
 **Notes**
 
@@ -529,99 +606,3 @@ view.
   https://en.wikiquote.org/wiki/Edsger_W._Dtra
   </li>
 </ol>
-
-<!--
-Now we have represented all the states of our cache.
-This becomes it's own 
-
-Like the `RemoteData` pattern, our remote data cache is a system for tagging
-data from a remote data source with one of a limited number of states.
-This cache has two requirements.
-First, the cache must represent every possible state explicitly.
-Second, the cache must change that state in response to external input.
-The cache is not responsible for updating the data itself and it should not 
-depend on any one type of data.
-
-define an explicit state
-enumerate every possible state explicitly.
-The cache should define an explicit state for every possible state of the cahce. 
-of the states listed above.
-The set of this states will be larger than the set of `RemoteData` states but
-they will not be infinitely more.
-All states are knowable in advance
-First, the cache should define a limited number of discrete cache states.
-These are general states such as empty, loading, and error; states applicable 
-describe any data from a remote data source that is cached by the application.
-
-
-,could be any states that make sense for the application.
-These states will be more than the four states of `RemoteData` but they will not
-be infinitely more.
-All states are knowable in advance.
-Second, the cache should know how to change the current state to the next state 
-in response to external input.
-The focus of the cache is on the states of the data and not the data itself.
-The cache should be compatible with any kind of data whose state is reasonably 
-described by the states of the cache.
-
-This approach models a cache of remote data as a finite state machine.
-A finite state machine is useful 
-A remote data cache has a relatively small number of states 
-The remote data cache is always in a 
-is always in a single state
-A finite state machine is a 
-A finite state machine is an pattern used to model the state of a system that 
-exists in one state at a time
--->
-
-<!--
-Every combination of state and event is knowable in advacne
-The condition for every new state is a combination of current state and event.
-
-and an `Error a` event occurs, the state
-of the cache should change to 
-The combination of the `Empty` state and the `Error a` event
-, the new state of 
-
-From any combination of state and event, we can know the next state.
-
-Given any state and any event, how do we know the next state? 
-what is the next state?
-
-The last question is "how does the state change?"
-
-Changing the state of a `RemoteData` cache was unsophisticated.
-
-Changing the state of a `RemoteData` cache was easy because the last state was
-always discarded
-the last state was 
-discarded and the next state was
-because the pattern does not distinguish between states and events.
-A loading event simply set the state of the cache to loading.
-Changing the state of our cache is more complicated because we have compound 
-states.
-Transitioning from one compound state to another compound state requires 
-
-Every combination of state and event produces a new state.
-All of these combinations are knowable
-
-
-The next state of the cache will always depend on the current state and the 
-event.
-
-
-The next state was always easy to predict.
-Our state changes will be more complicated but no less predictable.
-kkk
-
-We can begin to answer that question by thinking about what those changes will 
-be.
-Our state changes will be deterministic.
-Given a known state and a known event, the next state is also knowable.
-
-For that reason, every new state resulting from a state change is knowable.
-
-Every next state are knowable.
-
-We can start to answer this question by listing what states we want. 
--->
