@@ -550,21 +550,19 @@ And that space seems to come from understanding that different things are
 different and should be treated differently.
 Lines drawn along those differences are the seams in the sidewalk that permit 
 the concrete to expand and contract.
+What I like about the state machine is that it provides these lines instead of 
+prescribing code.
+The guidelines still apply even when the code changes.
 This does not exclude the possibility that some things are the same, that some
 abstractions are correct.
 But maybe it does mean that the tidiest abstractions warrant the most doubt. 
-
-<!--
-I am still not sure that a code meme is a real entity and not a straw man of my
-own creation.
--->
-
 
 **Notes**
 
 <ol>
   <li>
     <fn id="1">
+      <a href="">[^]</a>
       <a href="http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html">
         How Elm Slays a UI Antipattern
       </a>
@@ -573,6 +571,7 @@ own creation.
   </li>
   <li>
     <fn id="2">
+      <a href="">[^]</a>
       <a href="https://medium.com/javascript-inside/slaying-a-ui-antipattern-in-fantasyland-907cbc322d2a">
         Slaying a UI Antipattern in Fantasyland
       </a>
@@ -580,6 +579,7 @@ own creation.
   </li>
   <li>
     <fn id="3">
+      <a href="">[^]</a>
       <a href="https://medium.com/javascript-inside/slaying-a-ui-antipattern-in-react-64a3b98242c">
         Slaying a UI Antipattern in React
       </a>
@@ -587,12 +587,14 @@ own creation.
   </li>
   <li>
     <fn id="4">
+      <a href="">[^]</a>
       <a href="https://medium.com/@gcanti/slaying-a-ui-antipattern-with-flow-5eed0cfb627b">
         Slaying a UI Antipattern in Flow
       </a>
     </fn>
   </li>
   <li>
+    <a href="">[^]</a>
     <fn id="5">
       <a href="https://gist.github.com/busypeoples/b8982f215642e5258d3d49a9aa7d7438">
         Slaying a UI Antipattern in ReasonML
