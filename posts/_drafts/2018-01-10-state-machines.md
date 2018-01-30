@@ -248,8 +248,7 @@ The state of a collection and the state of an item in that collection are not
 always the same.
 For example, an application might load a list of data first and then later make 
 a request for details about one item in that list.
-Then only the state of the item, and not the collection, should be 
-`FilledSyncing`.
+Then only the  item, not the collection, should be in the `FilledSyncing` state.
 
 General and specific states are achieved by creating a cache of caches.
 Imagine that we are fetching data from a People API.
@@ -282,7 +281,7 @@ All possible states are represented.
 But when will the cache change its current state?
 The cache will change its state in response to a `CacheEvent`.
 Our cache will respond to three events: the start of a request to the remote 
-data source, and the resolution of that request to an error or data.
+data source and resolutions of that request to an error or data.
 
 ```elm
 type CacheEvent a b
@@ -291,16 +290,37 @@ type CacheEvent a b
     | Update b
 ```
 
-## VI. What is a state machine?
+## VI. What is a finite state machine?
 
-We have defined what the states are and when the state changes.
-The last question is "how does the state change?"
-Our answer to this question will take inspiration from finite state machines.
+Every combination of cache state and cache event results in a new cache state.
+All states and all events are known, and all state changes are knowable too.
+For example, a cache in the `Empty` state should change to `EmptyInvalid a`
+when an `Error a` event occurs.
+Here is a table that shows how each state should change in response to each 
+event.
+
+```
+State                    | Sync                     | Error             | Update
+-----------------------------------------------------------------------------------
+Empty                    | EmptySyncing             | EmptyInvalid a    | Filled b
+EmptyInvalid a           | EmptyInvalidSyncing a    | EmptyInvalid a    | Filled b
+EmptySyncing             | EmptySyncing             | EmptyInvalid a    | Filled b
+EmptyInvalidSyncing a    | EmptyInvalidSyncing a    | EmptyInvalid a    | Filled b
+Filled b                 | FilledSyncing b          | FilledInvalid a b | Filled b
+FilledSyncing b          | FilledSyncing b          | FilledInvalid a b | Filled b
+FilledInvalid a b        | FilledInvalidSyncing a b | FilledInvalid a b | Filled b
+FilledInvalidSyncing a b | FilledInvalidSyncing a b | FilledInvalid a b | Filled b
+```
+
+We know what the states are, when the states change, and how the states change.
+In fact, we have specified a finite state machine.
 A finite state machine has three components: states, events, and transitions.
-An event prompts the state machine to transition from its current state to a 
-new state.
-The state machine makes the correct transition by testing conditions at the 
-time of the event.
+An event prompts the finite state machine to transition from its current state 
+to a new state.
+The finite state machine makes the correct transition by testing conditions at 
+the time of the event.
+In our case, these conditions are all the combinations of states and events 
+found in our state change table.
 
 A simplified Elm `update` function closely resembles a simple state machine: 
 
@@ -336,6 +356,7 @@ Without upper and lower bounds, `update` can return any member of the infinitely
 large set of integers.
 
 ## VII. A remote-data cache is a state machine
+
 
 **Notes**
 
@@ -428,3 +449,54 @@ A finite state machine is an pattern used to model the state of a system that
 exists in one state at a time
 -->
 
+<!--
+Every combination of state and event is knowable in advacne
+The condition for every new state is a combination of current state and event.
+
+and an `Error a` event occurs, the state
+of the cache should change to 
+The combination of the `Empty` state and the `Error a` event
+, the new state of 
+
+From any combination of state and event, we can know the next state.
+
+Given any state and any event, how do we know the next state? 
+what is the next state?
+
+The last question is "how does the state change?"
+
+Changing the state of a `RemoteData` cache was unsophisticated.
+
+Changing the state of a `RemoteData` cache was easy because the last state was
+always discarded
+the last state was 
+discarded and the next state was
+because the pattern does not distinguish between states and events.
+A loading event simply set the state of the cache to loading.
+Changing the state of our cache is more complicated because we have compound 
+states.
+Transitioning from one compound state to another compound state requires 
+
+Every combination of state and event produces a new state.
+All of these combinations are knowable
+
+
+The next state of the cache will always depend on the current state and the 
+event.
+
+
+The next state was always easy to predict.
+Our state changes will be more complicated but no less predictable.
+kkk
+
+We can begin to answer that question by thinking about what those changes will 
+be.
+Our state changes will be deterministic.
+Given a known state and a known event, the next state is also knowable.
+
+For that reason, every new state resulting from a state change is knowable.
+
+Every next state are knowable.
+
+We can start to answer this question by listing what states we want. 
+-->
