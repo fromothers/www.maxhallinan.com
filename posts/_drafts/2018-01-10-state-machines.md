@@ -290,7 +290,7 @@ type CacheEvent a b
     | Update b
 ```
 
-## VI. What is a finite state machine?
+## VI. What is a state machine?
 
 Every combination of cache state and cache event results in a new cache state.
 All states and all events are known, and all state changes are knowable too.
@@ -313,7 +313,11 @@ FilledInvalidSyncing a b | FilledInvalidSyncing a b | FilledInvalid a b | Filled
 ```
 
 We know what the states are, when the states change, and how the states change.
-In fact, we have specified a finite state machine.
+We know what we want to happen.
+Now we need a system that will make it happen.
+In fact, there is already a name for such a system.
+By describing the remote data cache, we have specified a finite state machine.
+
 A finite state machine has three components: states, events, and transitions.
 An event prompts the finite state machine to transition from its current state 
 to a new state.
@@ -355,8 +359,76 @@ that `update` produces an infinite number of states.
 Without upper and lower bounds, `update` can return any member of the infinitely
 large set of integers.
 
-## VII. A remote-data cache is a state machine
+## VI. A remote data cache as a finite state machine
 
+Thinking of a remote data cache as a finite state machine does not necessitate
+one particular implementation. 
+States, events, and transitions should be reflect the needs of the application.
+And state machines themselves come in several varieties.
+My primary purpose is to make the conceptual connection.
+Nontheless, it is not enough to say "just use a finite state machine".
+Implementing the cache state machine was not straightforward, so I want to touch
+on a few of the details.
+
+The first step is to define an `updateCache` function.
+This is the heart of the cache system.
+This function takes a current `Cache` state and a `CacheEvent` event, and 
+returns a new `Cache` state according to the rules defined in the state change 
+table above.
+
+```elm
+updateCache : -> CacheEvent a c -> Cache a b -> Cache a b
+```
+
+Before we implement `updateCache`, we must remember this cache system should be
+compatible with different types of data.
+But when the state of the cache changes, it is sometimes necessary to change the 
+data itself.
+For example, the `Update b` event might require us to merge new data with 
+existing data if the state of the cache is `Filled b`.
+How the data changes is probably specific to the type of data.
+So the cache has to be able to do type-specific transformations without being 
+tied to any type.
+
+The solution is to pass a set of transitions into the state machine.
+These transitions are hooks for moments in the process of changing the state.
+The state machine knows how and when to call these hooks but does not know what 
+they do.
+This enables the caller to provide transformations that are specific to the 
+type of cached data when changing the state of that cache.
+
+For the moment, let's give our remote data cache two transitions: one that is 
+called when an empty cache is updated with data and a second that is called when
+a filled cache is updated with data. 
+`updateEmpty` is called with data from the `Update a` cache event.
+`updateFilled` is called with data from the `Update a` cache event and data that
+is already in the cache.
+
+```elm
+type alias Transitions a b =
+    { updateEmpty : a -> b
+    , updateFilled : a -> b -> b
+    }
+
+
+updateCache : Transitions c b -> CacheEvent a c -> Cache a b -> Cache a b
+```
+
+We have structured our cache as a cache of caches.
+Now it becomes clear that we have no way to update the inner caches.
+Updating the inner cache begins as an update to the outer cache.
+How does the outer cache know that the event and the resulting state change are
+specific to one of the inner caches?
+In our system, it cannot.
+
+## VIII. Updating specific states
+
+## IX. View states
+
+A function that translates the many states of the cache to fewer states of the 
+view.
+
+## X. Conclusion
 
 **Notes**
 
