@@ -201,7 +201,7 @@ As an utterance becomes more and more memetic, it is a map corresponding less
 and less to the territory.<sup><a id="ref-7" href="#cite-7">7</a></sup>
 
 Edsger Dijkstra famously defined programming as "the art of organizing 
-complexity, of mastering multitude".
+complexity, of mastering multitude".<sup><a id="ref-8" href="#cite-8">8</a></sup>
 In organizing complexity, we cannot make our programs less complex than they 
 need to be.
 As programmers, we should be wary of code memes.
@@ -629,8 +629,8 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
     <p>
       <a href="#ref-7">^</a>
       <fn id="cite-7">
-        The usefulness of the map depends on its correspondence to the 
-        territory:
+        The usefulness of the code meme, like any code, depends on how 
+        accurately it represents the problem:
         <blockquote>
           A map <em>is not</em> the territory it represents, but, if correct, it 
           has a similar structure to the territory, which accounts for its 
@@ -640,11 +640,17 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
       </fn>
     </p>
   </li>
-
-  <!--
-  note about how it took me a long time to understand what "a user interface is a state machine" means
   <li>
-  https://en.wikiquote.org/wiki/Edsger_W._Dtra
+    <p>
+      <a href="#ref-8">^</a>
+      Edsger Dijkstra (1970) "Notes On Structured Programming" via 
+      <a href="https://en.wikiquote.org/wiki/Edsger_W._Dtra">Wikiquote</a>:
+      <fn id="cite-8">
+        <blockquote>
+          The art of programming is the art of organizing complexity, of mastering 
+          multitude and avoiding its bastard chaos as effectively as possible. 
+        </blockquote>
+      </fn>
+    </p>
   </li>
-  -->
 </ol>
