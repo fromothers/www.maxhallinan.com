@@ -542,8 +542,15 @@ patchFilled key cacheEvent personCollection =
     -- select the inner cache
     Dict.get key personCollection
         -- update the state of the inner cache
-        |> Maybe.map (updateCache url cacheEvent)
-        -- reinsert the updated cache into the collection of caches
+        |> Maybe.map
+            (updateCache
+                { updateEmpty = updatePersonEmpty
+                , updateFilled = updatePersonFilled
+                , patchFilled = patchPersonFilled
+                }
+                cacheEvent
+            )
+        -- reinsert the updated inner cache into the collection of caches
         |> Maybe.map (\update -> Dict.insert key update personCollection)
         |> Maybe.withDefault personCollection
 {% endhighlight %}
