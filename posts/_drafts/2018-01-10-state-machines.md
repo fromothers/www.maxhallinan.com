@@ -11,8 +11,7 @@ languages._
 
 I'm not certain that code memes exist.
 I have a hard time defining the idea and unlike Justice Stewart, I am 
-uncomfortable asserting the reality of something that escapes definition.
-<sup><a id="ref-1" href="#cite-1">1</a></sup>
+uncomfortable asserting the reality of something that escapes definition.<sup><a id="ref-1" href="#cite-1">1</a></sup>
 "Code meme" is a label I give to some bits of programming I encounter on 
 Twitter.
 The technical content of the code meme is a readymade response to a common 
@@ -51,37 +50,37 @@ loading, error, and success.
 The UI Antipattern represents these states implicitly.
 The current state is derived from a model with roughly this shape:
 
-```elm
+{% highlight elm %}
 type alias Model = 
   { xs : List X
   , isLoading : Bool
   , error : Error
   }
-```
+{% endhighlight %}
 
 `RemoteData` improves on this approach by using a union type to make these 
 states explicit.
 The state of the data is encoded into the data's type:
 
-```elm
-type alias Model =
-    { xs : RemoteData Error (List X)
-    }
-
-
+{% highlight elm %}
 type RemoteData a b
     = NotAsked
     | Loading
     | Failure a
-    | Success (List b)
-```
+    | Success b
+
+
+type alias Model =
+    { xs : RemoteData Error (List X)
+    }
+{% endhighlight %}
 
 Making the state explicit has two benefits. 
 First, the state is universally consistent and clear.
 There is no risk that a developer will incorrectly derive an implicit state.
 Second, consumers of the data are required to handle every state:
 
-```elm
+{% highlight elm %}
 view : Model -> Html a
 view model =
     case model.xs of
@@ -96,21 +95,21 @@ view model =
 
         Success data ->
             successView data
-```
+{% endhighlight %}
 
-This code will not compile unless the patterns of the case statement covers 
-every possible state.
-The result is a system that is robust by default.
+This code will not compile unless the patterns of the case statement cover every 
+possible state.
+The result is a robust system.
 
 ## III. RemoteData does not model all possible states
 
 `RemoteData` models a _stateful_ cache of data in terms of a _stateless_ 
 transfer of data, REST.
 The current state of a `RemoteData` value preserves none of its prior state.
-For example, the transformation of `Success d` to `Loading` means that the 
-information in `d` is lost.
-To carry that information from `Success d` to `Loading` requires us to update
-the `Loading` constructor to `Loading d` or `Loading (Maybe d)`.
+For example, the transformation of `Success b` to `Loading` means that the 
+information in `b` is lost.
+To carry that information from `Success b` to `Loading` requires us to update
+the `Loading` constructor to `Loading b` or `Loading (Maybe b)`.
 
 Here we must recall the old adage: user interfaces are state machines.
 Many common features demand a continuity of context.
@@ -137,27 +136,27 @@ These states include:
 We can attempt to salvage the `RemoteData` pattern by adding nullable error and
 data parameters to the `Loading` and `Failure` states.
 
-```elm
+{% highlight elm %}
 type RemoteData a b
     = NotAsked
     | Loading (Maybe a) (Maybe b)
     | Failure a (Maybe b)
     | Success (Maybe a) b
-```
+{% endhighlight %}
 
 This enables us to model states that are a mix of loading, error, and data.
 For example, the "data cached, general error, and request pending" state would
 look like this:
 
-```elm
+{% highlight elm %}
 Loading (Just error) (Just xs)
-```
+{% endhighlight %}
 
 and the "empty, general error, and request pending" state would look like this:
 
-```elm
+{% highlight elm %}
 Loading (Just error) Nothing
-```
+{% endhighlight %}
 
 We can use a similar approach to associate the loading and error states with a 
 subset of the data.
@@ -166,13 +165,13 @@ string.
 The relationship between the state and an item in the collection is made by 
 adding a nullable string parameter to the `Loading` and `Failure` states.
 
-```elm
+{% highlight elm %}
 type RemoteData a b
     = NotAsked
     | Loading (Maybe String) (Maybe a) (Maybe b)
     | Failure (Maybe String) a (Maybe b)
     | Success (Maybe a) b
-```
+{% endhighlight %}
 
 But this approach only enables us to associate the error state or the loading 
 state with one item at a time.
@@ -184,8 +183,8 @@ Nor can we relate multiple states to the same item at the same time.
 error and the loading state with an item in the collection.
 
 We could continue to cram more information into the `RemoteData` type. 
-Instead of using `Maybe a` for errors, we could use `Dict String a` for a 
-collection of errors, keyed by item id.
+Instead of using `Maybe a` for errors, we could use `Dict String (Maybe a)` for 
+a collection of errors, keyed by item id.
 And so on.
 But I don't recommend it.
 This path leads directly back to implicit states.
@@ -199,7 +198,7 @@ information.
 I propose an inefficient-meme hypothesis: a meme never reflects all available 
 information.
 As an utterance becomes more and more memetic, it is a map corresponding less 
-and less to the terrain.
+and less to the territory.<sup><a id="ref-7" href="#cite-7">7</a></sup>
 
 Edsger Dijkstra famously defined programming as "the art of organizing 
 complexity, of mastering multitude".
@@ -232,7 +231,7 @@ Even a relatively simple user interface displays states that are a mix of
 "empty", "loading", "error", and "success".
 Let's start by defining those states.
 
-```elm
+{% highlight elm %}
 type Cache a b
     = Empty
     | EmptyInvalid a
@@ -242,7 +241,7 @@ type Cache a b
     | FilledSyncing b
     | FilledInvalid a b
     | FilledInvalidSyncing a b
-```
+{% endhighlight %}
 
 The second kind of missing state is specific state.
 The state of a collection and the state of an item in that collection are not 
@@ -252,14 +251,14 @@ a request for details about one item in that list.
 Then only the  item, not the collection, should be in the `FilledSyncing` state.
 
 General and specific states are achieved by creating a cache of caches.
-Imagine that we are fetching data from a People API.
+Imagine that we are fetching data from a Person API.
 For every `Person`, we'll create a `PersonCache`.
 Then we'll store each `PersonCache` in a `Dict` keyed by `Person` id.
 Finally, we'll create a `Cache` for this `PersonCollection`.
 General states are managed by the outer cache.
 Specific states are managed by the inner caches.
 
-```elm
+{% highlight elm %}
 type alias Person =
     { name : String
     }
@@ -276,7 +275,7 @@ type alias PersonCollection =
 type alias Model =
     { persons : Cache Http.Error PersonCollection
     }
-```
+{% endhighlight %}
 
 All possible states are represented.
 But when will the cache change its current state?
@@ -284,12 +283,12 @@ The cache will change its state in response to a `CacheEvent`.
 Our cache will respond to three events: the start of a request to the remote 
 data source and resolutions of that request to an error or data.
 
-```elm
+{% highlight elm %}
 type CacheEvent a b
     = Sync
     | Error a
     | Update b
-```
+{% endhighlight %}
 
 ## VI. What is a state machine?
 
@@ -329,7 +328,7 @@ found in our state change table.
 
 A simplified Elm `update` function closely resembles a simple state machine: 
 
-```elm
+{% highlight elm %}
 type Msg
     = Increment
     | Decrement
@@ -351,7 +350,7 @@ update msg model =
 
         Reset ->
             0
-```
+{% endhighlight %}
 
 The `Msg` is like an event, the `Model` is like a state, and each branch of the 
 case expression is a transition from the current state to the next state.
@@ -367,19 +366,20 @@ any particular implementation.
 States, events, and transitions should reflect the needs of the application.
 And state machines themselves come in several varieties.
 My primary purpose is to make the conceptual connection.
-Nontheless, it is not enough to say "just use a finite state machine".
+Nonetheless, it is not enough to say "just use a finite state machine".
 Implementing the remote data cache as a state machine was not straightforward 
 so I want to touch on a few of the details.
 
 The first step is to define an `updateCache` function.
 This is the heart of the cache system.
 `updateCache` takes a `CacheEvent` event and a current `Cache` state, and 
-returns a new `Cache` state according to the rules defined in the state change 
-table above.
+returns a new `Cache` state.
+The state will change according to the rules defined in the state change table 
+above.
 
-```elm
+{% highlight elm %}
 updateCache : -> CacheEvent a c -> Cache a b -> Cache a b
-```
+{% endhighlight %}
 
 Before we implement `updateCache`, we must remember that this cache system 
 should be compatible with different types of data.
@@ -408,7 +408,7 @@ changes to a filled cache.
 `updateFilled` is called with data from the `Update a` cache event and data that
 is already in the cache.
 
-```elm
+{% highlight elm %}
 type alias Transitions a b =
     { updateEmpty : a -> b
     , updateFilled : a -> b -> b
@@ -416,7 +416,7 @@ type alias Transitions a b =
 
 
 updateCache : Transitions c b -> CacheEvent a c -> Cache a b -> Cache a b
-```
+{% endhighlight %}
 
 Recall that our Person cache example is structured as a cache of caches.
 As we move forward with the implementation, we realize that there is no way to 
@@ -435,13 +435,13 @@ If the `Update b` event signals a change to all of the cached data, we need to
 add a new event that signals a change to a subset of the data.
 We'll call this event `Patch c`.
 
-```elm
+{% highlight elm %}
 type CacheEvent a b c
     = Sync
     | Error a
     | Update b
     | Patch c
-```
+{% endhighlight %}
 
 Changing the data in response to `Update b` is different from changing the data
 in response to `Patch c`.
@@ -455,13 +455,13 @@ cached data.
 `patchFilled`, not the state machine, is responsible for selecting the subset of 
 data to transform.
 
-```elm
+{% highlight elm %}
 type alias Transitions a b c =
     { updateEmpty : a -> b
     , updateFilled : a -> b -> b
     , patchFilled : c -> b -> b
     }
-```
+{% endhighlight %}
 
 We will send a `Patch c` event to the outer cache when we want to update the 
 state of an inner cache.
@@ -496,17 +496,17 @@ of cache state.
 It is advisable to reduce the many states of the cache to a set of fewer states
 for the view.
 
-```elm
+{% highlight elm %}
 type Visibility a
     = Show a
     | Hide
-```
+{% endhighlight %}
 
 Each kind of view defines its own reduction of `Cache` to `Visibility`.
 For example, an error view function can be composed with a reduction of 
 `Cache Http.Error a` to `Visibility Http.Error`.
 
-```elm
+{% highlight elm %}
 errorVisibility : Cache Http.Error a -> Visibility Http.Error
 errorVisibility cache =
     case cache of
@@ -514,12 +514,12 @@ errorVisibility cache =
             Hide
 
         -- etc.
-```
+{% endhighlight %}
 
 This approach is further augmented by a higher-order function that handles the
 `Hide` case.
 
-```elm
+{% highlight elm %}
 visibilityToHtml : (a -> Html b) -> Visibility a -> Html b
 visibilityToHtml toHtml visibility =
     case visibility of
@@ -528,7 +528,7 @@ visibilityToHtml toHtml visibility =
 
         Hide ->
             text ""
-```
+{% endhighlight %}
 
 ## X. Stories told in order to live
 
@@ -574,7 +574,6 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
       </fn>
     </p>
   </li>
-
   <li>
     <p>
       <a href="#ref-2">^</a>
@@ -586,7 +585,6 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
       </fn>
     </p>
   </li>
-
   <li>
     <p>
       <a href="#ref-3">^</a>
@@ -597,7 +595,6 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
       </fn>
     </p>
   </li>
-
   <li>
     <p>
       <a href="#ref-4">^</a>
@@ -608,7 +605,6 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
       </fn>
     </p>
   </li>
-
   <li>
     <p>
       <a href="#ref-5">^</a>
@@ -619,7 +615,6 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
       </fn>
     </p>
   </li>
-
   <li>
     <p>
       <a href="#ref-6">^</a>
@@ -627,6 +622,21 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
         <a href="https://gist.github.com/busypeoples/b8982f215642e5258d3d49a9aa7d7438">
           Slaying a UI Antipattern in ReasonML
         </a>
+      </fn>
+    </p>
+  </li>
+  <li>
+    <p>
+      <a href="#ref-7">^</a>
+      <fn id="cite-7">
+        The usefulness of the map depends on its correspondence to the 
+        territory:
+        <blockquote>
+          A map <em>is not</em> the territory it represents, but, if correct, it 
+          has a similar structure to the territory, which accounts for its 
+          usefulness.
+        </blockquote>
+        &mdash; <a href="https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation">Alfred Korzybski</a>
       </fn>
     </p>
   </li>
