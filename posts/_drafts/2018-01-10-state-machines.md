@@ -12,6 +12,7 @@ languages._
 I'm not certain that code memes exist.
 I have a hard time defining the idea and unlike Justice Stewart, I am 
 uncomfortable asserting the reality of something that escapes definition.
+<sup><a id="ref-1" href="#cite-1">1</a></sup>
 "Code meme" is a label I give to some bits of programming I encounter on 
 Twitter.
 The technical content of the code meme is a readymade response to a common 
@@ -33,11 +34,11 @@ Only details like language or implementation change.
 
 The code meme _Slaying a UI Antipattern in..._ refers to the `RemoteData` 
 pattern.
-<sup><a href="#1">1</a>,</sup>
-<sup><a href="#2">2</a>,</sup>
-<sup><a href="#3">3</a>,</sup>
-<sup><a href="#4">4</a>,</sup>
-<sup><a href="#5">5</a></sup>
+<sup><a id="ref-2" href="#cite-2">2</a>,</sup>
+<sup><a id="ref-3" href="#cite-3">3</a>,</sup>
+<sup><a id="ref-4" href="#cite-4">4</a>,</sup>
+<sup><a id="ref-5" href="#cite-5">5</a>,</sup>
+<sup><a id="ref-6" href="#cite-6">6</a></sup>
 To invoke the meme as "Slaying a UI Antipattern in Elm" means to show an 
 Elm implementation of `RemoteData`.
 Like the _Hello World_ program, the implementation is used to sample the flavor
@@ -478,7 +479,7 @@ correct state of the collection cache.
 
 ## IX. Mediating state explosion
 
-Any consumer of the remote data cache is required to handle every cache state.
+All consumers of the remote data cache are required to handle every cache state.
 Depending on the pattern matching capabilities of the language, explicit states 
 result in verbose code.
 The code becomes especially noisy when many states are handled in the same way.
@@ -561,50 +562,79 @@ But maybe it does mean that the tidiest abstractions warrant the most doubt.
 
 <ol>
   <li>
-    <fn id="1">
-      <a href="">[^]</a>
-      <a href="http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html">
-        How Elm Slays a UI Antipattern
-      </a>
-      by Kris Jenkins, the first to describe this pattern.
-    </fn>
+    <p>
+      <a href="#ref-1">^</a>
+      <fn id="cite-1">
+        Supreme Court Justice Potter Stewart doubted that he could ever 
+        "intelligibly" define obscenity. 
+        Instead, his famous test was
+        <a href="https://en.wikipedia.org/wiki/I_know_it_when_I_see_it">
+          "I know it when I see it."
+        </a>
+      </fn>
+    </p>
   </li>
+
   <li>
-    <fn id="2">
-      <a href="">[^]</a>
-      <a href="https://medium.com/javascript-inside/slaying-a-ui-antipattern-in-fantasyland-907cbc322d2a">
-        Slaying a UI Antipattern in Fantasyland
-      </a>
-    </fn>
+    <p>
+      <a href="#ref-2">^</a>
+      <fn id="cite-2">
+        <a href="http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html">
+          How Elm Slays a UI Antipattern
+        </a>
+        by Kris Jenkins, the first to describe this pattern.
+      </fn>
+    </p>
   </li>
+
   <li>
-    <fn id="3">
-      <a href="">[^]</a>
-      <a href="https://medium.com/javascript-inside/slaying-a-ui-antipattern-in-react-64a3b98242c">
-        Slaying a UI Antipattern in React
-      </a>
-    </fn>
+    <p>
+      <a href="#ref-3">^</a>
+      <fn id="cite-3">
+        <a href="https://medium.com/javascript-inside/slaying-a-ui-antipattern-in-fantasyland-907cbc322d2a">
+          Slaying a UI Antipattern in Fantasyland
+        </a>
+      </fn>
+    </p>
   </li>
+
   <li>
-    <fn id="4">
-      <a href="">[^]</a>
-      <a href="https://medium.com/@gcanti/slaying-a-ui-antipattern-with-flow-5eed0cfb627b">
-        Slaying a UI Antipattern in Flow
-      </a>
-    </fn>
+    <p>
+      <a href="#ref-4">^</a>
+      <fn id="cite-4">
+        <a href="https://medium.com/javascript-inside/slaying-a-ui-antipattern-in-react-64a3b98242c">
+          Slaying a UI Antipattern in React
+        </a>
+      </fn>
+    </p>
   </li>
+
   <li>
-    <a href="">[^]</a>
-    <fn id="5">
-      <a href="https://gist.github.com/busypeoples/b8982f215642e5258d3d49a9aa7d7438">
-        Slaying a UI Antipattern in ReasonML
-      </a>
-    </fn>
+    <p>
+      <a href="#ref-5">^</a>
+      <fn id="cite-5">
+        <a href="https://medium.com/@gcanti/slaying-a-ui-antipattern-with-flow-5eed0cfb627b">
+          Slaying a UI Antipattern in Flow
+        </a>
+      </fn>
+    </p>
   </li>
+
+  <li>
+    <p>
+      <a href="#ref-6">^</a>
+      <fn id="cite-6">
+        <a href="https://gist.github.com/busypeoples/b8982f215642e5258d3d49a9aa7d7438">
+          Slaying a UI Antipattern in ReasonML
+        </a>
+      </fn>
+    </p>
+  </li>
+
   <!--
   note about how it took me a long time to understand what "a user interface is a state machine" means
-  -->
   <li>
   https://en.wikiquote.org/wiki/Edsger_W._Dtra
   </li>
+  -->
 </ol>
