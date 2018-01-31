@@ -288,7 +288,7 @@ type CacheEvent a b
     | Update b
 {% endhighlight %}
 
-## VI. What is a state machine?
+## VI. A remote data cache is a state machine
 
 Every combination of cache state and cache event results in a new cache state.
 All states and all events are known, and all state changes are knowable too.
