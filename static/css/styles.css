@@ -125,6 +125,10 @@ pre.highlight {
   margin: 0 0 1.5rem;
 }
 
+.post figure {
+  margin: 0 0 1.5rem;
+}
+
 .post blockquote {
   color:#6a737d;
   border-left: 0.262rem solid #dfe2e5;

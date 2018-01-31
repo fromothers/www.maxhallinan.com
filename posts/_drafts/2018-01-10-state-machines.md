@@ -77,7 +77,8 @@ type alias Model =
 
 Making the state explicit has two benefits. 
 First, the state is universally consistent and clear.
-There is no risk that a developer will incorrectly derive an implicit state.
+There is no risk that consumers of the data will incorrectly derive an 
+implicit state.
 Second, consumers of the data are required to handle every state:
 
 {% highlight elm %}
@@ -152,7 +153,7 @@ look like this:
 Loading (Just error) (Just xs)
 {% endhighlight %}
 
-and the "empty, general error, and request pending" state would look like this:
+The "empty, general error, and request pending" state would look like this:
 
 {% highlight elm %}
 Loading (Just error) Nothing
@@ -182,11 +183,8 @@ Nor can we relate multiple states to the same item at the same time.
 `Loading (Maybe String) (Maybe String, Maybe a) (Maybe b)` to associate both the
 error and the loading state with an item in the collection.
 
-We could continue to cram more information into the `RemoteData` type. 
-Instead of using `Maybe a` for errors, we could use `Dict String (Maybe a)` for 
-a collection of errors, keyed by item id.
-And so on.
-But I don't recommend it.
+We could continue to cram more information into the `RemoteData` type but I 
+don't recommend it.
 This path leads directly back to implicit states.
 Any code that consumes a value of the `RemoteData` type will explode with the 
 nested case statements required to derive the current state.
@@ -400,7 +398,7 @@ Nonetheless, it is not enough to say "just use a finite state machine".
 Implementing a state machine for this purpose is not trivial, so I want to 
 touch on a few of the details.
 
-## VII. Not really polymorphic transitions
+## VII. Polymorphic transitions without polymorphism
 
 Before implementing `updateCache`, we must remember that this cache system 
 should be compatible with different types of data.
@@ -527,9 +525,10 @@ updateCache transitions event current =
 To update the state of an inner cache, we'll send a `Patch CacheEvent` to the 
 outer cache.
 The event in `Patch` is our message to the inner cache.
+`patchFilled` will call `updateCache` on the inner cache, sending it this event.
 That is how we signal through the outer cache to an inner cache.
+
 `updateCache` passes this event and the cached data to `patchFilled`.
-`patchFilled` will call `updateCache` on the inner cache, sending it the event 
 from `Patch CachEvent`.
 Then `patchFilled` inserts the updated Person cache back into the collection.
 Finally, the outer call to `updateCache` tags the patched collection with the 
@@ -640,12 +639,22 @@ errorView =
     errorVisibility >> visibilityToHtml errorHtml
 {% endhighlight %}
 
-## X. Stories told in order to live
+## X. 
 
 There is a lot of information here and I'm not convinced that any of it is good.
 This is, emphatically, an experiment.
 While `RemoteData` was too simple, this approach is in danger of becoming too
 complicated.
+
+We are accustomed to doubt the correctness of a messy abstraction because it is
+messy.
+I am inclined to also doubt tidy abstractions because they are tidy.
+The lesson of the code meme is that messiness and tidiness of abstraction can be
+the same kind of incorrectness.
+Our world is both messy and tidy.
+Our abstractions crystallize our understanding of that world.
+Pronounced messiness and pronounced tidiness might both be symptoms of 
+incomplete understanding.
 Please let me know when you find the middle path.
 
 **Notes**
