@@ -359,38 +359,59 @@ that `update` produces an infinite number of states.
 Without upper and lower bounds, `update` can return any member of the infinitely
 large set of integers.
 
-## VI. A remote data cache as a finite state machine
-
-Thinking of a remote data cache as a finite state machine does not necessitate
-any particular implementation. 
-States, events, and transitions should reflect the needs of the application.
-And state machines themselves come in several varieties.
-My primary purpose is to make the conceptual connection.
-Nonetheless, it is not enough to say "just use a finite state machine".
-Implementing the remote data cache as a state machine was not straightforward 
-so I want to touch on a few of the details.
-
-The first step is to define an `updateCache` function.
-This is the heart of the cache system.
+We can write a similar update function that changes the state of the remote 
+data cache.
+This is the heart of the state machine.
 `updateCache` takes a `CacheEvent` event and a current `Cache` state, and 
 returns a new `Cache` state.
 The state will change according to the rules defined in the state change table 
 above.
 
 {% highlight elm %}
-updateCache : -> CacheEvent a c -> Cache a b -> Cache a b
+updateCache : CacheEvent a c -> Cache a b -> Cache a b
+updateCache event current =
+    case current of
+        Empty ->
+            case event of
+                Sync ->
+                    EmptySyncing
+
+                Error nextError ->
+                    EmptyInvalid nextError
+
+                Update nextData ->
+                    Filled nextData
+
+        EmptyInvalid currentError ->
+            case event of
+                Sync ->
+                    EmptyInvalidSyncing currentError
+
+
+        -- etc.
 {% endhighlight %}
 
-Before we implement `updateCache`, we must remember that this cache system 
+There is no prescribed implementation of a remote data cache as a finite state 
+machine.
+States, events, and transitions should reflect the needs of the application.
+And state machines themselves come in several varieties.
+My primary purpose is to make the conceptual connection.
+Nonetheless, it is not enough to say "just use a finite state machine".
+Implementing a state machine for this purpose is not trivial, so I want to 
+touch on a few of the details.
+
+## VII. Not really polymorphic transitions
+
+Before implementing `updateCache`, we must remember that this cache system 
 should be compatible with different types of data.
 There is one problem here.
-When the state of the cache changes, it is sometimes necessary to change the 
+When the state of the cache changes, it's sometimes necessary to change the 
 data itself.
 For example, the `Update b` event might require us to merge new data with 
 existing data if the state of the cache is `Filled b`.
 How the data changes is probably specific to the type of data.
 So the cache must do some type-specific transformations while remaining 
-uncoupled to any type.
+uncoupled to the type.
 
 The solution is to pass transitions into the state machine.
 These transitions are hooks for moments in the process of changing the state.
@@ -416,7 +437,24 @@ type alias Transitions a b =
 
 
 updateCache : Transitions c b -> CacheEvent a c -> Cache a b -> Cache a b
+updateCache transitions event current =
+    case current of
+        Empty ->
+            case event of
+                Sync ->
+                    EmptySyncing
+
+                Error nextError ->
+                    EmptyInvalid nextError
+
+                Update nextData ->
+                    Filled <| transitions.updateEmpty nextData
+
+
+        -- etc.
 {% endhighlight %}
+
+## VIII. General and specific state changes 
 
 Recall that our Person cache example is structured as a cache of caches.
 As we move forward with the implementation, we realize that there is no way to 
@@ -461,21 +499,65 @@ type alias Transitions a b c =
     , updateFilled : a -> b -> b
     , patchFilled : c -> b -> b
     }
+
+updateCache : Transitions c b d -> CacheEvent a c d -> Cache a b -> Cache a b
+updateCache transitions event current =
+    case current of
+        -- etc.
+
+
+        Filled currentData ->
+            case event of
+                Sync ->
+                    FilledSyncing currentData
+
+                Error nextError ->
+                    FilledInvalid nextError currentData
+
+                Update nextData ->
+                    Filled <| transitions.updateFilled nextData currentData
+
+                Patch patch ->
+                    Filled <| transitions.patchFilled patch currentData
+
+
+        -- etc.
 {% endhighlight %}
 
-We will send a `Patch c` event to the outer cache when we want to update the 
-state of an inner cache.
-The value in `Patch c` will be a second `CacheEvent`.
-That event is our message to the inner cache.
+To update the state of an inner cache, we'll send a `Patch CacheEvent` to the 
+outer cache.
+The event in `Patch` is our message to the inner cache.
+That is how we signal through the outer cache to an inner cache.
 `updateCache` passes this event and the cached data to `patchFilled`.
-Continuing the example of the `Person` cache, this data is a 
-`Dict String (Cache Http.Error Person)`.
-`patchFilled` will call `updateCache` on the selected inner cache, sending it
-the event from `Patch c`.
-`updateCache` updates the Person cache.
+`patchFilled` will call `updateCache` on the inner cache, sending it the event 
+from `Patch CachEvent`.
 Then `patchFilled` inserts the updated Person cache back into the collection.
 Finally, the outer call to `updateCache` tags the patched collection with the 
 correct state of the collection cache.
+
+{% highlight elm %}
+type alias PersonCollection =
+    Dict String PersonCache
+
+
+type alias PersonCache =
+    Cache Http.Error Person
+
+
+patchFilled : String -> CacheEvent Http.Error Person a -> PersonCollection -> PersonCollection
+patchFilled key cacheEvent personCollection =
+    -- select the inner cache
+    Dict.get key personCollection
+        -- update the state of the inner cache
+        |> Maybe.map (updateCache url cacheEvent)
+        -- reinsert the updated cache into the collection of caches
+        |> Maybe.map (\update -> Dict.insert key update personCollection)
+        |> Maybe.withDefault personCollection
+{% endhighlight %}
+
+This is the part of the approach that I am the least comfortable with.
+The concept is undoubtedly hard to understand here and it was tricky to 
+implement for the proof of concept.
 
 ## IX. Mediating state explosion
 
@@ -484,13 +566,13 @@ Depending on the pattern matching capabilities of the language, explicit states
 result in verbose code.
 The code becomes especially noisy when many states are handled in the same way.
 
-View functions are prone to suffer in this way.
-Many of these functions represent aspects of a user interface that have a binary
-nature.
+View functions are prone to suffer from this noisiness.
+Many of these view functions have a binary relationship to the state of the 
+cache.
 A loading icon is displayed when the cache is in a loading state.
-Otherwise no loading icon is displayed.
+Otherwise, no loading icon is displayed.
 An error message is displayed when the cache is in an error state.
-Otherwise no error message is displayed.
+Otherwise, no error message is displayed.
 View functions responsible for these features do not need to know all varieties
 of cache state.
 It is advisable to reduce the many states of the cache to a set of fewer states
@@ -502,22 +584,41 @@ type Visibility a
     | Hide
 {% endhighlight %}
 
-Each kind of view defines its own reduction of `Cache` to `Visibility`.
-For example, an error view function can be composed with a reduction of 
-`Cache Http.Error a` to `Visibility Http.Error`.
+Then each kind of view defines its own reduction of `Cache` to `Visibility`.
+For example, an error view might reduce all cache error states to 
+`Show Error` and all other cache states to `Hide`.
 
 {% highlight elm %}
-errorVisibility : Cache Http.Error a -> Visibility Http.Error
+errorVisibility : Cache Error a -> Visibility Error
 errorVisibility cache =
     case cache of
         Empty ->
             Hide
 
-        -- etc.
+        EmptyInvalid error ->
+            Show error
+
+        EmptyInvalidSyncing error ->
+            Show error
+
+        EmptySyncing ->
+            Hide
+
+        Filled _ ->
+            Hide
+
+        FilledInvalid error _ ->
+            Show error
+
+        FilledInvalidSyncing error _ ->
+            Show error
+
+        FilledSyncing _ ->
+            Hide
 {% endhighlight %}
 
-This approach is further augmented by a higher-order function that handles the
-`Hide` case.
+This approach is enhanced by a higher-order function that handles the `Hide` 
+case.
 
 {% highlight elm %}
 visibilityToHtml : (a -> Html b) -> Visibility a -> Html b
@@ -530,6 +631,15 @@ visibilityToHtml toHtml visibility =
             text ""
 {% endhighlight %}
 
+The view itself is a composition of these functions.
+This keeps large case statements out of the function that produces the html.
+
+{% highlight elm %}
+errorView : Cache Http.Error a -> Html Msg
+errorView =
+    errorVisibility >> visibilityToHtml errorHtml
+{% endhighlight %}
+
 ## X. Stories told in order to live
 
 There is a lot of information here and I'm not convinced that any of it is good.
@@ -537,26 +647,6 @@ This is, emphatically, an experiment.
 While `RemoteData` was too simple, this approach is in danger of becoming too
 complicated.
 Please let me know when you find the middle path.
-
-As programmers, we tell each other that simplicity is achievable.
-And I have worked with a few programmers who do achieve simplicity.
-But their simple code is not always tweetable; it is not always summarized by a 
-few paragraphs of blog post; it is not always understood in an instant.
-Their code is simple because it tolerates change.
-A domain model is revised, protocols rise and fall, someone has a feature 
-request.
-Code that feels simple to me is code that leaves a little space for these and 
-other unknown futures.
-And that space seems to come from understanding that different things are 
-different and should be treated differently.
-Lines drawn along those differences are the seams in the sidewalk that permit 
-the concrete to expand and contract.
-What I like about the state machine is that it provides these lines instead of 
-prescribing code.
-The guidelines still apply even when the code changes.
-This does not exclude the possibility that some things are the same, that some
-abstractions are correct.
-But maybe it does mean that the tidiest abstractions warrant the most doubt. 
 
 **Notes**
 
