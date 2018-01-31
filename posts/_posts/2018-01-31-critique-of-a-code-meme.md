@@ -393,7 +393,7 @@ There is no prescribed implementation of a remote data cache as a finite state
 machine.
 States, events, and transitions should reflect the needs of the application.
 And state machines themselves come in several varieties.
-My primary purpose is to make the conceptual connection.
+My principal aim is to make the conceptual connection.
 Nonetheless, it is not enough to say "just use a finite state machine".
 Implementing a state machine for this purpose is not trivial, so I want to 
 touch on a few of the details.
@@ -522,17 +522,11 @@ updateCache transitions event current =
         -- etc.
 {% endhighlight %}
 
-To update the state of an inner cache, we'll send a `Patch CacheEvent` to the 
-outer cache.
-The event in `Patch` is our message to the inner cache.
-`patchFilled` will call `updateCache` on the inner cache, sending it this event.
-That is how we signal through the outer cache to an inner cache.
-
-`updateCache` passes this event and the cached data to `patchFilled`.
-from `Patch CachEvent`.
-Then `patchFilled` inserts the updated Person cache back into the collection.
-Finally, the outer call to `updateCache` tags the patched collection with the 
-correct state of the collection cache.
+To update the state of an inner cache, we'll send an event through the outer
+cache to the inner cache.
+`Patch CacheEvent` is used to carry the inner cache event through the outer 
+state machine.
+`patchFilled` receives that event and coordinates the update.
 
 {% highlight elm %}
 type alias PersonCollection =
@@ -639,13 +633,12 @@ errorView =
     errorVisibility >> visibilityToHtml errorHtml
 {% endhighlight %}
 
-## X. 
+## X. Unfinished maps
 
 There is a lot of information here and I'm not convinced that any of it is good.
 This is, emphatically, an experiment.
 While `RemoteData` was too simple, this approach is in danger of becoming too
 complicated.
-
 We are accustomed to doubt the correctness of a messy abstraction because it is
 messy.
 I am inclined to also doubt tidy abstractions because they are tidy.
@@ -653,8 +646,10 @@ The lesson of the code meme is that messiness and tidiness of abstraction can be
 the same kind of incorrectness.
 Our world is both messy and tidy.
 Our abstractions crystallize our understanding of that world.
-Pronounced messiness and pronounced tidiness might both be symptoms of 
-incomplete understanding.
+So we can expect our abstractions to be messy and tidy too.
+Pronounced messiness and pronounced tidiness might both be signs of incomplete 
+understanding.
+We began with a tidy abstraction and now end with a messy abstraction.
 Please let me know when you find the middle path.
 
 **Notes**
