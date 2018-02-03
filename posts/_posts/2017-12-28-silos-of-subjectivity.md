@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Silos of Subjectivity"
-subtitle: "A dilemma of availability on peer-to-peer networks"
+tags: [peer-to-peer, web]
 ---
 
 Many peer-to-peer networks identify data by _what_ it is and not _where_ it is.

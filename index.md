@@ -4,10 +4,7 @@ layout: base
 
 ## Posts
 
-{% for post in site.categories.posts %}
-  - {{ post.date | date_to_string }} - [{{post.title}}]({{post.url}})
-{% endfor %}
-
+{% include post-list.html %}
 
 ## Projects
 
@@ -34,7 +31,6 @@ layout: base
 
 - [zelektree](https://github.com/maxhallinan/zelektree) - Embed selectors in a 
   Redux state tree.
-
 
 ## Open source contributions
 

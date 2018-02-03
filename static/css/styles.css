@@ -137,5 +137,22 @@ pre.highlight {
 }
 
 .post p code {
-  background-color: #f3f3f4;
+  background-color: #eff0f1;
+  padding: 1px 2px;
+}
+
+.post-list__item > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.post-list__title {
+  font-weight: 700;
+}
+
+.post-tag {
+  background-color: #eff0f1;
+  color: #222;
+  font-size: 0.8rem;
+  padding: 1px 5px;
 }
