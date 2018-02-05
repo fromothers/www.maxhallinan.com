@@ -2,24 +2,24 @@
 layout: base
 ---
 
-<article 
+<article
   class="post"
-  itemscope 
+  itemscope
   itemtype="http://schema.org/BlogPosting">
   <header>
     <h1>{{page.title}}</h1>
     <p>
-      <time 
-      datetime="{{ page.date | date_to_xmlschema }}" 
+      <time
+      datetime="{{ page.date | date_to_xmlschema }}"
       itemprop="datePublished">
         {{ page.date | date_to_long_string }}
       </time>
 
-      {% if page.author %} 
-      • 
-      <span 
-      itemprop="author" 
-      itemscope 
+      {% if page.author %}
+      •
+      <span
+      itemprop="author"
+      itemscope
       itemtype="http://schema.org/Person">
         <span itemprop="name">
           {{ page.author }}
@@ -28,5 +28,24 @@ layout: base
       {% endif %}
     </p>
   </header>
+  <div class="post-body">
   {{content}}
+  </div>
+  <footer class="post-footer">
+    <a
+      class="license-icon"
+      rel="license"
+      href="http://creativecommons.org/licenses/by-sa/4.0/">
+      <img
+        alt="Creative Commons License"
+        style="border-width:0"
+        src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+    </a>
+    This post is licensed under a
+    <a
+      rel="license"
+      href="http://creativecommons.org/licenses/by-sa/4.0/">
+      Creative Commons Attribution-ShareAlike 4.0 International License
+    </a>.
+  </footer>
 </article>

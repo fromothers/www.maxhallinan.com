@@ -156,3 +156,17 @@ pre.highlight {
   font-size: 0.8rem;
   padding: 1px 5px;
 }
+
+.post-body {
+  padding-bottom: 1rem;
+}
+
+.post-footer {
+  border-top: 1px solid #eff0f1;
+  font-size: 0.96rem;
+  padding: 1rem 0 0 0;
+}
+
+.license-icon {
+  text-decoration: none;
+}
