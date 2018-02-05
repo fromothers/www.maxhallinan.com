@@ -14,18 +14,6 @@ layout: base
       itemprop="datePublished">
         {{ page.date | date_to_long_string }}
       </time>
-
-      {% if page.author %}
-      •
-      <span
-      itemprop="author"
-      itemscope
-      itemtype="http://schema.org/Person">
-        <span itemprop="name">
-          {{ page.author }}
-        </span>
-      </span>
-      {% endif %}
     </p>
   </header>
   <div class="post-body">
