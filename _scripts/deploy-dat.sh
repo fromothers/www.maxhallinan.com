@@ -2,6 +2,8 @@
 
 source .env
 
+git pull
+
 # Build site locally
 rm -rf $DAT_PATH 
 
