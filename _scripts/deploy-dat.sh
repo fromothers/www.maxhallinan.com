@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Load environemnt for .ssh commands
+source ~/.zshrc
 source .env
 
 git pull
