@@ -136,6 +136,12 @@ pre.highlight {
   padding: 0 0 0 1rem
 }
 
+.post pre {
+  max-width: 100%;
+  overflow: hidden;
+  overflow-x: scroll;
+}
+
 .post p code {
   background-color: #eff0f1;
   padding: 1px 2px;
