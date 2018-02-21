@@ -3,5 +3,5 @@
   "title": "Max Hallinan",
   "description": "Programming",
   "fallback_page": "index.html",
-  "web_root": "_site"
+  "web_root": "_dat"
 }
