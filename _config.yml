@@ -30,6 +30,7 @@ permalink: /:categories/:year/:month/:day/:title/
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
 exclude:
+  - dat.json
   - deploy.sh
   - Gemfile
   - Gemfile.lock
