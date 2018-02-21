@@ -1,7 +1,7 @@
 {
-  "url": "dat://f503632ae48cae2fdb55ff35d9e5757d58efde31e59a43cd167076fba96aa523",
-  "title": "Max Hallinan",
   "description": "Programming",
   "fallback_page": "index.html",
+  "title": "Max Hallinan",
+  "url": "dat://f503632ae48cae2fdb55ff35d9e5757d58efde31e59a43cd167076fba96aa523",
   "web_root": "_dat"
 }
