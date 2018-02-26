@@ -4,6 +4,214 @@ title: "Learning the Language of Functional Programming"
 tags: [elm, programming]
 ---
 
+Elm is a functional programming language that largely avoids the vocabulary of
+functional programming.
+Debates about contramap versus contravariant bifunctor seldom occur in the Elm 
+community.
+And though Elm's `Maybe` might be one instance of a "monoid in the category of 
+endofunctors", there is no concept of a monad in Elm.
+Evan Czaplicki, Elm's creator, has argued that this vocabulary is unsuitable for 
+an introduction to the subject.
+Instead, Elm teaches concrete applications of functional programming theory to 
+the domain of user interfaces.
+Applications of the theory are taught without teaching the theory itself and
+Elm programmers can write Elm programs without being aware of the theory 
+implied by their work.
+The vocabulary of functional programming is largely absent from Elm simply 
+because it is not needed.
+The theory 
+Theoretical discussions in t
+Theoretical discussions are largely practical (e.g. why data structure to use)
+
+Elm avoids the vocabulary of functional programming to the degree that this 
+vocabulary is theoretical 
+
+
+It seems to me that this vocabulary is largely absent from Elm because 
+
+for thinking about theory
+
+for talking about 
+The vocabulary of functional programming is largely absent from Elm because that
+vocabulary is used to talk about theory explicitly and Elm programmers mostly
+do not.
+
+
+
+The vocabulary of functional programming is largely absent from Elm
+because that vocabulary is only necessary when the theory is explicit.
+
+
+The vocabulary of fun
+The vocabulary of functional programming is heavily theoretical 
+absent from the Elm language
+because that vocabulary is mostly ot n.
+
+The argument is that the theory is an unnecessary impediment to using the 
+language.
+
+Elm programmers can write Elm programs that 
+Elm programmers can become proficient applying the theory (by writing Elm 
+programs) without being aware of the theory itself.
+
+with a significant subset of the theory 
+develop an intuition 
+for how the 
+by applying the theory to the domain
+of user interfaces.
+
+by enabling programmers to apply the
+
+to build user interfaces by 
+introduces functional programming by enabling programmers to 
+build user interfaces with a language that concretely applies the theory to the 
+domain.
+apply the theory to the domain of user interface programming.
+concrete applications of 
+the theory to the domain of user interfaces.
+demonstrating productive k
+applications of the theory to the domain of user interfaces.
+
+It is possible to be a productive functional programmer without a significant 
+
+The language is designed to enable a practice of functional programming without
+a deep awareness of functional programming theory.
+
+The design of the language is meant to enable a productive practice of 
+functional programming without a deep awareness of the theory.
+
+
+remove the theoretical dependency from 
+the practice of 
+functional programming 
+Elm emphasizes the practice of functional programming over the theory of
+
+Elm is designed to enable functional programming without 
+
+Elm is designed to make monads and other concepts useable without depending on 
+their theory.
+
+
+Elm is designed to de-emphasize the theory of functional programming.
+
+Elm removes the dependency on the theory of functional programming. 
+The 
+theoretical concepts like monad.
+The language is meant to teach functional programming by making programmers 
+productive with a functional language.
+
+
+make programmers productive with a  aims to make programmers productive in a functional language without 
+depending on theoretical concepts like monad.
+
+
+>...design the language such that as someone gets started and gets 
+>productive, slowly they realize these concepts in a way that builds upon each 
+>other...
+
+The Elm pedagogy aims to teach functional 
+Elm teaches functional programming by making a student productive with a 
+functional programming language.
+
+The Elm pedagogy is to teach functional programming by making a student 
+productive with a functional programming language.
+
+someone functional programming by teaching that 
+person to be productive with a functional programming language.
+The assumption is that the student has learned functional programming when they
+have become productive with the language.
+
+There are a couple of assumptions bundled into this pedagogy.
+
+The first assumption is a notion of beginners as people who must be shielded
+from information that makes them feel uncomfortable.
+
+The second assumption is that, when you have taught someone to be productive
+with a functional programming language, that they have understood something 
+about functional programming itself.
+
+If, in your attempt to make some information easily understood, you have 
+truncated that information, 
+
+The truest "functional programming language" is not a programming language - 
+it is a conceptual language.
+You have done functional programming when you have engaged in a kind of 
+thinking.
+And to the degree that Elm or Haskell or Clojure forces you into this way of 
+thinking, then proficiency with the language can amount to an understanding of
+the subject. 
+But I think that the act of functional programming is in the thinking.
+Programming languages are called functional when lend themselves to expressing 
+these thoughts.
+more than 
+the language use.
+The vocabulary of functional programming is the language of this thought - it is
+this language that is the functional programming language, and the programming
+languages that are called functional are called functional because they are
+sympathetic to this way of thinking.
+
+
+in itself, not
+in the language.
+
+
+This begs the question "what is a functional programming la
+
+
+To teach someone functional programming is to teach someone to be productive 
+with a functional programming language.
+
+
+Functional programming is taught 
+The Elm pedagogy of functional programming is 
+
+1. "How close is the Redux connect() function to a Bifunctor (see Fantasy Land for 
+details) ? Honest question. Could it have been designed with bimap somehow?" 
+&mdash; [@andrestaltz](https://twitter.com/andrestaltz/status/956241231541161984)
+
+"Seems like a contramap to me. So a contravariant bifunctor abstracting the 
+connect function itself as a builder"
+&mdash; [@drboolean](https://twitter.com/drboolean/status/956291210221518848)
+1."All told, a monad in X is just a monoid in the category of endofunctors of X, 
+with product × replaced by composition of endofunctors and unit set by the 
+identity endofunctor."  Saunders Mac Lane in _Categories for the Working 
+Mathematician_ via [StackOverflow](https://stackoverflow.com/questions/3870088/a-monad-is-just-a-monoid-in-the-category-of-endofunctors-whats-the-proble%E2%85%BF)
+
+
+Exchanges like 
+Elm programmers seldom 
+
+The design of a programming language expresses the opinions of its designer.
+One opinion expressed by the Elm language is that the vocabulary of functional
+programming is unsuitable for an introduction to the subject.
+Exchanges like this seldom occur 
+
+> "Seems like a contramap to me. So a contravariant bifunctor abstracting the 
+connect function itself as a builder"
+
+&mdash;@drboolean
+
+
+
+
+The Elm language expresses the opinion that the language of functional 
+programming is unsuitable for an introduction to the subject.
+
+The design of a programming language expresses the opinions of its designer.
+
+
+an introduction to functional
+programming should not use the language of 
+the language of functional 
+programming is 
+
+language of functional 
+programming 
+One opinion expressed by the Elm language is that the language of functional 
+programming is not beginner friendly.
+
+
+<!--
 ## I.
 
 I haven't felt like I understood math since I finished eighth-grade algebra.
@@ -71,6 +279,7 @@ Now I'm thirty-one and it's been awhile since I've done any drawing.
 But sometimes I watch math videos on the internet.
 Programming is the reason for both of those unexpected outcomes.
 And functional programming in particular is the reason I'm excited about math.
+-->
 
 
 <!--
