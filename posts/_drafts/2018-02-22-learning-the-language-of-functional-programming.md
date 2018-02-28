@@ -4,21 +4,209 @@ title: "Learning the Language of Functional Programming"
 tags: [elm, programming]
 ---
 
+Elm avoids the theoretical language of functional programming.
+Elm is designed to be a functional programming language for beginners.
+Knowing the theory of functional programming is not required to apply the 
+theoretical concepts.
+One can know how to work with a `Maybe` without knowing what a monad is.
+Elm is focused on making people productive.
+Theory can intimidate and confuse people.
+Because theory isn't needed to be productive and because theory can have 
+counter-productive effects, Elm avoids theory.
+Elm focuses on the application of concepts to the domain of user interfaces.
+
+This approach makes sense if your purpose is to teach someone to write 
+programs in Elm.
+I'm not sure that this approach makes sense if your purpose is to teach someone
+functional programming.
+To teach someone functional programming by teaching them to use a functional
+programming language assumes that functional programming is just programming in
+a "functional" language.
+The assumption here is that functional programming is inevitably what you do 
+when you write a program in a functional language.
+This is not the case.
+
+It seems to me that I can do a good bit of functional programming in any 
+language with first class functions.
+That means I can do functional programming in many more languages than those
+that are commonly called "functional".
+It also seems to me that I can do a good bit of imperative programming in Elm. 
+For example, I have read a lot of Elm code that looks like this:
+
+
+```
+updateFoo : Foo -> a -> Foo
+updateFoo foo = 
+  let
+    ... 
+  in
+```
+
+Nor is there a standard for functional programming languages that can be used
+to define what makes a language properly "functional".
+You cannot even say that all functional languages resemble one another.
+As far as I can see, a functional language is a programming language that
+lends itself to expressing a certain way of thinking.
+And it is the thinking itself which is functional programming, not writing code
+in a functional language.
+
+In this way of thinking, a program is an arrow between two points.
+The arrow originates at the point called "input" and ends at the point called
+"output".
+And if one looks closer at the path of the arrow connecting input to output, 
+one finds more dots connected by more arrows.
+Functional programming is connecting dots with arrows while following some 
+laws about which arrows can connect which dots.
+
+It is important that a programmer can write programs.
+It is important that a functional programming language enables a programmer
+to write programs.
+But the writing of a program in a functional language is not inherently 
+an act of functional programming.
+Functional programming has happened when the program is thought through as a 
+series of points connected by arrows and some laws governing how they connect.
+
+This way of thinking is borrowed from math.
+It is not borrowed from math because it is esoteric and it is definitely 
+not meant to be "self-defeating".
+The result of a mathematical expression, its meaning, can be universally 
+understood.
+Functional programming tries to find in math a language for programming that is 
+reliable in this way.
+Functional programming tries to find in math a language for expressing the 
+logic of software that is universally understood.
+I can't say whether functional programming succeeds in this attempt.
+My point is that the theoretical language is an essential aspect of 
+functional programming to the degree that this language is used to talk about
+this way of thinking.
+
+On paper, I think I resemble Elm's target audience.
+I haven't felt like I understood math since I finished eighth grade pre-algebra.
+I stopped studying math relatively early, in my third year of highschool, and I
+almost failed the class.
+What I remember about eighth grade pre-algebra was that I was taught some laws 
+and then I was asked to apply those laws to some problems.
+Most laws came with calculation techniques, something like dividing each side 
+by the opposite number.
+These techniques were how the problem solver applied the laws to the problems.
+
+Two approaches emerged among my classmates.
+The first approach was to memorize which technique went with which kind of 
+problem.
+I liken this to the Elm method of functional programming - focus on the concrete
+techniques for problem solving in a domain space.
+This was an decision-tree algebra.
+
+The second approach was to try to abstract the details of the problem to the 
+algebraic laws and then work out the numbers.
+In this approach, one might still use the calculation technique.
+The difference was how one chose which calculation technique to use.
+In the first approach, one uses the calculation technique because one remembers
+that this technique has worked in the past for a similar kind of problem.
+In the second approach, one works to apply the law to the problem and the 
+calculation technique, incidentally, is the way to do this.
+The difference between the two approaches is that the second approach enables
+you to make an educated guess about what to do when you encounter an 
+unfamiliar problem.
+
+Knowing the laws of the system enables one to do something new with that system.
+I find that to be the great promise of functional programming.
+I want to know the theory, the laws governing the arrows between input and
+ouput, so that I can be empowered to do something new.
+
+The argument remains that the theory doesn't have to come first.
+That is true.
+But I wonder how an Elm programmer is made aware of the theory.
+The language will not make her aware.
+Elm conceals the theory.
+Elm's creator describes the process of developing an understanding of monads.
+He says that he first felt like he understood them in six months and that he 
+developed a deep understanding of monads after about a year and a half of using
+them.
+He seems to imply that this is an unreasonably long amount of time.
+It is hard for me to relate to this.
+Many things which I find very useful and which seem simple in retrospect, took
+me much longer than a year and a half to absorb.
+For example, every day use of the English language is something I usually do 
+without thinking today but it took many years to achieve that.
+I am learning German now and I am painfully slow.
+<!--
+But I would never think that because this process is slow a, that
+the information should be avoided.
+-->
+I am generally baffled if someone says something in German to me.
+But that does not mean that those who are speaking German are "self-defeating" 
+and should avoid doing so.
+It means that I should learn German.
+The same is true for the language of functional programming.
+If we are to be functional programmers, we should not shrink back from the 
+discomfort of our initial ignorance.
+We should have greater confidence in our ability to understand and should be 
+encouraged by our programming language to seek this understanding.
+And we should do so not to enter pissing contests but to be empowered by 
+what we can understand.
+
+Elm, by concealing the theory from us, exhibits what my Dad calls "the soft
+bigotry of low expectations".
+That is, the design implies a doubt about the user's ability to understand 
+what is really going on.
+Elm promises to explain this to you later and then never does.
+Those Elm programmers who seem to wait for solutions to be handed down by the 
+language's creator are stuck with decision tree algebra.
+They are standing on a path that they cannot follow further because they do not
+know that each knew direction follows that path.
+
+# Draft 1
+
 Elm is a functional programming language that largely avoids the vocabulary of
 functional programming.
-Debates about contramap versus contravariant bifunctor seldom occur in the Elm 
-community.
+Debates about contramap versus contravariant bifunctor seldom occur in the world 
+of Elm.
 And though Elm's `Maybe` might be one instance of a "monoid in the category of 
 endofunctors", there is no concept of a monad in Elm.
+Instead, Elm focuses programmers on concrete patterns for problem solving in the 
+domain of user interfaces.
+It is possible for an Elm programmer to write Elm programs with little awareness
+of the theory implied by their work.
+
+Perhaps the vocabulary of functional programming is absent from the world of Elm
+because Elm programmers do not depend on this 
+The vocabulary of functional programming is largely absent from the world of 
+Elm perhaps because Elm programmers do not need this vocabulary to be 
+productive.
 Evan Czaplicki, Elm's creator, has argued that this vocabulary is unsuitable for 
-an introduction to the subject.
+an introduction to the subject and has suggested that the underlying theory of
+functional programming should be introduced after a programmer has become 
+proficient with a functional programming language.
+
+
+should be introduced after a programmer has become proficient applying those
+concepts.
+
+right time to 
+introduce theo.
+
+Elm inherits these concepts
+Elm inherits these concepts without explicitly passing the lineage to language
+users.
+
+
+The language's design inherits these concepts but does not pass them through to 
+language users.
+
+Elm is focused on concrete applications of functional programming theory to 
+the domain of user interfaces.
+
+The vocabulary of functional programming is largely absent from the world of Elm 
+simply because it is not needed.
+
+
+
 Instead, Elm teaches concrete applications of functional programming theory to 
 the domain of user interfaces.
-Applications of the theory are taught without teaching the theory itself and
 Elm programmers can write Elm programs without being aware of the theory 
 implied by their work.
-The vocabulary of functional programming is largely absent from Elm simply 
-because it is not needed.
+
 The theory 
 Theoretical discussions in t
 Theoretical discussions are largely practical (e.g. why data structure to use)
@@ -141,29 +329,126 @@ And to the degree that Elm or Haskell or Clojure forces you into this way of
 thinking, then proficiency with the language can amount to an understanding of
 the subject. 
 But I think that the act of functional programming is in the thinking.
-Programming languages are called functional when lend themselves to expressing 
-these thoughts.
-more than 
-the language use.
+Programming languages are called functional when they lend themselves to 
+expressing those thoughts.
+There is one functional programming language, the language of the theory of 
+functional programming.
+
+I don't clearly know what makes a programming language "functional".
+Quite a bit of functional programming can be done in any language featuring 
+first class functions but not all of those languages are commonly called 
+functional.
+Perhaps a functional programming language is one that lends itself to 
+expressing a way of thinking.
+This way of thinking is also expressed by the theory of functional programming.
+It is a way of thinking that was borrowed from math not because math dependably
+intimidates the unitiated but because the correctness of mathematical ideas is
+knowable and the result of their application is reliable.
+because math is a lossless medium of thought 
+compression.
+The correctness of most mathematical ideas is knowable and the results are 
+reliable
+
+language of math is rigorous and the 
+outcomes are reliable.
+
+
+because math is the most
+reliable form of human communication.
+
+math is the form in
+which human thought is transferred from one mind to another most clearly and 
+most reliably.
+
+clearest
+and most reliablel
+mathemetical
+thought is 
+
+clearest, most
+reliable clear to read and reliable to run.
+math is not 
+subjective
+
+are 
+provable 
+tend 
+to be objectively sound.
+
+not to intimidate the 
+unitiated but to 
+to intimidate the 
+uninitiated or to engage in mutual masturbation of the mind, but because 
+concepts from math tend to be objectively sound.
+And to the degree that Elm or Haskell or Clojure forces me into this way of 
+thinking, then proficiency with the language can amount to an understanding of
+the subject.
+But I think that the act of functional programming is the thinking itself. 
+I have done functional programming when I have engaged in this way of thinking,
+not when I have used a functional programming language productively.
+
+
+It seems to me that a functional programming language is one that lends itself
+to expressing a way of thinking.
+The theoretical vocabulary of functional programming is also an attempt to 
+express this way of thinking.
+It is a way of thinking that is borrowed from math 
+
+But it seems to me that functional programming languages lend themselves to 
+expressing a way of thinking.
+The vocabulary of functional programming, words like "monad", "functor, and 
+"curry" are also meant to express that way of thinking.
+It is a way of thinking that comes from math 
+
+
+When I look for the unifying factor among the several functional languages I 
+know of, 
+I think that there is only one "functional" language.
+It is a conceptual language, not a programming.
+I have done functional programming when I have engaged in a kind of thinking.
+And to the degree that Elm or Haskell or Clojure forces me into this way of 
+thinking, then proficiency with the language can amount to an understanding of
+the subject.
+But I think that the act of functional programing is the thinking itself, not 
+the use of a "functional programming language".
+
+It seems to me that there is only one "functional" language and it is not a 
+programming language.
+The language of functional programming is a conceptual language.
+
+
+Functional programming is an attempt to think about programming in a way that 
+transcends the subjectivity of any one programming language.
+
+Learning about the features of a so-called functional language does 
+Learning about the features 
+
+I could do quite a bit
+It seems to me that I could do a lot of functional programming with  
+
+
+Functional programming is an attempt to share a way of thinking about 
+programming.
+The language is not tied to 
+Functional programming is an attempt to share a language of programming that is
+not a requirement to use the same programming language.
+
+not assume 
+without 
+expecting all programmers to use the same programming language.
+
+programming lanaguage
+
+find a shared language.
+The language is borrowed from math.
+
+
 The vocabulary of functional programming is the language of this thought - it is
 this language that is the functional programming language, and the programming
 languages that are called functional are called functional because they are
 sympathetic to this way of thinking.
 
 
-in itself, not
-in the language.
-
-
-This begs the question "what is a functional programming la
-
-
-To teach someone functional programming is to teach someone to be productive 
-with a functional programming language.
-
-
-Functional programming is taught 
-The Elm pedagogy of functional programming is 
 
 1. "How close is the Redux connect() function to a Bifunctor (see Fantasy Land for 
 details) ? Honest question. Could it have been designed with bimap somehow?" 
@@ -196,20 +481,6 @@ connect function itself as a builder"
 
 The Elm language expresses the opinion that the language of functional 
 programming is unsuitable for an introduction to the subject.
-
-The design of a programming language expresses the opinions of its designer.
-
-
-an introduction to functional
-programming should not use the language of 
-the language of functional 
-programming is 
-
-language of functional 
-programming 
-One opinion expressed by the Elm language is that the language of functional 
-programming is not beginner friendly.
-
 
 <!--
 ## I.
