@@ -4,71 +4,63 @@ title: "Learning the Language of Functional Programming"
 tags: [elm, programming]
 ---
 
-Elm avoids the theoretical language of functional programming.
-Elm is designed to be a functional programming language for beginners.
-Knowing the theory of functional programming is not required to apply the 
-theoretical concepts.
-One can know how to work with a `Maybe` without knowing what a monad is.
-Elm is focused on making people productive.
-Theory can intimidate and confuse people.
-Because theory isn't needed to be productive and because theory can have 
-counter-productive effects, Elm avoids theory.
-Elm focuses on the application of concepts to the domain of user interfaces.
-
-This approach makes sense if your purpose is to teach someone to write 
-programs in Elm.
-I'm not sure that this approach makes sense if your purpose is to teach someone
+Elm is a functional programming language that largely avoids the vocabulary of
 functional programming.
-To teach someone functional programming by teaching them to use a functional
-programming language assumes that functional programming is just programming in
-a "functional" language.
-The assumption here is that functional programming is inevitably what you do 
-when you write a program in a functional language.
-This is not the case.
+Debates about contramap versus contravariant bifunctor seldom occur in the world 
+of Elm.
+And though Elm's `Maybe` might be one instance of a "monoid in the category of 
+endofunctors", there is no concept of a monad in Elm.
+Evan Czaplicki, Elm's creator, argues that the theory is not essential.
+Instead, Elm focuses programmers on concrete patterns for problem solving in the 
+domain of user interfaces.
+It is possible for an Elm programmer to write an Elm program with little 
+awareness of the theory implied by their work. 
 
-It seems to me that I can do a good bit of functional programming in any 
-language with first class functions.
+This approach makes sense when the purpose is to teach user interface
+development.
+But I'm not sure it makes sense if the purpose is to teach functional 
+programming.
+It should not be assumed that functional programming is the inevitable 
+result of programming in a functional language.
+Functional programming and programming in a functional language are not the same
+thing.
+I do not need a functional programming language to do functional programming.
+I only need a language with first class functions.
 That means I can do functional programming in many more languages than those
 that are commonly called "functional".
-It also seems to me that I can do a good bit of imperative programming in Elm. 
-For example, I have read a lot of Elm code that looks like this:
-
+Nor does a functional language necessarily prohibit me from imperative 
+programming.
+Nothing prevents me from writing this Elm code:
 
 ```
-updateFoo : Foo -> a -> Foo
-updateFoo foo = 
-  let
-    ... 
-  in
 ```
 
-Nor is there a standard for functional programming languages that can be used
-to define what makes a language properly "functional".
-You cannot even say that all functional languages resemble one another.
-As far as I can see, a functional language is a programming language that
-lends itself to expressing a certain way of thinking.
-And it is the thinking itself which is functional programming, not writing code
-in a functional language.
+A language is called "functional" when the language lends itself to the 
+expression of a certain kind of thought.
+You have done functional programming when you have engaged in that kind of 
+thinking.
+To the degree that Elm or Haskell or Clojure forces you into this way of 
+thinking, then proficiency with the language can amount to an understanding of
+the subject. 
+But the act of functional programming remains in the thought. 
+User interface programming is one opportunity to demonstrate this way of 
+thinking.
+But unless the thought is made explicit during the demonstration, an 
+understanding of that thought can only occur incidentally.
 
-In this way of thinking, a program is an arrow between two points.
+In the way of thinking that is functional programming, a program is an arrow 
+between two points.
 The arrow originates at the point called "input" and ends at the point called
 "output".
-And if one looks closer at the path of the arrow connecting input to output, 
-one finds more dots connected by more arrows.
+And if one inspects the path of the arrow connecting input to output, one finds 
+more dots connected by more arrows.
 Functional programming is connecting dots with arrows while following some 
-laws about which arrows can connect which dots.
+laws about which arrows connect which dots.
 
-It is important that a programmer can write programs.
-It is important that a functional programming language enables a programmer
-to write programs.
-But the writing of a program in a functional language is not inherently 
-an act of functional programming.
-Functional programming has happened when the program is thought through as a 
-series of points connected by arrows and some laws governing how they connect.
-
+<!--
 This way of thinking is borrowed from math.
-It is not borrowed from math because it is esoteric and it is definitely 
-not meant to be "self-defeating".
+It is not borrowed from math because it is esoteric and it is not meant to be 
+"self-defeating".
 The result of a mathematical expression, its meaning, can be universally 
 understood.
 Functional programming tries to find in math a language for programming that is 
@@ -79,17 +71,82 @@ I can't say whether functional programming succeeds in this attempt.
 My point is that the theoretical language is an essential aspect of 
 functional programming to the degree that this language is used to talk about
 this way of thinking.
+-->
 
 On paper, I think I resemble Elm's target audience.
-I haven't felt like I understood math since I finished eighth grade pre-algebra.
-I stopped studying math relatively early, in my third year of highschool, and I
-almost failed the class.
-What I remember about eighth grade pre-algebra was that I was taught some laws 
-and then I was asked to apply those laws to some problems.
-Most laws came with calculation techniques, something like dividing each side 
-by the opposite number.
-These techniques were how the problem solver applied the laws to the problems.
+I do not have a math background and I haven't understood math since I finished 
+eighth-grade Algebra I.
+What I remember about eighth-grade algebra is that I learned some laws and then 
+I applied those laws to math problems.
+Most laws came with calculation techniques, something like dividing a number on 
+the right side by a number on the left side.
 
+Students used the calculation techniques in one of two ways.
+Some students became skilled at memorizing which techniques went with which 
+kinds of problems.
+This approach is similar to the Elm method of functional programming; focus on 
+how to get a desired result and not why.
+As long as one knew the technique and knew when to use the technique, then 
+one didn't necessarily need to know the law.
+This worked like a decision tree: if the details of the problem are like x, then 
+use y technique. 
+In that approach, the laws weren't essential information.
+
+The second approach was to try to abstract the details of the problem to the 
+algebraic laws and then work out the numbers.
+In this approach, one might still use the calculation technique.
+The difference was how one chose which calculation technique to use.
+In the first approach, one uses the calculation technique because one remembers
+that this technique has worked in the past for a similar kind of problem.
+In the second approach, one works to apply the law to the problem and the 
+calculation technique, incidentally, is the way to do this.
+The difference between the two approaches is that the second approach enables
+you to make an educated guess about what to do when you encounter an 
+unfamiliar problem.
+
+Other students 
+
+What I remember about eighth grade algebra was that I was taught some laws 
+and then I was asked to apply those laws to some problems.
+
+<!--
+I haven't felt like I understood math since I finished eighth-grade algebra.
+What I remember about eighth-grade algebra is that I learned some laws and then 
+I applied those laws to math problems.
+There was generally two ways of approaching the math problems.
+
+The first approach was prescriptive.
+There was always a suggested technique for applying the law to the problem.
+As long as one knew the technique and knew when to use the technique, then 
+one didn't necessarily need to know the law.
+Some students became skilled at memorizing which techniques went with which 
+kinds of problems.
+This worked like a decision tree: if the details of the problem are like x, then 
+use y technique. 
+In that approach, the laws weren't essential information unless the test 
+required the student to name the law leveraged by the technique.
+
+I disliked the decision tree style of doing algebra because I was only pleased 
+to have the correct answer if I understood why it was correct.
+The decision tree was a very limited form of understanding. 
+It only enabled the individual to solve familiar problems.
+Unfamiliar problems required an extension of the decision tree, even 
+if the solution simply used a new combination of familiar laws.
+I was a lazy math student and I suspected that the decision tree was a trap.
+Maintaining the tree couldn't end until all kinds of problems had been
+encountered and I suspected this meant a lot of work.
+
+The second approach, my approach, was to focus more on the laws than the 
+numbers.
+I relish learning because I feel empowered by understanding.
+It was the algebraic laws, not the decision tree, that empowered me.
+New combinations of familiar laws were less work to learn because they required
+a smaller mental shift.
+And sometimes I could make that shift on the fly, without having to study.
+This reduced time spent on math outside of class and saved me more than once on 
+a test.
+I wasn't a gifted algebra student but I really liked knowing those laws and 
+-->
 Two approaches emerged among my classmates.
 The first approach was to memorize which technique went with which kind of 
 problem.
