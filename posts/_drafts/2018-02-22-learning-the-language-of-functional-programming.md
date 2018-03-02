@@ -30,10 +30,31 @@ That means I can do functional programming in many more languages than those
 that are commonly called "functional".
 Nor does a functional language necessarily prohibit me from imperative 
 programming.
-Nothing prevents me from writing this Elm code:
+For example, nothing prevents me from writing this Elm code:
 
-```
-```
+{% highlight elm %}
+type alias Named =
+    { name : String
+    }
+
+
+updateName : String -> Maybe Named -> Maybe Named
+updateName name mNamed =
+    case mNamed of
+        Just named ->
+            Just { named | name = name }
+
+        Nothing ->
+            Nothing
+{% endhighlight %}
+
+instead of something like this:
+
+{% highlight elm %}
+updateName : String -> Maybe Named -> Maybe Named
+updateName name =
+    Maybe.map (\named -> { named | name = name })
+{% endhighlight %}
 
 A language is called "functional" when the language lends itself to expressing 
 a certain kind of thought.
@@ -48,18 +69,24 @@ But unless the thought is made explicit during the demonstration, an
 understanding of that thought can only occur incidentally.
 
 In the way of thinking that is functional programming, a program is an arrow 
-between two points.
-Points abstract values and arrows abstract transformations.
-An arrow between two points transforms one value into the other.
-When two arrows connect three dots, `a -> b -> c`, then there is said to be an
-arrow between `a` and `c`.
-Functional programming is largely the game of abstracting smaller arrows to 
-larger arrows until finally there is just one arrow transforming input to 
-output.
+between two points. 
+The arrow originates at the point called "input" and ends at the point called 
+"output". 
+Each point is a value. 
+An arrow between two points is a transformation of one value into the other.
+Thus, a line-count program is an arrow from string to integer.
+
+If one inspects the path of the arrow connecting input to output, one finds more 
+dots connected by more arrows. 
+That is because it is possible to create one arrow between two points by 
+placing two arrows between three points.
+The line-count program might be a combination of two arrows: string to array and
+array to integer.
+When there is an arrow from string to array and an arrow from array to integer,
+then it is said that there is an arrow from string to integer.
 
 Laws dictate the arrows that exist between every pair of points.
 To connect two points, the functional programmer follows a law.
-Functional programming is applying laws to problems. 
 So functional programming can be understood only when the laws are understood.
 If I write code in a functional language that applies laws I do not understand, 
 maybe I have been a productive programmer but I have not understood functional 
@@ -84,12 +111,12 @@ kinds of problems.
 This worked like a decision tree: if the details of the problem are like x, then 
 use y technique. 
 In that approach, the laws aren't essential information.
-The second group tried to abstract the details of the problem to the laws first 
-and then work out the numbers.
-Perhaps students in the second group still used the prescribed technique but 
-they did so knowing why that technique had been prescribed.
+But the second group tried to abstract the details of the problem to the laws 
+first and then work out the numbers.
+Perhaps students in the second group still used the prescribed techniques but 
+they did so knowing why that techniques had been prescribed.
 
-The decision tree was a very limited form of understanding. 
+The decision tree was a limited form of understanding. 
 It only enabled a student to solve familiar problems.
 Unfamiliar problems required an extension of the decision tree, even if the 
 solution simply used a new combination of familiar laws.
@@ -107,21 +134,21 @@ Nothing has changed since then.
 I remain uncomfortable with numbers.
 I know little about category theory and I don't know the difference between a 
 contramap and a bifunctor.
-But I am working to change this, not because I want to join a pissing contest 
-but because I remember the usefulness of the seemingly unuseful laws from eighth 
-grade algebra.
+But I am working to change this because I remember the usefulness of the 
+seemingly unuseful laws from eighth-grade algebra.
 
-The promise of functional programming is that knowing the law makes me a more 
-capable programmer just as it made me a more capable math student.
+The promise of functional programming is that knowing the laws will make me a 
+more capable programmer just as it made me a more capable math student.
 In this sense, the best functional programming language is the language of those
 laws.
 Whether or not I learn the laws through the use of a programming language, 
-I must learn the laws to learn functional programming.
-The argument remains that the theory doesn't have to come first.
+I must learn the them to learn functional programming.
+The argument remains that the theory can be learned later, after learning the 
+techniques.
 I suppose this is true.
 But I wonder how an Elm programmer is ever made aware of the theory.
 How can the language make me aware when it avoids the subject?
 It is not necessarily the responsibility of the language to convey the theory to
 the programmer.
-Nonetheless, the language must do so if it claims to be a useful tool for 
-teaching functional programming.
+Nonetheless, I am best served as a student of functional programming by a 
+language that exposes me to these concepts.
