@@ -35,10 +35,9 @@ Nothing prevents me from writing this Elm code:
 ```
 ```
 
-A language is called "functional" when the language lends itself to the 
-expression of a certain kind of thought.
-You have done functional programming when you have engaged in that kind of 
-thinking.
+A language is called "functional" when the language lends itself to expressing 
+a certain kind of thought.
+You have done functional programming when you have thought that way.
 To the degree that Elm or Haskell or Clojure forces you into this way of 
 thinking, then proficiency with the language can amount to an understanding of
 the subject. 
@@ -50,140 +49,122 @@ understanding of that thought can only occur incidentally.
 
 In the way of thinking that is functional programming, a program is an arrow 
 between two points.
-The arrow originates at the point called "input" and ends at the point called
-"output".
-And if one inspects the path of the arrow connecting input to output, one finds 
-more dots connected by more arrows.
-Functional programming abstracts values to points and logic to arrows.
-An arrow between two points is a logic that transforms one value into another.
-There are laws that dictate the arrows between each pair of points.
+Points abstract values and arrows abstract transformations.
+An arrow between two points transforms one value into the other.
+When two arrows connect three dots, `a -> b -> c`, then there is said to be an
+arrow between `a` and `c`.
+Functional programming is largely the game of abstracting smaller arrows to 
+larger arrows until finally there is just one arrow transforming input to 
+output.
+
+Laws dictate the arrows that exist between every pair of points.
 To connect two points, the functional programmer follows a law.
-Functional programming is applying laws to problems and functional programming 
-is understood when the laws are understood.
+Functional programming is applying laws to problems. 
+So functional programming can be understood only when the laws are understood.
 If I write code in a functional language that applies laws I do not understand, 
 maybe I have been a productive programmer but I have not understood functional 
 programming.
 
 So what good is understanding the laws if I can be productive without this 
 understanding?
-The laws are borrowed from math because laws in math tend to be universal. 
-<!--
-It is not borrowed from math because it is esoteric and it is not meant to be 
-"self-defeating".
-The result of a mathematical expression, its meaning, can be universally 
-understood.
-Functional programming tries to find in math a language for programming that is 
-reliable in this way.
-Functional programming tries to find in math a language for expressing the 
-logic of software that is universally understood.
-I can't say whether functional programming succeeds in this attempt.
-My point is that the theoretical language is an essential aspect of 
-functional programming to the degree that this language is used to talk about
-this way of thinking.
-way of thinking is borrowed from math.
--->
-
-On paper, I think I resemble Elm's target audience.
-I do not have a math background and I haven't understood math since I finished 
-eighth-grade Algebra I.
-What I remember about eighth-grade algebra is that I learned some laws and then 
-I applied those laws to math problems.
+The question reminds me of eighth-grade Algebra I.
+Eighth-grade algebra taught me some laws and taught me to apply those laws to 
+math problems.
 Most laws came with calculation techniques, something like dividing a number on 
 the right side by a number on the left side.
+The calculation technique was the method for applying the law to the problem
+and students were tested on the result of the calculations.
+Knowing the answer did not depend on knowing the law.
+Success in Algebra I meant choosing the correct calculation technique and not 
+necessarily knowing the law that justified the choice.
 
-Students used the calculation techniques in one of two ways.
-Some students became skilled at memorizing which techniques went with which 
-kinds of problems.
-This approach is similar to the Elm method of functional programming; focus on 
-how to get a desired result and not why.
-As long as one knew the technique and knew when to use the technique, then 
-one didn't necessarily need to know the law.
-This worked like a decision tree: if the details of the problem are like x, then 
-use y technique. 
-In that approach, the laws weren't essential information.
-
-The second approach was to try to abstract the details of the problem to the 
-algebraic laws and then work out the numbers.
-In this approach, one might still use the calculation technique.
-The difference was how one chose which calculation technique to use.
-In the first approach, one uses the calculation technique because one remembers
-that this technique has worked in the past for a similar kind of problem.
-In the second approach, one works to apply the law to the problem and the 
-calculation technique, incidentally, is the way to do this.
-The difference between the two approaches is that the second approach enables
-you to make an educated guess about what to do when you encounter an 
-unfamiliar problem.
-
-What I remember about eighth grade algebra was that I was taught some laws 
-and then I was asked to apply those laws to some problems.
-
-<!--
-I haven't felt like I understood math since I finished eighth-grade algebra.
-What I remember about eighth-grade algebra is that I learned some laws and then 
-I applied those laws to math problems.
-There was generally two ways of approaching the math problems.
-
-The first approach was prescriptive.
-There was always a suggested technique for applying the law to the problem.
-As long as one knew the technique and knew when to use the technique, then 
-one didn't necessarily need to know the law.
-Some students became skilled at memorizing which techniques went with which 
+That year, two groups of students emerged.
+The first group became skilled at memorizing which techniques went with which 
 kinds of problems.
 This worked like a decision tree: if the details of the problem are like x, then 
 use y technique. 
-In that approach, the laws weren't essential information unless the test 
-required the student to name the law leveraged by the technique.
+In that approach, the laws aren't essential information.
+The second group tried to abstract the details of the problem to the laws first 
+and then work out the numbers.
+Perhaps students in the second group still used the prescribed technique but 
+they did so knowing why that technique had been prescribed.
 
-I disliked the decision tree style of doing algebra because I was only pleased 
-to have the correct answer if I understood why it was correct.
 The decision tree was a very limited form of understanding. 
-It only enabled the individual to solve familiar problems.
-Unfamiliar problems required an extension of the decision tree, even 
-if the solution simply used a new combination of familiar laws.
-I was a lazy math student and I suspected that the decision tree was a trap.
-Maintaining the tree couldn't end until all kinds of problems had been
-encountered and I suspected this meant a lot of work.
-
-The second approach, my approach, was to focus more on the laws than the 
-numbers.
-I relish learning because I feel empowered by understanding.
-It was the algebraic laws, not the decision tree, that empowered me.
-New combinations of familiar laws were less work to learn because they required
-a smaller mental shift.
-And sometimes I could make that shift on the fly, without having to study.
+It only enabled a student to solve familiar problems.
+Unfamiliar problems required an extension of the decision tree, even if the 
+solution simply used a new combination of familiar laws.
+It was knowing the laws, not the decision tree, that empowered the students to 
+solve these problems.
+Knowing the law meant that new applications of the law were less work to learn.
+Sometimes I could make that shift on the fly, without having to study.
 This reduced time spent on math outside of class and saved me more than once on 
 a test.
-I wasn't a gifted algebra student but I really liked knowing those laws and 
--->
-Two approaches emerged among my classmates.
-The first approach was to memorize which technique went with which kind of 
-problem.
-I liken this to the Elm method of functional programming - focus on the concrete
-techniques for problem solving in a domain space.
-This was an decision-tree algebra.
 
-The second approach was to try to abstract the details of the problem to the 
-algebraic laws and then work out the numbers.
-In this approach, one might still use the calculation technique.
-The difference was how one chose which calculation technique to use.
-In the first approach, one uses the calculation technique because one remembers
-that this technique has worked in the past for a similar kind of problem.
-In the second approach, one works to apply the law to the problem and the 
-calculation technique, incidentally, is the way to do this.
-The difference between the two approaches is that the second approach enables
-you to make an educated guess about what to do when you encounter an 
-unfamiliar problem.
+On paper, I resemble Elm's target audience.
+My math education concluded early, in the third year of highschool and I nearly
+failed that final year.
+Nothing has changed since then.
+I remain uncomfortable with numbers.
+I know little about category theory and I don't know the difference between a 
+contramap and a bifunctor.
+But I am working to change this, not because I want to join a pissing contest 
+but because I remember the usefulness of the seemingly unuseful laws from eighth 
+grade algebra.
 
-Knowing the laws of the system enables one to do something new with that system.
-I find that to be the great promise of functional programming.
-I want to know the theory, the laws governing the arrows between input and
-ouput, so that I can be empowered to do something new.
-
+The promise of functional programming is that knowing the law makes me a more 
+capable programmer just as it made me a more capable math student.
+In this sense, the best functional programming language is the language of those
+laws.
+Whether or not I learn the laws through the use of a programming language, 
+I must learn the laws to learn functional programming.
 The argument remains that the theory doesn't have to come first.
-That is true.
-But I wonder how an Elm programmer is made aware of the theory.
-The language will not make her aware.
-Elm conceals the theory.
+I suppose this is true.
+But I wonder how an Elm programmer is ever made aware of the theory.
+How can the language make her aware when it avoids the subject?
+It is not necessarily the responsibility of the language to convey the theory to
+the programmer.
+Nonetheless, the language must do so if it claims to be a useful tool for 
+teaching functional programming.
+
+<!--
+In the way of thinking that is functional programming, a program is an arrow between two points. The arrow originates at the point called “input” and ends at the point called “output”. And if one inspects the path of the arrow connecting input to output, one finds more dots connected by more arrows. Functional programming abstracts values to points and transformations to arrows. An arrow between two points transforms one value into the other.
+
+Only knowing the laws empower me to make the mental leaps that are necessary
+for solving unsolved problems.
+
+The laws, not the languages, save me from myself.
+
+Knowing the laws enables me to make coherent modifications to unfamiliar 
+programs written in unfamiliar languages.
+
+
+Knowing the laws frees me from complexity traps and enables me to make 
+connections that I haven't been told exist.
+
+The laws guide me as I 
+Knowing the laws enabl
+make the mental leaps, the kj0
+I am more capable when I can solve unsolved problems 
+
+The laws enable me to find the arrows connecting the points between input and
+output.
+
+Expecting these connections to exist and knowing how to find them empowers me to
+find solutions to unsolved problems and to modify existing solutions 
+beyond the solutions I have been given
+
+I wasn't a gifted algebra student but I really liked knowing those laws and 
+putting them to work.
+It was not the first time but certainly one time that I knew "the pleasure of 
+finding things out."
+It is a pleasure to find things out in part because what you have found out 
+makes you more capable than you were before.
+
+The promise of functional programming is that knowing the laws, not knowing the
+languages, will make you a more capable programmer.
+The truest functional language is the language of the law, not the programming
+language.
+
 Elm's creator describes the process of developing an understanding of monads.
 He says that he first felt like he understood them in six months and that he 
 developed a deep understanding of monads after about a year and a half of using
@@ -195,10 +176,10 @@ me much longer than a year and a half to absorb.
 For example, every day use of the English language is something I usually do 
 without thinking today but it took many years to achieve that.
 I am learning German now and I am painfully slow.
-<!--
+
 But I would never think that because this process is slow a, that
 the information should be avoided.
--->
+
 I am generally baffled if someone says something in German to me.
 But that does not mean that those who are speaking German are "self-defeating" 
 and should avoid doing so.
@@ -547,7 +528,6 @@ connect function itself as a builder"
 The Elm language expresses the opinion that the language of functional 
 programming is unsuitable for an introduction to the subject.
 
-<!--
 ## I.
 
 I haven't felt like I understood math since I finished eighth-grade algebra.
@@ -615,10 +595,8 @@ Now I'm thirty-one and it's been awhile since I've done any drawing.
 But sometimes I watch math videos on the internet.
 Programming is the reason for both of those unexpected outcomes.
 And functional programming in particular is the reason I'm excited about math.
--->
 
 
-<!--
 "How close is the Redux connect() function to a Bifunctor (see Fantasy Land for 
 details) ? Honest question. Could it have been designed with bimap somehow?"
 https://twitter.com/andrestaltz/status/956241231541161984
