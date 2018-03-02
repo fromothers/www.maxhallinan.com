@@ -54,11 +54,20 @@ The arrow originates at the point called "input" and ends at the point called
 "output".
 And if one inspects the path of the arrow connecting input to output, one finds 
 more dots connected by more arrows.
-Functional programming is connecting dots with arrows while following some 
-laws about which arrows connect which dots.
+Functional programming abstracts values to points and logic to arrows.
+An arrow between two points is a logic that transforms one value into another.
+There are laws that dictate the arrows between each pair of points.
+To connect two points, the functional programmer follows a law.
+Functional programming is applying laws to problems and functional programming 
+is understood when the laws are understood.
+If I write code in a functional language that applies laws I do not understand, 
+maybe I have been a productive programmer but I have not understood functional 
+programming.
 
+So what good is understanding the laws if I can be productive without this 
+understanding?
+The laws are borrowed from math because laws in math tend to be universal. 
 <!--
-This way of thinking is borrowed from math.
 It is not borrowed from math because it is esoteric and it is not meant to be 
 "self-defeating".
 The result of a mathematical expression, its meaning, can be universally 
@@ -71,6 +80,7 @@ I can't say whether functional programming succeeds in this attempt.
 My point is that the theoretical language is an essential aspect of 
 functional programming to the degree that this language is used to talk about
 this way of thinking.
+way of thinking is borrowed from math.
 -->
 
 On paper, I think I resemble Elm's target audience.
@@ -103,8 +113,6 @@ calculation technique, incidentally, is the way to do this.
 The difference between the two approaches is that the second approach enables
 you to make an educated guess about what to do when you encounter an 
 unfamiliar problem.
-
-Other students 
 
 What I remember about eighth grade algebra was that I was taught some laws 
 and then I was asked to apply those laws to some problems.
