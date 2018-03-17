@@ -132,7 +132,7 @@ judgment, the result of which is not dependably consistent.
 ## VIII.
 
 What is gained by inviting the spectre of the subjective when it can be avoided?
-Why must code be self-expressive one degree more than it necessarily is.
+Why must code be self-expressive one degree more than it necessarily is?
 
 **Notes**
 
