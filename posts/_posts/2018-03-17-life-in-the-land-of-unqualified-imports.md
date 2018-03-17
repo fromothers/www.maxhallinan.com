@@ -147,7 +147,7 @@ Why must code be self-expressive one degree more than it necessarily is?
     </sup>
   </li>
   <li id="cite-2">
-    <a href="vim.wikia.com/wiki/Using_marks">
+    <a href="http://vim.wikia.com/wiki/Using_marks">
       Vim Tips Wiki: Using marks
     </a>
     <sup> 
