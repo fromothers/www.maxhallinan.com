@@ -1,7 +1,7 @@
 ---
 layout: post
 tags: [elm, programming]
-title: Critique of a Code Meme
+title: "Critique of a code meme"
 ---
 
 _The examples here are written in Elm, the original language of the RemoteData 

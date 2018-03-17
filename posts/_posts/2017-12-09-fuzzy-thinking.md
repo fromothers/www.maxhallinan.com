@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Fuzzy Thinking: Fuzz Testing and Formal Grammar"
+title: "Fuzzy thinking: fuzz testing and formal grammar"
 tags: [elm, programming]
 ---
 

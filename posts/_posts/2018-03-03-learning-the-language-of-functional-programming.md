@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Learning the Language of Functional Programming"
+title: "Learning the language of functional programming"
 tags: [elm, programming]
 ---
 
