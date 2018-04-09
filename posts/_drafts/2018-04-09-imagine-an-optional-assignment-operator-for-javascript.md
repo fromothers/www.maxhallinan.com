@@ -19,12 +19,11 @@ if (bar) {
 {% endhighlight %}
 
 The last three lines use a lot of syntax to communicate a simple intent.
-First `foo` is initialized to `null`, signalling that the we don't have a `Foo`
-yet.
+First `foo` is initialized to `null`, signalling that there is no `Foo`.
 Then the code attempts to get some Foos.
-The intent is to reassign `foo` only when there is a new value, a `Foo`, to 
-assign.
-Without a new value, there is no reason to change the assignment.
+The intent is to reassign `foo` only when `getFoos` produces a `Foo`.
+If `getFoos` produces an empty array, there is no reason to change the 
+assignment.
 
 I wonder if it would be nice to have an "optional assignment" operator for a 
 moment like this.
