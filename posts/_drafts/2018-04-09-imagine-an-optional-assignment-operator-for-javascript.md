@@ -42,7 +42,7 @@ if (bar) {
 {% endhighlight %}
 
 This is almost a ternary expression but it saves me from having to provide the
-old value on the right side of the expression.
+initial value on the right side of the expression.
 
 {% highlight javascript %}
 // ternary expression
@@ -54,12 +54,12 @@ foo = foos.length ? foos[0] : foo;
 foo =? foos.length : foos[0];
 {% endhighlight %}
 
-Here the optional assignment operator appeals to me more than the ternary 
-operator because it enables me to communicate my intent exactly.
+Only the optional assignment operator enables me to communicate my intent 
+exactly.
 
 ## Afterword
 
-The premise of my example is that I intend to write code in an imperative style
+The premise of my example is that I mean to write code in an imperative style
 with mutable assignment.
 Other styles of programming suggest other ways to model a nullable value.
 Some of those ways render an optional assignment operator unnecessary.
@@ -74,9 +74,10 @@ let foo;
 foo = foos[0]; 
 {% endhighlight %}
 
-I prefer to use `null` to signal the absence of a value.
-If I always use `null` to null an assignment, then I can depend on `undefined`
-values to signal something broken or unexpected.
+Here `undefined` is used to signal the absence of value.
+I prefer `null` for this purpose.
+When null values are literally `null`, then I can depend on `undefined` to 
+indicate something broken or unexpected.
 
 Another example is:
 
@@ -85,5 +86,5 @@ let foo = null;
 foo = foos[0] || null; 
 {% endhighlight %}
 
-But this works only if `foos[0]` is expected to be truthy.
+This works only if `foos[0]` is expected to be truthy.
 An array of booleans containing `false` would break this logic.
