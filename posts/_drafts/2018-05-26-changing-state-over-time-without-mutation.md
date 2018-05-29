@@ -25,7 +25,7 @@ This requires me to save and update a bit of state for each session.
 It is straightforward to refresh the MTA feeds at a regular interval and
 broadcast the new data to open connections.
 This can be achieved by binding websocket sessions to an [event emitter](https://nodejs.org/api/events.html)
-that emits a `data` event every time the MTA feeds are refreshed.
+that emits data every time the feeds are refreshed.
 For example, here is a websocket server that listens to a timer and sends a
 message every time the timer ticks.
 
@@ -104,14 +104,14 @@ const startSession = (emmiter) => (websocket) => {
 The intuition to treat the ticks as a collection like an array is good.
 The intuition to sum that collection with pure functions is also good.
 Now I need an abstraction for a series of values occurring over time.
-I want to transform the time-based series as I would transform an array, without 
-having to manually re-run the transformation and store state each time a new 
+I want to transform the time-based series as I would transform an array, without
+having to manually re-run the transformation and store state each time a new
 value is produced.
 For this I can use an Observable.
 
 An Observable is like a Generator, a function that can produce many values.
 But unlike a Generator, an Observable decides _when_ it will produce a value.
-Consumers _pull_ values from Generator functions but Observables _push_ values 
+Consumers _pull_ values from Generator functions but Observables _push_ values
 out to consumers.
 This can occur asynchronously, over time, or synchronously, all at once.
 
@@ -160,7 +160,7 @@ const createObservable = () => ({
 });
 {% endhighlight %}
 
-The Observable does not start producing values until the `subscribe` method is 
+The Observable does not start producing values until the `subscribe` method is
 called.
 
 {% highlight javascript %}
@@ -172,6 +172,63 @@ observable.subscribe(observer);
 // 'complete'
 {% endhighlight %}
 
-The Observable is our "array of values occurring over time".
-One of the powerful features of Observables is that they model 
-sequentially occurring values 
+Observables do not necessarily execute asynchronously.
+The example above runs to completion synchronously.
+But Observables are often used to model a series of values ordered in time.
+The abstraction makes it possible to operate on a sequence over time in the same
+way one would operate on a static sequence, like an array.
+
+To demonstrate this, let's return to our timer.
+
+{% highlight javascript %}
+const Rx = require(`rxjs`);
+
+const ticks = Rx.timer(0, 1000);
+
+ticks.subscribe({
+  next: (x) => {
+    console.log(x);
+  },
+});
+// 1
+// 1
+// 1
+// ...
+{% endhighlight %}
+
+Instead of using `setInterval`, we've created an Observable that pushes a new
+tick every 1000 milliseconds.
+Then we start the timer by calling the subscribe method.
+
+Now we want to count the number of ticks that have occurred since the timer
+started.
+To do this, we use an Observable operator called `scan`.
+
+{% highlight javascript %}
+const Rx = require(`rxjs`);
+const { scan } = require(`rxjs/operators`);
+
+const ticks = Rx.timer(0, 1000);
+
+const ticksCount = ticks.pipe(
+  scan((count, n) => count + 1, 0)
+);
+
+ticksCount.subscribe({
+  next: (x) => {
+    console.log(x);
+  },
+});
+// 1
+// 2
+// 3
+// ...
+{% endhighlight %}
+
+An operator applies a transformation to the observed values.
+`scan` is like `Array.prototype.reduce`. 
+The operation folds a series of values into a single value.
+Then the transformed values are observed on the new Observable returned by 
+`pipe`.
+Each time `ticks` produces a new tick, `scan` is re-run and `ticksCount` pushes 
+the latest count to its observer.
