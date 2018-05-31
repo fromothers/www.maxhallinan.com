@@ -2,7 +2,7 @@
 layout: post
 published: true
 title: "Changing state over time without mutation"
-tags: [javascript, programming]
+tags: [javascript, frp, programming]
 ---
 
 I have been working on a websocket server that polls the New York City MTA
@@ -67,9 +67,10 @@ const startSession = (emmiter) => (websocket) => {
 };
 {% endhighlight %}
 
-I want to avoid the headaches that come with mutable state.
-I can clearly see how to sum a series of values without mutating a counter
-variable.
+This works.
+Nonetheless, I want to avoid the headaches that come with mutable state.
+A pure transformation from ticks to tick count seems like it should be as simple
+as summing an array of numbers.
 
 {% highlight javascript %}
 const increment = (n) => n + 1;
@@ -136,11 +137,11 @@ const observer = {
   complete: () => {
     console.log(`complete`);
   },
-  error: () => {
-    console.log(`error`)
+  error: (err) => {
+    console.log(`error: ${err}`);
   },
   next: (x) => {
-    console.log(x)
+    console.log(x);
   },
 };
 {% endhighlight %}
@@ -197,7 +198,7 @@ ticks.subscribe({
 {% endhighlight %}
 
 Instead of using `setInterval`, we've created an Observable that pushes a new
-tick every 1000 milliseconds.
+tick every second.
 Then we start the timer by calling the subscribe method.
 
 Now we want to count the number of ticks that have occurred since the timer
@@ -225,10 +226,56 @@ ticksCount.subscribe({
 // ...
 {% endhighlight %}
 
-An operator applies a transformation to the observed values.
-`scan` is like `Array.prototype.reduce`. 
-The operation folds a series of values into a single value.
-Then the transformed values are observed on the new Observable returned by 
-`pipe`.
-Each time `ticks` produces a new tick, `scan` is re-run and `ticksCount` pushes 
-the latest count to its observer.
+An operator applies a transformation to the stream of observed values.
+The `scan` operator is like `Array.prototype.reduce`.
+`scan` folds a collection of values into a single value.
+Each time `ticks` produces a new tick, `scan` is re-run and the tick count is
+recomputed.
+The result can be observed on the new Observable returned by `pipe`.
+
+This is one way to track state over time without mutation.
+Each session subscribes to the `ticks` observable and transforms that stream of 
+ticks into its own stream of tick counts.
+Then the websocket sends a new message each time there is a new tick count.
+
+{% highlight javascript %}
+const Rx = require(`rxjs`);
+const { multicast, scan } = require(`rxjs/operators`);
+const WebSocket = require(`ws`);
+
+const ticks = Rx.timer(0, 1000).pipe(multicast(new Rx.Subject()));
+
+const server = new WebSocket.Server({ port: 80, });
+
+const add = n1 => n2 => n1 + n2;
+
+const startSession = (ticks) => (websocket) => {
+  emitter.on(`data`, (data) => {
+    const ticksCount = ticks.pipe(scan(add(1), 0));
+
+    ticksCount.subscribe({
+      next: (count) => {
+        websocket.send(count);
+      },
+    });
+  });
+};
+
+server.on(`connect`, startSession(ticks));
+{% endhighlight %}
+
+You might have noticed `multicast`, the one detail that hasn't been accounted 
+for.
+Observables are limited to one observer per instance.
+That is to say an Observable is "unicast".
+Once the `subscribe` method is called, it cannot be called again.
+The `multicast` operator permits observation of one stream by many Observers.
+
+This is important when Observable evaluation is non-trivial.
+Depending on the number of concurrent connections, it might be okay for each 
+session to start its own timer.
+But I don't want each session to poll the MTA data feeds independently.
+That would consume exponentially more bandwidth than necessary and, given enough 
+concurrent connections, this would amount to a DDOS attack on the MTA.
+A multicast Observable enables the work of requesting new data to be done once
+for all consumers of that data.
