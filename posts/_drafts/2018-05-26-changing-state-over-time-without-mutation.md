@@ -2,7 +2,7 @@
 layout: post
 published: true
 title: "Changing state over time without mutation"
-tags: [javascript, frp, programming]
+tags: [ frp, javascript, programming]
 ---
 
 I have been working on a websocket server that polls the New York City MTA
@@ -118,8 +118,6 @@ This can occur asynchronously, over time, or synchronously, all at once.
 
 That might sound complicated so let's look at a simple Observer.
 
-An Observable is an interface with a `subscribe` method.
-
 {% highlight javascript %}
 const createObservable = () => ({
   subscribe: (observer) => {
@@ -128,6 +126,7 @@ const createObservable = () => ({
 });
 {% endhighlight %}
 
+An Observable is an interface with a `subscribe` method.
 The `subscribe` method takes an `observer` argument.
 An Observer enables the Observable to pushes new values out to the consumer.
 The Observer interface specifies three methods: `next`, `error`, and `complete`.
@@ -174,7 +173,7 @@ observable.subscribe(observer);
 {% endhighlight %}
 
 Observables do not necessarily execute asynchronously.
-The example above runs to completion synchronously.
+The above example runs to completion synchronously.
 But Observables are often used to model a series of values ordered in time.
 The abstraction makes it possible to operate on a sequence over time in the same
 way one would operate on a static sequence, like an array.
@@ -200,7 +199,6 @@ ticks.subscribe({
 Instead of using `setInterval`, we've created an Observable that pushes a new
 tick every second.
 Then we start the timer by calling the subscribe method.
-
 Now we want to count the number of ticks that have occurred since the timer
 started.
 To do this, we use an Observable operator called `scan`.
@@ -226,10 +224,10 @@ ticksCount.subscribe({
 // ...
 {% endhighlight %}
 
-An operator applies a transformation to the stream of observed values.
+An operator transforms the stream of observed values.
 The `scan` operator is like `Array.prototype.reduce`.
 `scan` folds a collection of values into a single value.
-Each time `ticks` produces a new tick, `scan` is re-run and the tick count is
+For each new tick in the `ticks` stream, `scan` is re-run and the tick count is
 recomputed.
 The result can be observed on the new Observable returned by `pipe`.
 
@@ -237,6 +235,90 @@ This is one way to track state over time without mutation.
 Each session subscribes to the `ticks` observable and transforms that stream of 
 ticks into its own stream of tick counts.
 Then the websocket sends a new message each time there is a new tick count.
+
+{% highlight javascript %}
+const Rx = require(`rxjs`);
+const { scan } = require(`rxjs/operators`);
+const WebSocket = require(`ws`);
+
+const ticks = Rx.timer(0, 1000);
+
+const server = new WebSocket.Server({ port: 80, });
+
+const add = n1 => n2 => n1 + n2;
+
+const startSession = (ticks) => (websocket) => {
+  emitter.on(`data`, (data) => {
+    const ticksCount = ticks.pipe(scan(add(1), 0));
+
+    ticksCount.subscribe({
+      next: (count) => {
+        websocket.send(count);
+      },
+    });
+  });
+};
+
+server.on(`connect`, startSession(ticks));
+{% endhighlight %}
+
+There is one detail that hasn't been accounted for.
+We know that the timer does not start ticking until `subscribe` is called.
+Calling `subscribe` begins the execution of an Observable.
+But we pass the same `ticks` Observable to each new websocket connection.
+`ticks.subscribe` is called by every connection.
+What happens when `subscribe` is called more than once on the same Observable?
+
+The answer depends on the Observable implementation.
+An Observable can be "unicast" or "multicast".
+An unicast Observable does not broadcast the same stream to more than one 
+Observer.
+Every `subscribe` call starts a fresh execution of the Observable.
+For this reason, the example below will log `'bar 1'` _after_ logging `'foo 1'` 
+and `'foo 2'`.
+
+{% highlight javascript %}
+const Rx = require(`rxjs`);
+const { scan } = require(`rxjs/operators`);
+
+const add = n1 => n2 => n1 + n2;
+
+const ticks = Rx.timer(0, 1000).scan(add(1), 0);
+
+ticks.subscribe({
+  next: (x) => {
+    console.log(`foo ${x}`);
+  }
+});
+
+setTimeout(() => {
+  ticks.subscribe({
+    next: (x) => {
+      console.log(`bar ${x}`);
+    }
+  });
+}, 1000);
+{% endhighlight %}
+
+Our `ticks` Observable is unicast because RxJs Observables are unicast by 
+default.
+Thus, each websocket connection starts its own timer by calling 
+`ticks.subscribe`.
+The ticks counted by one session are not the same ticks counted by another 
+session.
+
+Depending on the number of concurrent connections, it might be okay for each 
+session to start its own timer.
+But I don't want each session to poll the MTA feeds independently.
+That would consume more bandwidth than necessary and, given enough concurrent 
+connections, could amount to a DDoS attack on the MTA.
+
+Fortunately, it is possible to create a multicast Observable.
+Multicast Observables share a single stream of values with all Observers.
+Observers receive only the values produced after they have subscribed.
+Unicast and multicast Observables have different use cases.<sup><a id="ref-1" href="#cite-1">1</a></sup>
+Here, a multicast Observable enables us to do the work of producing new data 
+once for all consumers of that data.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -264,18 +346,18 @@ const startSession = (ticks) => (websocket) => {
 server.on(`connect`, startSession(ticks));
 {% endhighlight %}
 
-You might have noticed `multicast`, the one detail that hasn't been accounted 
-for.
-Observables are limited to one observer per instance.
-That is to say an Observable is "unicast".
-Once the `subscribe` method is called, it cannot be called again.
-The `multicast` operator permits observation of one stream by many Observers.
 
-This is important when Observable evaluation is non-trivial.
-Depending on the number of concurrent connections, it might be okay for each 
-session to start its own timer.
-But I don't want each session to poll the MTA data feeds independently.
-That would consume exponentially more bandwidth than necessary and, given enough 
-concurrent connections, this would amount to a DDOS attack on the MTA.
-A multicast Observable enables the work of requesting new data to be done once
-for all consumers of that data.
+**Notes**
+
+<ol>
+  <li>
+    <p>
+      <a href="#ref-1">^</a>
+      <fn id="cite-1">
+        <a href="https://github.com/tc39/proposal-observable/issues/66">
+          tc39/proposal-observable: "Discussion: Multicast vs. Unicast"
+        </a>
+      </fn>
+    </p>
+  </li>
+</ol>
