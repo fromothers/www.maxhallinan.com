@@ -2,7 +2,7 @@
 layout: post
 published: true
 title: "Changing state over time without mutation"
-tags: [ frp, javascript, programming]
+tags: [ javascript, programming]
 ---
 
 I have been working on a websocket server that polls the New York City MTA
