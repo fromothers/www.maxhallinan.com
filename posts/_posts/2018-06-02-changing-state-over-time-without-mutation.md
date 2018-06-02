@@ -192,8 +192,8 @@ const Rx = require(`rxjs`);
 const ticks = Rx.timer(0, 1000);
 
 ticks.subscribe({
-  next: (x) => {
-    console.log(x);
+  next: () => {
+    console.log(1);
   },
 });
 // 1
