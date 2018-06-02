@@ -22,12 +22,14 @@ should describe all train locations since the connection started.
 Each message is the sum of all feed updates that occur during the session.
 This requires me to save and update a bit of state for each session.
 
+## I. A simplified example of the problem
+
 It is straightforward to refresh the MTA feeds at a regular interval and
 broadcast the new data to open connections.
 This can be achieved by binding websocket sessions to an [event emitter](https://nodejs.org/api/events.html)
 that emits data every time the feeds are refreshed.
 For example, here is a websocket server that listens to a timer and sends a
-message every time the timer ticks.
+message when the timer ticks.
 
 {% highlight javascript %}
 const EventEmitter = require(`events`);
@@ -50,7 +52,7 @@ const startSession = (emmiter) => (websocket) => {
 server.on(`connect`, startSession(emitter));
 {% endhighlight %}
 
-But a message describing each next tick is not enough.
+But a message describing each tick is not enough.
 The message should describe the number of ticks that have occurred during the
 session.
 That is the difference between sending a train's current location and sending
@@ -68,7 +70,7 @@ const startSession = (emmiter) => (websocket) => {
 {% endhighlight %}
 
 This works.
-Nonetheless, I want to avoid the headaches that come with mutable state.
+Nonetheless, I want to avoid the headaches associated with mutable state.
 A pure transformation from ticks to tick count seems like it should be as simple
 as summing an array of numbers.
 
@@ -81,9 +83,9 @@ const count = ns.reduce(increment, 0);
 // ns.length works here too but doesn't demonstrate the principle
 {% endhighlight %}
 
-I would like to take the same approach to summing the timer ticks.
+Can I take the same approach to summing the timer ticks?
 The problem is that the series of ticks grows over time.
-Each time a tick occurs, I have to update a stateful array of ticks.
+Whenever a tick occurs, I have to update a stateful array of ticks.
 This only exchanges one piece of mutable state for another.
 
 {% highlight javascript %}
@@ -109,6 +111,8 @@ I want to transform the time-based series as I would transform an array, without
 having to manually re-run the transformation and store state each time a new
 value is produced.
 For this I can use an Observable.
+
+## II. A new kind of function
 
 An Observable is like a Generator, a function that can produce many values.
 But unlike a Generator, an Observable decides _when_ it will produce a value.
@@ -172,6 +176,8 @@ observable.subscribe(observer);
 // 'complete'
 {% endhighlight %}
 
+## III. Transforming a series of values ordered in time
+
 Observables do not necessarily execute asynchronously.
 The above example runs to completion synchronously.
 But Observables are often used to model a series of values ordered in time.
@@ -196,11 +202,9 @@ ticks.subscribe({
 // ...
 {% endhighlight %}
 
-Instead of using `setInterval`, we've created an Observable that pushes a new
-tick every second.
-Then we start the timer by calling the subscribe method.
-Now we want to count the number of ticks that have occurred since the timer
-started.
+We've replaced `setInterval` with an Observable that pushes a new tick every
+second and start this timer by calling `subscribe`.
+Now we want to count the number of ticks.
 To do this, we use an Observable operator called `scan`.
 
 {% highlight javascript %}
@@ -224,7 +228,7 @@ ticksCount.subscribe({
 // ...
 {% endhighlight %}
 
-An operator transforms the stream of observed values.
+An Observable operator transforms the stream of observed values.
 The `scan` operator is like `Array.prototype.reduce`.
 `scan` folds a collection of values into a single value.
 For each new tick in the `ticks` stream, `scan` is re-run and the tick count is
@@ -232,9 +236,9 @@ recomputed.
 The result can be observed on the new Observable returned by `pipe`.
 
 This is one way to track state over time without mutation.
-Each session subscribes to the `ticks` observable and transforms that stream of 
-ticks into its own stream of tick counts.
-Then the websocket sends a new message each time there is a new tick count.
+Instead of updating a counter variable, each session reduces the `ticks`
+Observable to its own stream of tick counts.
+Then the websocket sends a new message every time there is a new tick count.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -262,6 +266,8 @@ const startSession = (ticks) => (websocket) => {
 server.on(`connect`, startSession(ticks));
 {% endhighlight %}
 
+## IV. Sharing the work
+
 There is one detail that hasn't been accounted for.
 We know that the timer does not start ticking until `subscribe` is called.
 Calling `subscribe` begins the execution of an Observable.
@@ -271,10 +277,10 @@ What happens when `subscribe` is called more than once on the same Observable?
 
 The answer depends on the Observable implementation.
 An Observable can be "unicast" or "multicast".
-An unicast Observable does not broadcast the same stream to more than one 
+A unicast Observable does not broadcast the same stream to more than one
 Observer.
 Every `subscribe` call starts a fresh execution of the Observable.
-For this reason, the example below will log `'bar 1'` _after_ logging `'foo 1'` 
+For this reason, the example below will log `'bar 1'` _after_ logging `'foo 1'`
 and `'foo 2'`.
 
 {% highlight javascript %}
@@ -300,25 +306,25 @@ setTimeout(() => {
 }, 1000);
 {% endhighlight %}
 
-Our `ticks` Observable is unicast because RxJs Observables are unicast by 
+Our `ticks` Observable is unicast because RxJs Observables are unicast by
 default.
-Thus, each websocket connection starts its own timer by calling 
+Thus, each websocket connection starts its own timer by calling
 `ticks.subscribe`.
-The ticks counted by one session are not the same ticks counted by another 
+The ticks counted by one session are not the same ticks counted by another
 session.
 
-Depending on the number of concurrent connections, it might be okay for each 
+Depending on the number of concurrent connections, it might be okay for each
 session to start its own timer.
 But I don't want each session to poll the MTA feeds independently.
-That would consume more bandwidth than necessary and, given enough concurrent 
-connections, could amount to a DDoS attack on the MTA.
+That would consume more bandwidth than necessary and, given enough concurrent
+connections, might amount to a DDoS attack on the MTA.
 
 Fortunately, it is possible to create a multicast Observable.
 Multicast Observables share a single stream of values with all Observers.
 Observers receive only the values produced after they have subscribed.
 Unicast and multicast Observables have different use cases.<sup><a id="ref-1" href="#cite-1">1</a></sup>
-Here, a multicast Observable enables us to do the work of producing new data 
-once for all consumers of that data.
+Here, a multicast Observable enables us produce new data once for all consumers
+of that data.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -346,6 +352,17 @@ const startSession = (ticks) => (websocket) => {
 server.on(`connect`, startSession(ticks));
 {% endhighlight %}
 
+All that is left for me to do is replace `timer` with a stream of MTA feed 
+updates and replace `add` with a function that reduces the stream to a history 
+of train locations.
+
+## V. Practically speaking
+
+Observables are a central component of functional reactive programming (FRP).
+The vocabulary of FRP often sounds overwhelmingly technical.
+Perhaps that technical language has hidden some useful ideas from programmers 
+who have a need to use them. 
+I hope I have revealed a little of that usefulness.
 
 **Notes**
 
