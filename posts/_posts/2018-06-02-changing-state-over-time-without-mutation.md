@@ -323,8 +323,8 @@ Fortunately, it is possible to create a multicast Observable.
 Multicast Observables share a single stream of values with all Observers.
 Observers receive only the values produced after they have subscribed.
 Unicast and multicast Observables have different use cases.<sup><a id="ref-1" href="#cite-1">1</a></sup>
-Here, a multicast Observable enables us produce new data once for all consumers
-of that data.
+Here, a multicast Observable enables us to produce new data once for all 
+consumers of that data.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
