@@ -38,8 +38,8 @@ source .env
 
 docker run \
   --env-file .env \
-  --expose $MY_APP_PORT \
-  --publish <host port>:$MY_APP_PORT
+  --expose $APP_PORT \
+  --publish <host port>:$APP_PORT
   <image name>
 {% endhighlight %}
 
