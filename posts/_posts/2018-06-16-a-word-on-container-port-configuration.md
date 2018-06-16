@@ -9,7 +9,7 @@ One thing I find weird about basic Dockerfile [examples](https://docs.docker.com
 is that the exposed port is baked into the image.
 This would seem to make the image less portable.
 What if there is another process already listening on the same port?
-This isn't a problem because container ports are mapped to host ports.
+That isn't a problem because container ports are mapped to host ports.
 If container A and container B both expose port `3000`, A can be mapped to 
 `3001` and B can be mapped to `3002`.
 
