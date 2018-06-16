@@ -17,7 +17,7 @@ The weirdness starts within the container.
 If the container exposes port `3000`, then the application running inside the 
 container _must_ listen on port `3000`.
 The application will be unreachable if it's listening on port `3001`.
-For this reason, it might seem prudent to hardcode the application port into the
+For this reason, it might seem prudent to hardcode the port number into the
 application code.
 But then the application is coupled to the Docker environment.
 
