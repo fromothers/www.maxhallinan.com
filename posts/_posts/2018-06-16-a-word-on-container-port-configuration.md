@@ -43,5 +43,5 @@ docker run \
   <image name>
 {% endhighlight %}
 
-The `.env` file is the single point of configuration for all places where the 
+Thus the `.env` file is the single point of configuration for all places where the 
 port number should be identical.
