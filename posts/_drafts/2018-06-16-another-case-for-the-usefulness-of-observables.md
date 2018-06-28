@@ -17,74 +17,126 @@ So bandwidth is wasted and unnecessary load is placed on a free service.
 Better to poll the MTA feeds only when the data is in demand.
 
 Polling on demand gets messy fast.
-My naive first attempt made liberal use of mutable state.
-And once again, the Observable pattern freed me from that trap.
-I like to collect the problems that patterns solve, patterns like polling on
-demand.
-The problems solved by a pattern are key to understanding the pattern.
-And I like problems from experience more than problems contrived for
-instruction.
-The usefulness of a pattern is best evoked by a real problem.
-So here I am again to write about the Observable pattern, to again note
-its usefulness.
+My first attempt made liberal use of mutable state. 
+And mutable state is exactly what I was working to avoid in the last post.
+I avoided mutable state by modeling that state with the Observable pattern.
+Here again, the Observable pattern offers a way out of the mutable state 
+trap.
+To understand the usefulness of this pattern, let's first look at my initial
+approach to polling on demand, the approach that uses mutable state.
 
-The problem we're examining here is not polling on demand in general but
-specifically polling on demand _without mutable state_.
-How tricky is this problem?
-Did I use the Observable pattern or was I just indulging myself?
+## I. Learning from the naive
+
+We'll start where the last post stopped.
+The idea of "polling the MTA feeds every 30 seconds" is represented by a timer 
+that ticks every 30 seconds.
+The timer is a multicast Observable subscribed by each websocket session.
+Now we need a timer that ticks every 30 seconds when there are open websocket 
+connections and does not tick when there are none.
+
+The problem has two parts: knowing _when_ to pause the timer and knowing _how_ 
+to pause the timer.
+Let's start with knowing when to pause the timer.
+We should stop the timer when there are no current websocket connections.
+To know the number of current connections, we must track the number of opened
+connections and the number of closed connections.
+These are the first pieces of global mutable state: counters that are 
+incremented by the `connection` and `close` event handlers.
+
+{% highlight javascript %}
+let sessionStarts = 0;
+let sessionEnds = 0;
+
+server.on(`connection`, () => {
+  sessionStarts = sessionStarts + 1;
+  // ...
+});
+
+server.on(`close`, () => {
+  sessionEnds = sessionEnds + 1;
+  // ...
+});
+{% endhighlight %}
+
+If we know the number of opened and closed connections, we can work out the 
+number of current connections with a little math: 
+`current connections = opened connections - closed connections`.
+Having determined the number of current connections, we know when to start and 
+stop the timer.
+
+The timer should start when the number of current connections is 1.
+
+{% highlight javascript %}
+server.on(`connection`, () => {
+  sessionStarts = sessionStarts + 1;
+
+  if (sessionStarts - sessionEnds === 1) {
+    // start the timer
+  }
+
+  // ...
+});
+{% endhighlight %}
+
+And the timer should stop when the number of current connections is less than 1.
+
+{% highlight javascript %}
+server.on(`close`, () => {
+  sessionEnds = sessionEnds + 1;
+
+  if (sessionStarts - sessionEnds < 1) {
+    // stop the timer
+  }
+
+  // ...
+});
+{% endhighlight %}
+
+It's important to note that the timer will continue to run as the number of 
+current connections advances beyond 1.
+The stopping and starting only happens in the vicinity of 1.
+
+
 <!--
-Am I simply indulging my affection for the Observable pattern or does it provide
-improve the code?
-value?
-Is the Observable pattern here a bit of over-engineering?
--->
-For an answer to that question, let's look at my first attempt to build this
-feature, an approach that uses mutable state.
-
-Polling the MTA feeds is essentially a matter of starting a timer.
-A function is called every 30 seconds.
-The primary difference is of the data produced by the function.
-A timer produces a "tick", which could be a value like `1` or might be 
-`undefined`.
-The polling function produces new data from the MTA feed.
-For our topic, a timer and a polling interval are equivalent.
-So let's abstract "polling the MTA feeds every 30 seconds" to a timer that ticks
+Polling the MTA feeds essentially means starting a timer.
+In both cases, a function is called every 30 seconds.
+The primary difference is that a timer produces a "tick", which could be a value
+like `1` or `undefined`, and the polling function produces new MTA feed data.
+We're not concerned with the data itself.
+So let's simplify "polling the MTA feeds every 30 seconds" to a timer that ticks
 every 30 seconds when there are open websocket connections and does not tick 
 when there are none.
+For details about this timer and the Observable pattern, please read the 
+previous post.
+
+The problem we want to solve is not polling on demand in general but 
+specifically polling on demand _without mutable state_.
+How tricky is this problem?
+
+Sometimes the complexities of a problem are best understood by failing to solve
+the problem.
+Let's use my first attempt, the attempt that
+Sometimes a problem is best understood through making mistakes, by doing failing
+to solve it first in order to understand why must be done to solve it successfully.
+Let's use my first attempt, the attempt that does use mutable state, to reveal
+the complexities of the problem.
+For an answer to that question, let's look at my first attempt to build this
+feature, the approach that uses mutable state.
+
+Polling the MTA feeds essentially means starting a timer.
+In both cases, a function is called every 30 seconds.
+The primary difference is that a timer produces a "tick", which could be a value
+like `1` or `undefined`, and the polling function produces new MTA feed data.
+We're not concerned with the data itself.
+So let's simplify "polling the MTA feeds every 30 seconds" to a timer that ticks
+every 30 seconds when there are open websocket connections and does not tick 
+when there are none.
+-->
 
 <!--
 make a note about the timer being a concept re-used from the last blog post
 don't want 
--->
 
-This feature has two parts:
-
-- a pausable timer;
-- knowing when to pause the timer.
-
-Both parts provide a starting point for understanding the usefulness of 
-Observables.
-
-To create a pausable timer,
-
-{% highlight javascript %}
-let tick$ = null;
-
-const createTick$ = () => {
-  //...
-};
-
-server.on(`connection`, () => {
-  if (!tick$) {
-    tick$ = createTick$();
-  }
-
-  ticks$.subscribe({
-    next: sendMsg,
-  })
-});
-{% endhighlight %}
-<!--
 Polling on demand without mutable state is the problem.
 
 To answer that question, let's look at what I consider to be the most obvious or
@@ -317,4 +369,28 @@ pausableTimer.subscribe({
   },
 });
 {% endhighlight %}
+-->
+<!--
+I like to collect the problems that patterns solve, patterns like polling on
+demand.
+The problems solved by a pattern are key to understanding that pattern.
+And I like problems from experience more than problems contrived for
+instruction.
+The usefulness of a pattern is best evoked by a real problem.
+So here I am again to write about the Observable pattern, to again note
+its usefulness.
+-->
+
+<!--
+Am I simply indulging my affection for the Observable pattern or does it provide
+improve the code?
+value?
+Is the Observable pattern here a bit of over-engineering?
+-->
+<!--
+The problem catalogue
+- interesting if technical writing, technical ideas were always presented in the
+context of real problems solved, problems from experience
+- a catalogue of problems from experience 
+- a log book of problems solved, like a lab book maybe
 -->
