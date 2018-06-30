@@ -8,66 +8,71 @@ tags: [javascript, programming]
 I recently [wrote](/posts/2018/06/02/changing-state-over-time-without-mutation/)
 about a websocket server that tracks the current location of trains in the New
 York City subway.
-The server polls the MTA's real-time data feeds every 30 seconds.
+The server polls the MTA's real-time data feeds every 10 seconds.
 My last post failed to acknowledge a design flaw.
-The server is _always_ polling, every 30 seconds, even when no one is listening.
+The server is _always_ polling, every 10 seconds, even when no one is listening.
 The latest data from the MTA is discarded when there are no open websocket
 connections.
 So bandwidth is wasted and unnecessary load is placed on a free service.
 Better to poll the MTA feeds only when the data is in demand.
 
 Polling on demand gets messy fast.
-My first attempt made liberal use of mutable state. 
+My first attempt made liberal use of mutable state.
 And mutable state is exactly what I was working to avoid in the last post.
-I avoided mutable state by modeling that state with the Observable pattern.
-Here again, the Observable pattern offers a way out of the mutable state 
-trap.
-To understand the usefulness of this pattern, let's first look at my initial
-approach to polling on demand, the approach that uses mutable state.
+The last post describes how I avoided mutable state by modeling that state with
+the Observable pattern.
+Polling on demand was a second opportunity to use the Observable pattern as an
+escape from the mutable state trap.
 
-## I. Learning from the naive
+## I. Clarity through naivety
 
-We'll start where the last post stopped.
-The idea of "polling the MTA feeds every 30 seconds" is represented by a timer 
-that ticks every 30 seconds.
-The timer is a multicast Observable subscribed by each websocket session.
-Now we need a timer that ticks every 30 seconds when there are open websocket 
-connections and does not tick when there are none.
+A problem that a pattern solves is a key to understanding that pattern.
+The problem here is how to share information across isolated contexts without 
+mutating global state.
+To understand that problem, let's first consider my initial approach, the
+approach that uses the mutable state we want to avoid.
 
-The problem has two parts: knowing _when_ to pause the timer and knowing _how_ 
-to pause the timer.
+For the sake of simplicity, I will represent the idea of polling with a timer
+that ticks every 10 seconds.
+The timer is a multicast Observable subscribed by each websocket connection.
+In the last 
+[post](/posts/2018/06/02/changing-state-over-time-without-mutation/),
+the timer is always ticking in the background.
+We will replace this timer with one that ticks only when there are open
+connections.
+
+The pausable behavior has two parts: a timer that can be paused and knowing when 
+to pause it.
 Let's start with knowing when to pause the timer.
 We should stop the timer when there are no current websocket connections.
 To know the number of current connections, we must track the number of opened
 connections and the number of closed connections.
-These are the first pieces of global mutable state: counters that are 
+These are the first pieces of global mutable state: counters that are
 incremented by the `connection` and `close` event handlers.
 
 {% highlight javascript %}
 let sessionStarts = 0;
 let sessionEnds = 0;
 
-server.on(`connection`, () => {
+server.on(`connection`, (socket) => {
   sessionStarts = sessionStarts + 1;
-  // ...
-});
 
-server.on(`close`, () => {
-  sessionEnds = sessionEnds + 1;
-  // ...
+  socket.on(`close`, () => {
+    sessionEnds = sessionEnds + 1;
+  });
 });
 {% endhighlight %}
 
-If we know the number of opened and closed connections, we can work out the 
-number of current connections with a little math: 
+If we know the number of opened and closed connections, we can work out the
+number of current connections with a little math:
 `current connections = opened connections - closed connections`.
-Having determined the number of current connections, we know when to start and 
+Having determined the number of current connections, we know when to start and
 stop the timer.
 
 The timer should start when the number of current connections is 1.
 
 {% highlight javascript %}
-server.on(`connection`, () => {
+server.on(`connection`, (socket) => {
   sessionStarts = sessionStarts + 1;
 
   if (sessionStarts - sessionEnds === 1) {
@@ -81,21 +86,233 @@ server.on(`connection`, () => {
 And the timer should stop when the number of current connections is less than 1.
 
 {% highlight javascript %}
-server.on(`close`, () => {
-  sessionEnds = sessionEnds + 1;
+server.on(`connection`, (socket) => {
+  // ...
 
-  if (sessionStarts - sessionEnds < 1) {
-    // stop the timer
+  socket.on(`close`, () => {
+    sessionEnds = sessionEnds + 1;
+
+    if (sessionStarts - sessionEnds  1) {
+      // stop the timer
+    }
+  });
+});
+{% endhighlight %}
+
+Now we need the pausable timer itself.
+Recall that Observables and Generators are both functions that produce one or 
+more values.
+A Generator is easily paused.
+In fact, the execution of a Generator is suspended each time a value is 
+produced.
+Execution resumes only when the caller asks for the next value.
+But an Observable behaves differently.
+While consumers pull values from Generators, Observables push values out to 
+consumers.
+This means that the consumer does not determine when the value is produced and 
+so cannot suspend execution of the Observable.
+
+This would be a problem if the pausable timer required a continuous execution 
+context.
+Continuous context is required only when the paused computation needs to resume 
+from its last state.
+For example, a pausable function that counts infinitely up from one should 
+preserve its execution context:
+
+```
+1 2 3 pause 4 5 6
+---------------->
+```
+
+If the context is not preserved, pausing the function will reset the count:
+
+```
+1 2 3 pause 1 2 3
+---->       ---->
+```
+
+This counter function should be modeled as a Generator and not an Observable.
+But our pausable timer (and polling) does not require this kind of context 
+preservation.
+Instead, we can start a timer when we need one and dispose of it when we don't.
+
+We'll start by defining a function that creates an instance of the timer 
+Observable.
+
+{% highlight javascript %}
+const Rx = require(`rx`);
+const { multicast, } = require(`rx/operators`);
+
+const createTicks = () => Rx.timer(0, 10000).pipe(multicast(new Rx.Subject()));
+{% endhighlight %}
+
+The Observable returned by `createTicks` is made multicast so that there is only 
+ever one timer running on the server.
+A unicast Observable would start a new timer for each websocket session.
+This might be trivial for a timer but sharing the work becomes important when 
+the timer is replaced with polling.
+
+{% highlight javascript %}
+let ticks = null;
+let subscription = null;
+
+server.on(`connection`, (socket) => {
+  sessionStarts = sessionStarts + 1;
+
+  if (sessionStarts - sessionEnds === 1) {
+    ticks = createTicks();
+    subscription = ticks.connect();
   }
 
   // ...
 });
 {% endhighlight %}
 
-It's important to note that the timer will continue to run as the number of 
+To start the pausable timer for the first websocket connection, we simply 
+create a new timer Observable and start the execution of that Observable by 
+calling `connect`.
+The Subscription returned by `connect` will be used to stop the timer when 
+there are no more open connections.
+
+{% highlight javascript %}
+server.on(`connection`, (socket) => {
+  // ...
+
+  socket.on(`close`, () => {
+    sessionEnds = sessionEnds + 1;
+
+    if (sessionStarts - sessionEnds  1) {
+      subscription.unsubscribe();
+      timer = null;
+      subscription = null;
+    }
+  });
+});
+{% endhighlight %}
+
+When the last connection closes, the timer is disposed by calling 
+`Subscription#unsubscribe`.
+If `unsubscribe` is not called, the timer will continue to run in the 
+background.
+Then the state is reset until the next `connection` event starts a new timer.
+
+<!--
+Knowing how to pause the timer is a matter of being able to start and stop the
+timer repeatedly.
+First let's create a function that returns the timer Observable.
+
+It's important to note that the timer will continue to run as the number of
 current connections advances beyond 1.
 The stopping and starting only happens in the vicinity of 1.
 
+Know that we know when to pause the timer, we can think about how to pause the
+timer.
+We're using a timer Observable.
+
+- we're already managing two pieces of global mutable state just to know when to
+  start and stop the timer
+- as we move on to pausing the timer, things will get even more complex
+- state management will get more complex
+- the amount of "how to do it logic" will get more complex
+- add imperative logic
+
+We are using global state to spread information across isolated contexts.
+
+Every websocket connection must be prepared to pause the timer.
+Each connection must be aware of the other connections, specifically the
+number of current connections.
+
+Because every websocket connection must be prepared to pause the timer, each
+connection must be aware of the other connections, specifically the number of
+current connections.
+
+Every websocket connection must be prepared to pause the timer.
+Knowing when to pause the timer requires each connection to know the number of
+current connections.
+
+
+Global state makes it possible for all connections to be aware of each other in this way.
+Each connection is isolated from the other connections but all connections have
+access to the global context.
+
+
+Global state enables each connection, isolated in its own context, to access
+this information.
+
+
+
+What are we doing with global state?
+We are using
+
+
+
+
+
+
+Each websocket connection is prepared to pause the timer.
+k
+A connection is able to pause the timer at the correct moment because it is
+aware of the number of current connections.
+The number of current connections is information shared by all connections.
+Because
+
+They know when to pause the timer by sharing information about the number of
+current connections.
+
+Each websocket connection is be prepared to pause the timer.
+Knowing when to pause the timer requires each connection to know the number of
+current connections.
+For each connection to be aware of other connections,
+Knowing when to pause the timer requires each connection to know the number of
+current connections.
+For each connection to be aware of other connections,
+
+So each connection must have some awareness of other connections.
+
+Specifically the total number of current connections
+Global mutable state gives each websocket connection this g
+To be aware of each
+each connection to be globally aware,
+specifically to know the number of current connections.
+
+The conditions pausing the timer require an awareness of other connections,.
+
+
+The websocket connections are responsible for starting and stopping the timer.
+To start and stop the timer, each websocket connection must have some awareness
+of the other connections, specifically the total number of current connections.
+Global mutable state gives each websocket connection this global awareness.
+
+
+Our need to share information with the otherwise encapsulated websocket
+connections has forced us to add two pieces of global mutable state.
+All websocket connections share two pieces of global state.
+
+So all websocket connections share two pieces of global state.
+
+The first part of the problem has been completed by using t
+sharing two pieces of global
+
+
+We added two pieces of global mutable state just to know when to pause the
+timer.
+To know when to pause the timer, we added to pieces of global mutable state.
+
+So we've added two pieces of global mutable state.
+The state is shared by the websocket connections.
+The websocket connections are unaware of each other.
+Logic for the websocket connections is trapped in the closure of the `connection`
+event handlers.
+The state has been placed in the global scope because each connection must
+be able to read and update that state.
+The socket sessions, because they are closures, are unaware of each other.
+The state is global because it has to be shared by each open connection.
+Now we turn to the second part of the problem: knowing how to pause the timer.
+Starting and stopping the timer will require additional global mutable state.
+
+We've added two pieces of global mutable state.
+Now we will add more global mutable state to implement the pausable timer.
+-->
 
 <!--
 Polling the MTA feeds essentially means starting a timer.
@@ -104,12 +321,12 @@ The primary difference is that a timer produces a "tick", which could be a value
 like `1` or `undefined`, and the polling function produces new MTA feed data.
 We're not concerned with the data itself.
 So let's simplify "polling the MTA feeds every 30 seconds" to a timer that ticks
-every 30 seconds when there are open websocket connections and does not tick 
+every 30 seconds when there are open websocket connections and does not tick
 when there are none.
-For details about this timer and the Observable pattern, please read the 
+For details about this timer and the Observable pattern, please read the
 previous post.
 
-The problem we want to solve is not polling on demand in general but 
+The problem we want to solve is not polling on demand in general but
 specifically polling on demand _without mutable state_.
 How tricky is this problem?
 
@@ -129,13 +346,13 @@ The primary difference is that a timer produces a "tick", which could be a value
 like `1` or `undefined`, and the polling function produces new MTA feed data.
 We're not concerned with the data itself.
 So let's simplify "polling the MTA feeds every 30 seconds" to a timer that ticks
-every 30 seconds when there are open websocket connections and does not tick 
+every 30 seconds when there are open websocket connections and does not tick
 when there are none.
 -->
 
 <!--
 make a note about the timer being a concept re-used from the last blog post
-don't want 
+don't want
 
 Polling on demand without mutable state is the problem.
 
@@ -391,6 +608,21 @@ Is the Observable pattern here a bit of over-engineering?
 The problem catalogue
 - interesting if technical writing, technical ideas were always presented in the
 context of real problems solved, problems from experience
-- a catalogue of problems from experience 
+- a catalogue of problems from experience
 - a log book of problems solved, like a lab book maybe
+-->
+
+<!--
+In an early paper about functional reactive programming called "Functional
+Reactive Animation", Conal Elliot presented a concept called an Event.
+An Event was essentially a function of Time.
+that was that could be
+
+
+> ...events may be combined with others, to an arbitrary degree of
+> complexity, thus factoring complex animation logic into semantically rich,
+> modular building blocks.
+
+applied to the domain of
+animation
 -->
