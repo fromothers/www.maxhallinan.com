@@ -196,11 +196,11 @@ If `unsubscribe` is not called, the timer will continue to run in the
 background.
 Then the state is reset until the next `connection` event starts a new timer.
 
-So concludes the mutable state approach to a pausable timer.
-This approach is essentially about doing.
-The timer's behavior is an effect of doing things like incrementing counters, 
+So concludes the mutable state approach to pausing a timer.
+This approach is essentially about the concept of "doing".
+The timer's behavior is an effect of doing things like incrementing counters,
 creating timers, and cleaning up state.
-To achieve the same behavior without mutable state, we must shift our focus from 
+To achieve the same behavior without mutable state, we must shift our focus from
 doing to being.
 
 ## Being instead of doing
@@ -211,45 +211,39 @@ doing to being.
 Programming"](https://www.youtube.com/watch?v=j3Q32brCUAI&feature=youtu.be&t=4m21s),
 Lambda Jam 2015
 
-- Define states of being.
-- The problem here is how to share information across isolated contexts without
-mutating global state.
-  - the isolated contexts can read from a shared state source
-  - global values that aren't mutated are not a problem
-  - but it becomes a problem when the isolated contexts start to author and
-    consume that state.
-- Shift the focus from doing to being.
-- Focus on what the values are and not how they are produced.
-- We have just written a lot of logic that is _doing_.
-- The `connection` and `close` event handlers do things like update counters and
-  create timers, and clean up stale state.
-- How can we shift are thinking from paused timer as a series of actions, of doing,
-  to a state of being?
-- Must think of _things_ instead of steps.
-- Must think of the different states instead of the steps to reach that state.
-- Rewrite our code as definitions or descriptions of things instead of
-  instructions.
-- We'll use some of these things to make other things.
-- The only logic will be pure transformations of one "thing" into another.
-- By thinking declaratively, by thinking in terms of being instead of doing, we
-  can still achieve the pausable behavior.
+If doing means instructing the computer, then being means describing the result.
+A description of the result is a definition of a thing.
+Being means expressing program behavior by defining things.
+What are things in programming?
+Values are things.
+Functional programming uses functions to define things.
+A function `Foo -> Bar` is one way to define `Bar`.
+Ultimately, the output of a program is defined as a function of the input.
 
-In the first paper on functional reactive programming, Conal Elliot and Stephen
-Hudak wrote about the idea of an Event.
-An Event is a discrete moment in time.
-That might represent a real-world event like a mouse click.
-But it also could mean an arbitrarily complex condition or conditions.
-In this sense, an event was essentially a boolean function over time.
-When the boolean function returned true, then the event had occurred.
+Our program already defines some things, values like `sessionStarts` and 
+`sessionEnds`.
+But those definitions have not made our code less about doing.
+That is because `sessionStarts` and `sessionEnds` are imperfectly defined.
+We have defined them as numbers.
+The problem is that the value of those numbers varies over time.
+<!--The problem is that these are numbers whose values vary over time.-->
+<!--They are defined as numbers-->
+<!--The problem is that the values of those numbers vary over time-->
+`sessionStarts` is incremented each time a `connection` event occurs.
+`sessionEnds` is incremented each time a `close` event occurs.
+<!--And the timer's behavior flows from the variance in those two values.-->
+All of the doing in our program is an attempt to confront time-varying value.
+And all of the timer's behavior flows from that variance.
+`sessionStarts` and `sessionEnds` should not be defined simply as "number" but
+as "number that varies over time".
 
-Observables are a lot like events.
-They are discrete, representing an occurrence of a value.
+<!--
+All of the doing in our program is an attempt to confront the time-varying 
+property of these values.
 
-The idea of functional reactive programming was first presented by Conal Elliot
-and Stephen Hudak as an approach to programming animation in the paper
-"Functional reactive animation".
-
-The `connection` and `close` are both event streams.
+To be about being instead of doing, we should define time-varying values as a
+thing and not imply them as an effect of our logic.
+-->
 
 Create a `connection` event stream.
 

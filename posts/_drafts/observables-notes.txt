@@ -1,0 +1,616 @@
+<!--
+Knowing how to pause the timer is a matter of being able to start and stop the
+timer repeatedly.
+First let's create a function that returns the timer Observable.
+
+It's important to note that the timer will continue to run as the number of
+current connections advances beyond 1.
+The stopping and starting only happens in the vicinity of 1.
+
+Know that we know when to pause the timer, we can think about how to pause the
+timer.
+We're using a timer Observable.
+
+- we're already managing two pieces of global mutable state just to know when to
+  start and stop the timer
+- as we move on to pausing the timer, things will get even more complex
+- state management will get more complex
+- the amount of "how to do it logic" will get more complex
+- add imperative logic
+
+We are using global state to spread information across isolated contexts.
+
+Every websocket connection must be prepared to pause the timer.
+Each connection must be aware of the other connections, specifically the
+number of current connections.
+
+Because every websocket connection must be prepared to pause the timer, each
+connection must be aware of the other connections, specifically the number of
+current connections.
+
+Every websocket connection must be prepared to pause the timer.
+Knowing when to pause the timer requires each connection to know the number of
+current connections.
+
+
+Global state makes it possible for all connections to be aware of each other in this way.
+Each connection is isolated from the other connections but all connections have
+access to the global context.
+
+
+Global state enables each connection, isolated in its own context, to access
+this information.
+
+
+
+What are we doing with global state?
+We are using
+
+
+
+
+
+
+Each websocket connection is prepared to pause the timer.
+k
+A connection is able to pause the timer at the correct moment because it is
+aware of the number of current connections.
+The number of current connections is information shared by all connections.
+Because
+
+They know when to pause the timer by sharing information about the number of
+current connections.
+
+Each websocket connection is be prepared to pause the timer.
+Knowing when to pause the timer requires each connection to know the number of
+current connections.
+For each connection to be aware of other connections,
+Knowing when to pause the timer requires each connection to know the number of
+current connections.
+For each connection to be aware of other connections,
+
+So each connection must have some awareness of other connections.
+
+Specifically the total number of current connections
+Global mutable state gives each websocket connection this g
+To be aware of each
+each connection to be globally aware,
+specifically to know the number of current connections.
+
+The conditions pausing the timer require an awareness of other connections,.
+
+
+The websocket connections are responsible for starting and stopping the timer.
+To start and stop the timer, each websocket connection must have some awareness
+of the other connections, specifically the total number of current connections.
+Global mutable state gives each websocket connection this global awareness.
+
+
+Our need to share information with the otherwise encapsulated websocket
+connections has forced us to add two pieces of global mutable state.
+All websocket connections share two pieces of global state.
+
+So all websocket connections share two pieces of global state.
+
+The first part of the problem has been completed by using t
+sharing two pieces of global
+
+
+We added two pieces of global mutable state just to know when to pause the
+timer.
+To know when to pause the timer, we added to pieces of global mutable state.
+
+So we've added two pieces of global mutable state.
+The state is shared by the websocket connections.
+The websocket connections are unaware of each other.
+Logic for the websocket connections is trapped in the closure of the `connection`
+event handlers.
+The state has been placed in the global scope because each connection must
+be able to read and update that state.
+The socket sessions, because they are closures, are unaware of each other.
+The state is global because it has to be shared by each open connection.
+Now we turn to the second part of the problem: knowing how to pause the timer.
+Starting and stopping the timer will require additional global mutable state.
+
+We've added two pieces of global mutable state.
+Now we will add more global mutable state to implement the pausable timer.
+-->
+
+<!--
+Polling the MTA feeds essentially means starting a timer.
+In both cases, a function is called every 30 seconds.
+The primary difference is that a timer produces a "tick", which could be a value
+like `1` or `undefined`, and the polling function produces new MTA feed data.
+We're not concerned with the data itself.
+So let's simplify "polling the MTA feeds every 30 seconds" to a timer that ticks
+every 30 seconds when there are open websocket connections and does not tick
+when there are none.
+For details about this timer and the Observable pattern, please read the
+previous post.
+
+The problem we want to solve is not polling on demand in general but
+specifically polling on demand _without mutable state_.
+How tricky is this problem?
+
+Sometimes the complexities of a problem are best understood by failing to solve
+the problem.
+Let's use my first attempt, the attempt that
+Sometimes a problem is best understood through making mistakes, by doing failing
+to solve it first in order to understand why must be done to solve it successfully.
+Let's use my first attempt, the attempt that does use mutable state, to reveal
+the complexities of the problem.
+For an answer to that question, let's look at my first attempt to build this
+feature, the approach that uses mutable state.
+
+Polling the MTA feeds essentially means starting a timer.
+In both cases, a function is called every 30 seconds.
+The primary difference is that a timer produces a "tick", which could be a value
+like `1` or `undefined`, and the polling function produces new MTA feed data.
+We're not concerned with the data itself.
+So let's simplify "polling the MTA feeds every 30 seconds" to a timer that ticks
+every 30 seconds when there are open websocket connections and does not tick
+when there are none.
+-->
+
+<!--
+make a note about the timer being a concept re-used from the last blog post
+don't want
+
+Polling on demand without mutable state is the problem.
+
+To answer that question, let's look at what I consider to be the most obvious or
+straightforward solution, a solution that uses mutable state.
+
+Before we look at the solution, let's look at a naive solution that uses
+uses mutable state to understand the problem.
+mutable state to i
+
+The problem we're examining here is not polling on demand in general but
+specifically polling on demand without mutable state.
+
+It sometimes helps to start with a naive solution.
+Do it first in the way that is the most obvious.
+Sometimes that is enough.
+The obvious way need not be naive.
+When it is naive, it nonetheless uncovers complexity and
+
+And when it is naive, it is nonetheless a good way to understand the problem,
+to uncover complexities and investigate potential for abstraction.
+
+  - the naive solution is often a good way to understand the problem, find the
+    complexities and reveal areas where abstraction is helpful
+And sometimes the obvious way works to reveal the complexities and areas that
+would benefit from abstraction.
+
+  - as was the case in the last article, we can achieve our goal naively with
+    global mutable state
+-->
+
+
+<!--
+- background
+  - websocket server
+  - polls the MTA every 5 seconds
+  - transforms the MTA feed data into a description of train locations
+  - sends a message describing the current train locations to each open
+    websocket connection
+- problem
+  - consuming unnecessary bandwidth
+  - driving up operating cost unneccessarily
+  - irresponsible use of a free service
+- solutions
+  - each websocket connection independently polls the MTA feeds
+      - when there are no connections, no polling happens
+      - problem: duplicates work
+      - problem: scales poorly
+      - problem: consumes exponentially more resources than required
+  - start polling when there is one or more open connections and stop polling
+    when there are no open connections
+- it helps to start with a naive solution
+  - the naive solution is often a good way to understand the problem, find the
+    complexities and reveal areas where abstraction is helpful
+  - as was the case in the last article, we can achieve our goal naively with
+    global mutable state
+
+```javascript
+let tick$ = null;
+
+const createTick$ = () => {
+  //...
+};
+
+server.on(`connection`, () => {
+  if (!tick$) {
+    tick$ = createTick$();
+  }
+
+  ticks$.subscribe({
+    next: sendMsg,
+  })
+});
+```
+        - this would work but we want to avoid mutable state and especially
+          global state that is shared and updated by different contexts
+          (websocket sessions)
+  - there are broadly two problems:
+    - mutable global state is messy and bug prone
+    - there is a lot of imperative logic
+    - generates a lot of cognitive overhead
+    - it's hard to test
+- why is this a good use-case for observables?
+    - removes global state
+    - enables us to think more simply
+    - applies transformations to a stream of values
+    - enables functional programming
+- why is using observables better than using the naive approach?
+  - what is it exactly that the observable abstraction does?
+  - what does an observable represent?
+  - are observables simpler?
+  - in some sense, they are not
+  - using an observable requires the user to learn some new ideas
+  - the argument for observables is essentially the argument for functional
+    programming
+      - code that is easier to test
+      - code that is easier to reason about
+      - code that is less prone to regressions
+  - in the most basic understanding of functional programming you transform a
+    value a to a value b.
+  - a function is the transformation
+  - you can then compose a -> b to make a transformation of a -> b -> c.
+  - in this way, you can use functions to describe complex transformations
+  - but a perhaps overlooked assumption is that you
+  - you can even transform a collection of values by representing that collection
+    as itself a single value like an array
+  - the implicit assumption of functional programming is that you have all the
+    values you expect to have at the moment you transform them
+  - if you want to sum a collection of numbers, you first get _all_ the numbers
+  - but what if that assumption is incorrect?
+  - what if the collection of numbers changes, grows over time?
+  - if we think of the total number of connection events as simply summing an
+    array of `1`s, where each 1 represents a `connection` event, then we have to
+    re-calculate the sum each time an event occurs.
+  - functional programming, in it's essence, assumes static values
+  - transformations of static values
+  - the basics of functional programming don't really help us here
+  - observables give us a way to treat a series of values that are ordered in time
+    as a static value
+  - the observable abstracts the bits about updating the collection each time a
+    new value is produced and re-running the transformations of that value
+    downstream.
+  - but what if the entire set of values grows over time?
+  - observables facilitate the application of functional programming to a series
+    of values ordered in time
+  - ordered in time does not mean that the values are produced asynchronously
+  - the observable might produce the entire series synchronously
+      - for example, an observable oneThroughFive might call `next` five times
+      - each call to `next` is a separate moment in time, regardless of whether
+        the value passed to next was produced by a synchronous or asynchronous
+        computation
+- the naive approach expresses these kinds of thoughts:
+  - "when there is a new websocket connection, check if a timer has already been
+    created"
+  - "when there is a new websocket connection, increment a connections counter"
+  - "if there is no timer, create a timer"
+  - "when there is a new websocket connection, decrement the connections counter"
+  - "when a websocket connection closes, check if that was the last open
+    connection"
+- these kinds of thoughts are characterized as "actions to take"
+  - they are instructions
+- these instructions describe how to reach certain states
+  - these states are:
+    - "number of opened connections"
+    - "number of closed connections"
+    - "number of active connections"
+    - "paused polling"
+    - "active polling"
+- states are static values
+- static values are easier to think about
+- we'd like to just transforming static values into static values
+- instead of thinking in terms of actions, we can think in terms of the states
+  - states are just values
+  - a state is not an action or an instruction,
+  - the value 1 does not describe any movement or change
+  - states are produced by changes
+  - focus on the states first and de-emphasize the actions that result in those
+    states
+  - "the number of connection events"
+  - "the number of close events"
+  - "the number of active connections"
+- implementation with observables
+  - components
+    - tracking open connections
+        - count the number of `connection` events
+        - count the number of `close` events
+        - `active connections count = total connections count - total closes count`
+    - pausable polling
+        - each session is given a feeds data source
+        - each session subscribes to this data source
+        - each time the data source produces new data, the session sends a new
+          websocket message.
+        - want to maintain this interface
+        - want to do this without sideeffects
+        - the data source must be passed to each new session
+        - so the data source is defined outside of the scope of a `connection`
+          event handler
+        - to start a new poller for the first connection would require a sideeffect
+          in order to pass that poller to subsequent sessions:
+
+A timer that only ticks when someone has connected to the server.
+
+<!--
+I like to collect the problems that patterns solve, patterns like polling on
+demand.
+The problems solved by a pattern are key to understanding that pattern.
+And I like problems from experience more than problems contrived for
+instruction.
+The usefulness of a pattern is best evoked by a real problem.
+So here I am again to write about the Observable pattern, to again note
+its usefulness.
+-->
+
+<!--
+Am I simply indulging my affection for the Observable pattern or does it provide
+improve the code?
+value?
+Is the Observable pattern here a bit of over-engineering?
+-->
+<!--
+The problem catalogue
+- interesting if technical writing, technical ideas were always presented in the
+context of real problems solved, problems from experience
+- a catalogue of problems from experience
+- a log book of problems solved, like a lab book maybe
+-->
+
+<!--
+In an early paper about functional reactive programming called "Functional
+Reactive Animation", Conal Elliot presented a concept called an Event.
+An Event was essentially a function of Time.
+that was that could be
+
+
+> ...events may be combined with others, to an arbitrary degree of
+> complexity, thus factoring complex animation logic into semantically rich,
+> modular building blocks.
+
+applied to the domain of
+animation
+-->
+
+{% highlight javascript %}
+const Rx = require(`rxjs`);
+const { flatMap, map, scan, } = require(`rxjs/operators`);
+
+const socket$ = Rx.fromEvent(server, `connection`).pipe(map(head));
+
+const connectionCount$ = socket$.pipe(scan(increment, 0));
+
+const close$ = socket$.pipe(
+  flatMap((socket) => Rx.fromEvent(socket, `close`)),
+);
+
+const zero$ = Rx.of(0);
+
+const closeCount$ = Rx.merge(
+  zero$,
+  close$.pipe(scan(increment, 0))
+);
+
+const subtract = (x, y) => x - y;
+
+// the current number of open sockets
+const activeCount$ = Rx.combineLatest(
+  [ connectionCount$, closeCount$, ],
+  subtract
+);
+
+// stop polling when there are no open connections
+const isPaused = (count) => 1 > count;
+
+const isPaused$ = activeCount$.pipe(map(isPaused));
+
+const createTimer = () => Rx.timer(0, 1000);
+
+const pausableTimer = pauser.pipe(
+  switchMap(isPaused => isPaused ? Rx.NEVER : createTimer()),
+  multicast(new Subject()),
+);
+
+pausableTimer.subscribe({
+  next: () => {
+    console.log(`tick`);
+  },
+});
+{% endhighlight %}
+
+<!--
+things to write
+- the number of connection events
+- the number of close events
+- the difference between the number of connections and the number of close events
+-->
+
+<!--
+going to look at several ways of composing Observables
+the power of composition
+going to see how one Observable can be used as a building block for several
+other Observables
+going to look at several ways of composing Observables
+-->
+
+<!--
+- events are composable
+- focus on composability
+-->
+
+<!--But what does that mean in practice?-->
+All applications are concerned with states.
+Sometimes states are defined explicitly and sometimes they are only implied by 
+business logic.
+
+Sometimes the states are implied by business logic, by conditions and statements
+scattered around the code.
+Our first approach to a pausable timer implies some states.
+You can derive those states from values.
+A state is a thing that is.
+States are forms of being.
+Functional programming focuses on defining states explicitly and then defining
+transformations of one state to the next.
+Transforming might feel like doing.
+
+To me, transforming does feel like doing.
+
+- Why do we want things?
+- Things can be combined.
+- Something that is ordered in time.
+- Want little building blocks.
+- Things can be combined.
+- Doing 
+
+In the first paper on functional reactive programming, Conal Elliot and Stephen
+Hudak wrote about two concepts: Behavior and Event.
+A Behavior is a value that might vary over time.
+Behaviors are continuous because they always have a current value.
+
+An Event is a value that is ordered in time.
+Events are discrete because they have no current value, only a last occurrence.
+The mouse position is a Behavior and a mouse click is an event.
+
+the idea of the concept Event.
+An Event is a discrete moment in time.
+It might represent a real-world event like a mouse click.
+But it might also be defined by an arbitrarily complex condition.
+As time changed, this condition would detect moments when the condition was 
+satisfied.
+
+
+When the boolean function returned true, then the event had occurred.
+This "function over time" would return `true` when the event had occurred.
+
+could mean an arbitrarily complex condition or conditions.
+In this sense, an event was essentially a boolean function over time.
+When the boolean function returned true, then the event had occurred.
+
+
+> ...events may be combined with others, to an arbitrary degree of
+> complexity, thus factoring complex animation logic into semantically rich,
+> modular building blocks.
+
+- Define states of being.
+- The problem here is how to share information across isolated contexts without
+mutating global state.
+  - the isolated contexts can read from a shared state source
+  - global values that aren't mutated are not a problem
+  - but it becomes a problem when the isolated contexts start to author and
+    consume that state.
+- Shift the focus from doing to being.
+- Focus on what the values are and not how they are produced.
+- We have just written a lot of logic that is _doing_.
+- The `connection` and `close` event handlers do things like update counters and
+  create timers, and clean up stale state.
+- How can we shift are thinking from paused timer as a series of actions, of doing,
+  to a state of being?
+- Must think of _things_ instead of steps.
+- Must think of the different states instead of the steps to reach that state.
+- Rewrite our code as definitions or descriptions of things instead of
+  instructions.
+- We'll use some of these things to make other things.
+- The only logic will be pure transformations of one "thing" into another.
+- By thinking declaratively, by thinking in terms of being instead of doing, we
+  can still achieve the pausable behavior.
+
+Observables are a lot like events.
+They are discrete, representing an occurrence of a value.
+
+The idea of functional reactive programming was first presented by Conal Elliot
+and Stephen Hudak as an approach to programming animation in the paper
+"Functional reactive animation".
+
+What states are we trying to model?
+
+<!--
+- Total `connection` events.
+- Total `close` events.
+- The difference between the totals.
+-->
+
+- The number of current connections.
+- A paused timer.
+- An unpaused timer.
+- A timer that is either paused or not.
+
+The `connection` and `close` are both event streams.
+
+The first state we implied by our logic was the state of total websocket 
+connections being less than one.
+
+What is the difference between doing and being in the context of software?
+All useful programs aim to do something.
+A program that adds two numbers is doing the adding.
+"Being" in contrast to "doing" evokes something static, a program that does not
+effect the world.
+That program doesn't sound useful.
+
+I don't think Conal Elliot was refering to the behavior of the software itself.
+His distinction refers to the programmer's expression of that behavior.
+When a programmer thinks in terms of "doing", then the program reads like a
+series of steps taken to achieve the desired outcome.
+A program written in terms of "being" defines the desired outcome
+
+But "being" and "doing" do not describe the behavior of the software itself.
+Conal Elliot's distinction refers to how a programmer expresses the software's
+behavior.
+When programmer is focused on "doing", then the program reads like a series of
+steps taken to achieve the desired outcome.
+When a programmer is focused on "being", then the program reads like a
+definition of the desired outcome as a thing.
+We want to turn our steps into things and then derive other things from those
+things.
+
+transformations of one thing to another are still a form of doing.
+the operation is an action.
+but the things you do are always in relation to, are always determined by what
+things are.
+and they are always actions that produce a new thing.
+the transformation of x is a kind of definition of y.
+
+"Being" and "doing" is not a distinction of software behavior.
+
+The distinction between being and doing is not a distinction about the behavior
+of the software but rather a distinction about how that behavior is expressed
+by the programmer.
+
+My interpretation of Conal Elliot's distinction is that functional programming
+is focused on explicitly defining states.
+
+Program states are like states of being, a state "is" and not "does".
+Application states are static.
+One defines a state in terms of what it "is" and not what it "does".
+A useful program is one that changes an input state to an output state.
+
+a program that exists without having an effect on the world.
+That might be a program that declares a variable without changing its value.
+That doesn't sound useful.
+
+What is the difference between doing and being to a programmer?
+It seems that all useful programs aim to do something.
+For example, a program that adds two numbers would seem to be doing the adding.
+"Being" evokes a program that declares some variables without changing their
+values.
+That program does not sound very useful.
+
+I can't speak for Conal Elliot, but my interpretation of this is that being means
+defining values.
+
+- What is the difference between the old and new approach?
+- The old approach mutates the state.
+- The old approach implies states.
+- We want to represent those states explicitly.
+- Doing two things that require us to mutate state.
+  - Updating the state from a smaller scope.
+- Want the `connection` event handlers to react to state changes but not to
+  change the state.
+- Want the state to flow one way.
+- Define the basic building blocks of the program.
+- Combine these building blocks to make more complex building blocks.
+- Look for a way to combine things.
