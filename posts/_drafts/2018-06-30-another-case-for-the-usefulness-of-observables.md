@@ -99,7 +99,7 @@ server.on(`connection`, (socket) => {
 });
 {% endhighlight %}
 
-Now that we know when to pause the timer, we need the pausable timer itself.
+Now that we know when to pause the timer, we need a timer that can be paused.
 
 ### An aside about pausable computations
 
@@ -237,18 +237,34 @@ We have defined them as numbers but they are numbers that vary over time.
 `sessionEnds` is incremented each time a `close` event occurs.
 All of the doing in our program is an attempt to confront time-varying value.
 And all of the timer's behavior flows from that variance.
-`sessionStarts` and `sessionEnds` should not be defined simply as "number" but
-as "number that varies over time".
+`sessionStarts` and `sessionEnds` should not be defined simply as "number".
+They must be defined as "number that varies over time".
 
-A value that varies over time should notify its consumers when it changes.
-Values that vary over time are tricky because 
-Observables are not a representation of a time-varying value.
-Time-varying values are continuous, always having a current value.
-Observables are streams of values.
-Streams are discrete
+We are going to use Observables as the single abstraction for all our time-based 
+values.
+But in doing so, we depart from the original domain model of functional reactive
+programming.
+The first formulation of functional reactive programming presented two 
+abstractions: a Behavior and an Event.
 
-A value that varies over time should notify its consumers when it changes. 
-This is what Observables do.
+A Behavior is a continuous time-varying value, meaning that the Behavior has a 
+value for every moment in time.
+An Event represents discrete occurrences of value over time, meaning that the 
+Event has no value for some moments in time.
+The classic example of this distinction is mouse position versus mouse clicks.
+There is always a current value of the mouse position but there is only a last
+occurrence of the mouse click.
+An Observable is a stream of discrete values, practically equivalent to an 
+Event.
+
+The pausable timer problem presents examples of both Behaviors and Events.
+The `connection` and `close` events are both Events.
+The number of current websocket connections is a Behavior, not an Event.
+The former have last occurrences. 
+The latter has a current value.
+Nonetheless, we can model everything as an Event (an Observable) and still 
+manage to derive the desired behavior.
+With apologies to Elliot and Hudak, let's continue.
 
 Create a `connection` event stream.
 
