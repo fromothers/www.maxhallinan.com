@@ -120,7 +120,7 @@ Consumers _pull_ values from Generator functions but Observables _push_ values
 out to consumers.
 This can occur asynchronously, over time, or synchronously, all at once.
 
-That might sound complicated so let's look at a simple Observer.
+That might sound complicated so let's look at a simple Observerable.
 
 {% highlight javascript %}
 const createObservable = () => ({

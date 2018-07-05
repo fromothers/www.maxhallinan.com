@@ -32,8 +32,8 @@ hexToRgb : String -> Result String ( Int, Int, Int )
 {% endhighlight %}
 
 Now we want to test `hexToRgb`.
-First, we write is a unit test that asserts `hexToRgb "#ffffff"` 
-returns `Ok (255, 255, 255)`.
+First, we write a unit test that asserts `hexToRgb "#ffffff"` returns 
+`Ok (255, 255, 255)`.
 This test focuses on the correctness of the conversion formula.
 If `hexToRgb` converts `"#ffffff"` to `Ok (0, 0, 0)`, then it's no use at all.
 So this is a reasonable first test to write.

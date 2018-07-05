@@ -99,7 +99,11 @@ server.on(`connection`, (socket) => {
 });
 {% endhighlight %}
 
-Now we need the pausable timer itself.
+Now that we know when to pause the timer, we need the pausable timer itself.
+
+### An aside about pausable computations
+
+Is it possible to pause an Observable?
 Recall that Observables and Generators are both functions that produce one or
 more values.
 A Generator is easily paused.
@@ -109,13 +113,15 @@ Execution resumes only when the caller asks for the next value.
 But an Observable behaves differently.
 While consumers pull values from Generators, Observables push values out to
 consumers.
-This means that the consumer does not determine when the value is produced and
-so cannot suspend execution of the Observable.
+This means that the consumer does not determine when the value is produced. 
+Thus, the consumer cannot suspend execution of the Observable.
 
-This would be a problem if the pausable timer required a continuous execution
-context.
-Continuous context is required only when the paused computation needs to resume
-from its last state.
+Pausing an Observable cannot mean pausing its execution.
+This would be a problem if we required the pausable timer to maintain a 
+continuous execution context.
+Continuous context is required when a paused computation needs to resume from 
+its last state.
+
 For example, a pausable function that counts infinitely up from one should
 preserve its execution context:
 
@@ -124,17 +130,20 @@ preserve its execution context:
 ---------------->
 ```
 
-If the context is not preserved, pausing the function will reset the count:
+If the context is not preserved, then pausing the function will reset the count:
 
 ```
 1 2 3 pause 1 2 3
 ---->       ---->
 ```
 
-This counter function should be modeled as a Generator and not an Observable.
-But our pausable timer (and polling) does not require this kind of context
-preservation.
-Instead, we can start a timer when we need one and dispose of it when we don't.
+But our timer (and polling) is stateless.
+No context preservation is required to produce a tick every ten seconds.
+This means that we don't need a truly pausable timer.
+Instead, we can create a new timer when we need one and dispose of it when we 
+don't.
+
+### A "pausable" timer
 
 We'll start by defining a function that creates an instance of the timer
 Observable.
@@ -168,9 +177,8 @@ server.on(`connection`, (socket) => {
 });
 {% endhighlight %}
 
-To start the pausable timer for the first websocket connection, we simply
-create a new timer Observable and start the execution of that Observable by
-calling `connect`.
+To start the pausable timer, we create a new timer Observable and trigger its 
+execution by calling `connect`.
 The Subscription returned by `connect` will be used to stop the timer when
 there are no more open connections.
 
@@ -203,7 +211,7 @@ creating timers, and cleaning up state.
 To achieve the same behavior without mutable state, we must shift our focus from
 doing to being.
 
-## Being instead of doing
+## II. Being instead of doing
 
 > For me, functional programming is not about doing. It's about being.
 
@@ -224,26 +232,23 @@ Our program already defines some things, values like `sessionStarts` and
 `sessionEnds`.
 But those definitions have not made our code less about doing.
 That is because `sessionStarts` and `sessionEnds` are imperfectly defined.
-We have defined them as numbers.
-The problem is that the value of those numbers varies over time.
-<!--The problem is that these are numbers whose values vary over time.-->
-<!--They are defined as numbers-->
-<!--The problem is that the values of those numbers vary over time-->
+We have defined them as numbers but they are numbers that vary over time.
 `sessionStarts` is incremented each time a `connection` event occurs.
 `sessionEnds` is incremented each time a `close` event occurs.
-<!--And the timer's behavior flows from the variance in those two values.-->
 All of the doing in our program is an attempt to confront time-varying value.
 And all of the timer's behavior flows from that variance.
 `sessionStarts` and `sessionEnds` should not be defined simply as "number" but
 as "number that varies over time".
 
-<!--
-All of the doing in our program is an attempt to confront the time-varying 
-property of these values.
+A value that varies over time should notify its consumers when it changes.
+Values that vary over time are tricky because 
+Observables are not a representation of a time-varying value.
+Time-varying values are continuous, always having a current value.
+Observables are streams of values.
+Streams are discrete
 
-To be about being instead of doing, we should define time-varying values as a
-thing and not imply them as an effect of our logic.
--->
+A value that varies over time should notify its consumers when it changes. 
+This is what Observables do.
 
 Create a `connection` event stream.
 
