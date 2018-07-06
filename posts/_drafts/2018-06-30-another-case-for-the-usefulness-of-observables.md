@@ -240,14 +240,70 @@ And all of the timer's behavior flows from that variance.
 `sessionStarts` and `sessionEnds` should not be defined simply as "number".
 They must be defined as "number that varies over time".
 
+<!-- so we need to define time-based values.-->
+<!-- how do we define time-based values? -->
+<!-- functional reactive programming gives us some guidance about defining time-based values -->
+<!-- frp talks about two kinds of time-based values  -->
+<!-- Behavior is... -->
+<!-- Event is... -->
+<!-- An Observable is practically equivalent to an event -->
+<!-- We can derive all the behavior we need from an Observable -->
+<!-- With apologies to Hudak/Elliot, we're going to use Observables as our 
+  single abstraction for all time-based values -->
 We are going to use Observables as the single abstraction for all our time-based 
 values.
 But in doing so, we depart from the original domain model of functional reactive
 programming (FRP).
-FRP's first formulation presented two abstractions: a Behavior and an Event.
-Behavior and Event both model time-based value.
-The difference between a Behavior and an Event is about _when_ in time the value 
-exists.
+FRP's first formulation presented two abstractions: Behavior and Event.
+Behavior and Event both model time-based values.
+The difference between a Behavior and an Event is a distinction of _when_ the 
+value exists.
+
+### An aside about what we're doing with Observables
+
+> ...events may be combined with others, to an arbitrary degree of
+> complexity, thus factoring complex animation logic into semantically rich,
+> modular building blocks.
+
+&mdash; Conal Elliot ["The Essence and Origins of Functional Reactive
+Programming"](https://www.youtube.com/watch?v=j3Q32brCUAI&feature=youtu.be&t=4m21s),
+Lambda Jam 2015
+
+<!--
+- The question is how were are going to represent these values that vary over time?
+- How do we
+- The answer is that we are going to use Observables
+- There is this other point that is just an academic point about the place that 
+  Observables have in functional reactive programming
+- Our use of Observables conflates two ideas: continuous and discrete time-based
+  values
+- 
+-->
+Functional reactive programming is a programming idiom that 
+Functional reactive programming is an approach to programming that takes time
+into account.
+Functional reactive programming (FRP) is a programming idiom that defines things
+as things in time.
+Functional reactive programming is an approach to working with time-based 
+values. 
+
+We are going to use Observables as the single abstraction for all our time-based 
+values.
+<!--
+The Observable pattern inherits from the idea of functional reactive programming.
+The Observable pattern is descended from the functional reactive programming.
+Observables come from the context of functional reactive programming.
+Observables are often used as an example of functional reactive programming.
+-->
+
+But in doing so, we depart from the original domain model of functional reactive
+programming (FRP).
+
+The Observables is related to FRP, so it is useful to understand these ideas.
+FRP's first formulation presented two abstractions: Behavior and Event.
+Behavior and Event both model time-based values.
+The difference between a Behavior and an Event is a distinction of _when_ the 
+value exists.
 
 The value of a Behavior exists always and the value of an Event exists 
 sometimes.
@@ -277,6 +333,8 @@ The latter has a current value.
 Nonetheless, we can model everything as an Event (an Observable) and still 
 manage to derive the desired behavior.
 With apologies to Elliot and Hudak, let's continue.
+
+## Time things
 
 Create a `connection` event stream.
 
