@@ -243,14 +243,26 @@ They must be defined as "number that varies over time".
 We are going to use Observables as the single abstraction for all our time-based 
 values.
 But in doing so, we depart from the original domain model of functional reactive
-programming.
-The first formulation of functional reactive programming presented two 
-abstractions: a Behavior and an Event.
+programming (FRP).
+FRP's first formulation presented two abstractions: a Behavior and an Event.
+Behavior and Event both model time-based value.
+The difference between a Behavior and an Event is about _when_ in time the value 
+exists.
 
-A Behavior is a continuous time-varying value, meaning that the Behavior has a 
-value for every moment in time.
-An Event represents discrete occurrences of value over time, meaning that the 
-Event has no value for some moments in time.
+The value of a Behavior exists always and the value of an Event exists 
+sometimes.
+
+A Behavior always has value for every moment in time.
+The value of a Behavior always exists
+Behaviors are continuous over time and Events are discrete.
+Continuous means that a value exists for every moment in time. 
+If time is a line, then a continuous value over time is also a line.
+The existence of value is unbroken over time.
+A Behavior always has a current value.
+
+Discrete means that there is no value for some moments in time.
+Discrete means that the existence of value is broken over time.
+Events have no current value, only a last occurrence.
 The classic example of this distinction is mouse position versus mouse clicks.
 There is always a current value of the mouse position but there is only a last
 occurrence of the mouse click.
