@@ -113,13 +113,13 @@ Execution resumes only when the caller asks for the next value.
 But an Observable behaves differently.
 While consumers pull values from Generators, Observables push values out to
 consumers.
-This means that the consumer does not determine when the value is produced. 
+This means that the consumer does not determine when the value is produced.
 Thus, the consumer cannot suspend execution of the Observable.
 
 Pausing an Observable cannot mean pausing its execution.
-This would be a problem if we required the pausable timer to maintain a 
+This would be a problem if we required the pausable timer to maintain a
 continuous execution context.
-Continuous context is required when a paused computation needs to resume from 
+Continuous context is required when a paused computation needs to resume from
 its last state.
 
 For example, a pausable function that counts infinitely up from one should
@@ -140,7 +140,7 @@ If the context is not preserved, then pausing the function will reset the count:
 But our timer (and polling) is stateless.
 No context preservation is required to produce a tick every ten seconds.
 This means that we don't need a truly pausable timer.
-Instead, we can create a new timer when we need one and dispose of it when we 
+Instead, we can create a new timer when we need one and dispose of it when we
 don't.
 
 ### A "pausable" timer
@@ -177,7 +177,7 @@ server.on(`connection`, (socket) => {
 });
 {% endhighlight %}
 
-To start the pausable timer, we create a new timer Observable and trigger its 
+To start the pausable timer, we create a new timer Observable and trigger its
 execution by calling `connect`.
 The Subscription returned by `connect` will be used to stop the timer when
 there are no more open connections.
@@ -228,7 +228,7 @@ Functional programming uses functions to define things.
 A function `Foo -> Bar` is one way to define `Bar`.
 Ultimately, the output of a program is defined as a function of the input.
 
-Our program already defines some things, values like `sessionStarts` and 
+Our program already defines some things, values like `sessionStarts` and
 `sessionEnds`.
 But those definitions have not made our code less about doing.
 That is because `sessionStarts` and `sessionEnds` are imperfectly defined.
@@ -240,101 +240,94 @@ And all of the timer's behavior flows from that variance.
 `sessionStarts` and `sessionEnds` should not be defined simply as "number".
 They must be defined as "number that varies over time".
 
-<!-- so we need to define time-based values.-->
-<!-- how do we define time-based values? -->
-<!-- functional reactive programming gives us some guidance about defining time-based values -->
-<!-- frp talks about two kinds of time-based values  -->
-<!-- Behavior is... -->
-<!-- Event is... -->
-<!-- An Observable is practically equivalent to an event -->
-<!-- We can derive all the behavior we need from an Observable -->
-<!-- With apologies to Hudak/Elliot, we're going to use Observables as our 
-  single abstraction for all time-based values -->
-We are going to use Observables as the single abstraction for all our time-based 
+Functional reactive programming (FRP) is an approach to working with time-based 
 values.
-But in doing so, we depart from the original domain model of functional reactive
-programming (FRP).
-FRP's first formulation presented two abstractions: Behavior and Event.
+FRP was first formulated by Conal Elliot and Paul Hudak in a paper that 
+proposed two abstractions: Behavior and Event.
 Behavior and Event both model time-based values.
-The difference between a Behavior and an Event is a distinction of _when_ the 
+The difference between a Behavior and an Event is a distinction of _when_ the
 value exists.
 
-### An aside about what we're doing with Observables
+A Behavior exists always and an Event exists sometimes.
+The classic example of this distinction is mouse position and mouse clicks.
+There is always a current value of the mouse position but there is only a last
+occurrence of the mouse click.
+When the presence of value is unbroken over time, then the value is said to be
+continuous.
+Values that are not continuous over time are said to be discrete.
+Behaviors are continuous over time and Events are discrete.
+
+Our pausable timer problem contains examples of both Behaviors and Events.
+The `connection` and `close` events are both discrete values over time.
+The number of current websocket connections is a continuous value over time.
+The former have last occurrences.
+The latter has a current value.
+The most precise definition of these things would treat them as different types.
+
+We are going to use one abstraction, the Observable, to represent both.
+An Observable is a stream of discrete values over time, practically equivalent
+to an Event.
+By conflating continuous and discrete values, we are going to be imprecise.
+Nonetheless, we can model everything as an Observable and still manage to derive
+the desired behavior.
+With apologies to Elliot and Hudak, let's continue.
+
+## III. Making time concrete
 
 > ...events may be combined with others, to an arbitrary degree of
 > complexity, thus factoring complex animation logic into semantically rich,
 > modular building blocks.
 
-&mdash; Conal Elliot ["The Essence and Origins of Functional Reactive
-Programming"](https://www.youtube.com/watch?v=j3Q32brCUAI&feature=youtu.be&t=4m21s),
-Lambda Jam 2015
+&mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
+
+Our first iteration of the pausable timer identified several time-dependent 
+values:
+
+- number of open connections
+- number of closed connections
+- number of currently open connections
+
+These values were used to detect when to pause the timer.
+Our first step will be to express this condition as an Observable.
+We can start by defining the smallest components of this condition.
+Then we can combine those components.
 
 <!--
-- The question is how were are going to represent these values that vary over time?
-- How do we
-- The answer is that we are going to use Observables
-- There is this other point that is just an academic point about the place that 
-  Observables have in functional reactive programming
-- Our use of Observables conflates two ideas: continuous and discrete time-based
-  values
-- 
+- Observables represent a timeline of value occurrences
+- In the first approach, the timeline was implied
+- The code checked for conditions that defined the occurrence and then responded
+  to that occurrence.
+- There was no thing that is these occurrences.
+- An Observable is the timeline
+- The Observable makes the timeline concrete
+- The Observable makes a timeline of value occurrences into a concrete thing 
+  like a number or a string.
+- Making time concrete is useful because then you can combine things into more
+  complex things.
+- What are we doing in this section?
+- What is the theme of this section?
+- We need to start solving the problem.
+- We know what are abstraction is and why we need to use it 
+- We know we need to abstract time-dependent value.
+- We know we are going to use Observables to represent time-dependent values.
+- We know that our timer is already a variable.
+- We know that the state of the timer depends on some other time-dependent 
+  values.
+- How do we go from time-dependent states to a timer?
+- What are the time-dependent values involved in the pausable timer behavior?
+  - total opened websocket connections
+  - total closed connections
+  - total current connections
+  - the no current connections state
+  - the paused state
+  - the timer itself
+- most of these values are functions of other values
+- most of these values are derived from other values
 -->
-Functional reactive programming is a programming idiom that 
-Functional reactive programming is an approach to programming that takes time
-into account.
-Functional reactive programming (FRP) is a programming idiom that defines things
-as things in time.
-Functional reactive programming is an approach to working with time-based 
-values. 
 
-We are going to use Observables as the single abstraction for all our time-based 
-values.
-<!--
-The Observable pattern inherits from the idea of functional reactive programming.
-The Observable pattern is descended from the functional reactive programming.
-Observables come from the context of functional reactive programming.
-Observables are often used as an example of functional reactive programming.
--->
-
-But in doing so, we depart from the original domain model of functional reactive
-programming (FRP).
-
-The Observables is related to FRP, so it is useful to understand these ideas.
-FRP's first formulation presented two abstractions: Behavior and Event.
-Behavior and Event both model time-based values.
-The difference between a Behavior and an Event is a distinction of _when_ the 
-value exists.
-
-The value of a Behavior exists always and the value of an Event exists 
-sometimes.
-
-A Behavior always has value for every moment in time.
-The value of a Behavior always exists
-Behaviors are continuous over time and Events are discrete.
-Continuous means that a value exists for every moment in time. 
-If time is a line, then a continuous value over time is also a line.
-The existence of value is unbroken over time.
-A Behavior always has a current value.
-
-Discrete means that there is no value for some moments in time.
-Discrete means that the existence of value is broken over time.
-Events have no current value, only a last occurrence.
-The classic example of this distinction is mouse position versus mouse clicks.
-There is always a current value of the mouse position but there is only a last
-occurrence of the mouse click.
-An Observable is a stream of discrete values, practically equivalent to an 
-Event.
-
-The pausable timer problem presents examples of both Behaviors and Events.
-The `connection` and `close` events are both Events.
-The number of current websocket connections is a Behavior, not an Event.
-The former have last occurrences. 
-The latter has a current value.
-Nonetheless, we can model everything as an Event (an Observable) and still 
-manage to derive the desired behavior.
-With apologies to Elliot and Hudak, let's continue.
-
-## Time things
+Representing value over time as a "thing" makes time concrete.
+Making time concrete is useful because concrete things can be combined with 
+other concrete things to make more concrete things.
 
 Create a `connection` event stream.
 
