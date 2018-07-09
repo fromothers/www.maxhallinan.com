@@ -48,7 +48,7 @@ We should stop the timer when there are no current websocket connections.
 To know the number of current connections, we must track the number of opened
 connections and the number of closed connections.
 These are the first pieces of global mutable state: counters that are
-incremented by the `connection` and `close` event handlers.
+incremented by the connection and close event handlers.
 
 {% highlight javascript %}
 let sessionStarts = 0;
@@ -233,18 +233,18 @@ Our program already defines some things, values like `sessionStarts` and
 But those definitions have not made our code less about doing.
 That is because `sessionStarts` and `sessionEnds` are imperfectly defined.
 We have defined them as numbers but they are numbers that vary over time.
-`sessionStarts` is incremented each time a `connection` event occurs.
-`sessionEnds` is incremented each time a `close` event occurs.
+`sessionStarts` is incremented each time a connection event occurs.
+`sessionEnds` is incremented each time a close event occurs.
 All of the doing in our program is an attempt to confront time-varying value.
 And all of the timer's behavior flows from that variance.
 `sessionStarts` and `sessionEnds` should not be defined simply as "number".
 They must be defined as "number that varies over time".
 
-Functional reactive programming (FRP) is an approach to working with time-based 
-values.
+Functional reactive programming (FRP) is an approach to working with 
+time-dependent values.
 FRP was first formulated by Conal Elliot and Paul Hudak in a paper that 
 proposed two abstractions: Behavior and Event.
-Behavior and Event both model time-based values.
+Behavior and Event both model time-dependent values.
 The difference between a Behavior and an Event is a distinction of _when_ the
 value exists.
 
@@ -258,7 +258,7 @@ Values that are not continuous over time are said to be discrete.
 Behaviors are continuous over time and Events are discrete.
 
 Our pausable timer problem contains examples of both Behaviors and Events.
-The `connection` and `close` events are both discrete values over time.
+The connection and close events are both discrete values over time.
 The number of current websocket connections is a continuous value over time.
 The former have last occurrences.
 The latter has a current value.
@@ -267,7 +267,7 @@ The most precise definition of these things would treat them as different types.
 We are going to use one abstraction, the Observable, to represent both.
 An Observable is a stream of discrete values over time, practically equivalent
 to an Event.
-By conflating continuous and discrete values, we are going to be imprecise.
+Conflating continuous and discrete values is imprecise.
 Nonetheless, we can model everything as an Observable and still manage to derive
 the desired behavior.
 With apologies to Elliot and Hudak, let's continue.
@@ -280,56 +280,39 @@ With apologies to Elliot and Hudak, let's continue.
 
 &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
 
-Our first iteration of the pausable timer identified several time-dependent 
-values:
+The "things" in our application will be defined as Observables.
+Sometimes an Observable already exists for the thing you are trying to define.
+For example, RxJs provides a ready-made definition of a timer Observable.
+When there is no ready-made Observable for the "thing" you are trying to define,
+then you must define your own Observable.
+One way to do this is to combine simple Observables to create complex ones.
 
-- number of open connections
+We're going to use Observables to define the "things" in our application.
+A pausable timer is the time-dependent "thing" that we want to define.
+When there is no ready-made Observable for the time-dependent value you are 
+modeling, you must define your own Observable.
+Observables are defined as functions of other Observables.
+Working with Observables is a game of combining the simple to create the 
+complex.
+
+We will define it as a function of other time-dependent values.
+But there is no ready-made pausable timer Observable.
+We must define it ourselves.
+Working with Observables is a game of building complex time-dependent values out 
+of simple ones.
+
+The game now is to define things as functions of other things.
+Work toward building a pausable timer by defining things as functions of other
+things.
+Combining simple things to create more complex things is the way to work with
+Observables.
+
+The pausable timer is a function of two time-dependent values:
+
+- number of opened connections
 - number of closed connections
-- number of currently open connections
 
-These values were used to detect when to pause the timer.
-Our first step will be to express this condition as an Observable.
-We can start by defining the smallest components of this condition.
-Then we can combine those components.
-
-<!--
-- Observables represent a timeline of value occurrences
-- In the first approach, the timeline was implied
-- The code checked for conditions that defined the occurrence and then responded
-  to that occurrence.
-- There was no thing that is these occurrences.
-- An Observable is the timeline
-- The Observable makes the timeline concrete
-- The Observable makes a timeline of value occurrences into a concrete thing 
-  like a number or a string.
-- Making time concrete is useful because then you can combine things into more
-  complex things.
-- What are we doing in this section?
-- What is the theme of this section?
-- We need to start solving the problem.
-- We know what are abstraction is and why we need to use it 
-- We know we need to abstract time-dependent value.
-- We know we are going to use Observables to represent time-dependent values.
-- We know that our timer is already a variable.
-- We know that the state of the timer depends on some other time-dependent 
-  values.
-- How do we go from time-dependent states to a timer?
-- What are the time-dependent values involved in the pausable timer behavior?
-  - total opened websocket connections
-  - total closed connections
-  - total current connections
-  - the no current connections state
-  - the paused state
-  - the timer itself
-- most of these values are functions of other values
-- most of these values are derived from other values
--->
-
-Representing value over time as a "thing" makes time concrete.
-Making time concrete is useful because concrete things can be combined with 
-other concrete things to make more concrete things.
-
-Create a `connection` event stream.
+To define these values, we start by creating a stream of websockets.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -340,7 +323,7 @@ const head = xs => xs[0];
 const socket$ = Rx.fromEvent(server, `connection`).pipe(map(head));
 {% endhighlight %}
 
-Sum the number of `connection` events.
+Opened connections are counted by summing the stream.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -355,8 +338,20 @@ const increment = add(1);
 const connectionCount$ = socket$.pipe(scan(increment, 0));
 {% endhighlight %}
 
-Create a close event stream.
-Introduce `flatMap`.
+Counting closed connections is a little more complicated.
+The close event is emitted by the _socket_, not the server.
+Since we already have a stream of sockets, we might be tempted to use `map`.
+
+{% highlight javascript %}
+const close$ = socket$.pipe(
+  map((socket) => Rx.fromEvent(socket, `close`)),
+);
+{% endhighlight %}
+
+The result is a stream of streams, one stream for each socket.
+But we want a single stream of close events.
+We should use `flatMap` instead of `map`.
+`flatMap` merges all of the sub-streams into one stream of close events.
 
 {% highlight javascript %}
 const { flatMap, map, scan, } = require(`rxjs/operators`);
@@ -366,7 +361,7 @@ const close$ = socket$.pipe(
 );
 {% endhighlight %}
 
-Sum the number of close events.
+Again, we can count occurrences of the event by summing the stream.
 
 {% highlight javascript %}
 const zero$ = Rx.of(0);
@@ -382,8 +377,7 @@ Count the number of current connections.
 {% highlight javascript %}
 const subtract = (x, y) => x - y;
 
-// the current number of open sockets
-const activeCount$ = Rx.combineLatest(
+const currentCount$ = Rx.combineLatest(
   [ connectionCount$, closeCount$, ],
   subtract
 );
@@ -399,7 +393,7 @@ Doesn't need to know about any of the other connections.
 {% highlight javascript %}
 const isPaused = (count) => 1 > count;
 
-const pause$ = activeCount$.pipe(map(isPaused));
+const pause$ = currentCount$.pipe(map(isPaused));
 {% endhighlight %}
 
 When the timer is paused, switch to an Observable that never produces a value.
@@ -425,3 +419,9 @@ server.on(`connection`, () => {
   });
 });
 {% endhighlight %}
+<!--
+Representing value over time as a "thing" makes time concrete.
+Making time concrete is useful because concrete things can be combined with 
+other concrete things to make more concrete things.
+-->
+
