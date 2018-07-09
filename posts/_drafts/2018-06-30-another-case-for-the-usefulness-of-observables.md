@@ -240,9 +240,9 @@ And all of the timer's behavior flows from that variance.
 `sessionStarts` and `sessionEnds` should not be defined simply as "number".
 They must be defined as "number that varies over time".
 
-Functional reactive programming (FRP) is an approach to working with 
+Functional reactive programming (FRP) is an approach to working with
 time-dependent values.
-FRP was first formulated by Conal Elliot and Paul Hudak in a paper that 
+FRP was first formulated by Conal Elliot and Paul Hudak in a paper that
 proposed two abstractions: Behavior and Event.
 Behavior and Event both model time-dependent values.
 The difference between a Behavior and an Event is a distinction of _when_ the
@@ -280,39 +280,59 @@ With apologies to Elliot and Hudak, let's continue.
 
 &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
 
-The "things" in our application will be defined as Observables.
-Sometimes an Observable already exists for the thing you are trying to define.
-For example, RxJs provides a ready-made definition of a timer Observable.
-When there is no ready-made Observable for the "thing" you are trying to define,
-then you must define your own Observable.
-One way to do this is to combine simple Observables to create complex ones.
+How do we do this?
+We have a timer Observable.
+We want a pausable timer Observable.
+RxJs doesn't give us a ready-made pausable timer.
+So we must create that Observable.
+Observables are created in two ways.
+Observables can be created with Observables constructors.
+The constructor `of(1)` will create an Observable that produces the value 1.
+Or we can create Observables that are functions of other Observables.
+Or we can create Observables that are defined as functions of other Observables.
+This approach treats Observables as building blocks.
+Simple Observables are combined to create complex Observables.
 
-We're going to use Observables to define the "things" in our application.
-A pausable timer is the time-dependent "thing" that we want to define.
-When there is no ready-made Observable for the time-dependent value you are 
-modeling, you must define your own Observable.
-Observables are defined as functions of other Observables.
-Working with Observables is a game of combining the simple to create the 
-complex.
+We are going to break the pausable timer into its smallest, time-dependent 
+components.
+We'll start with the most fundamental time-dependent values.
+We'll capture these time-dependent values in the Observable interface.
+Then we'll start working toward a definition of the pausable-timer Observable
+by combining these fundamental pieces to create more complex parts of the 
+timer behavior.
 
-We will define it as a function of other time-dependent values.
-But there is no ready-made pausable timer Observable.
-We must define it ourselves.
-Working with Observables is a game of building complex time-dependent values out 
-of simple ones.
+Observables remove the need to update a time-dependent value each time it 
+changes.
+Each time we update that value, we have to re-run functions of that value.
+Observables keep all dependent values current when a value changes.
+This makes it easier to layer time-dependent into incremental layers of 
+complexity.
+This makes it easier to define time-dependent values as functions of other 
+values.
+Making the time-variance part of the thing itself, we can build simple 
+time-varying things into complex time-varying things.
+We maintain our focus on definitions of things.
+Things that make the ephemeral nature of events in time into a concrete thing
+that can be used to build more things.
 
-The game now is to define things as functions of other things.
-Work toward building a pausable timer by defining things as functions of other
-things.
-Combining simple things to create more complex things is the way to work with
-Observables.
-
-The pausable timer is a function of two time-dependent values:
+Our first iteration of the pausable timer started with two values:
 
 - number of opened connections
 - number of closed connections
 
-To define these values, we start by creating a stream of websockets.
+The entire pausable behavior was based on these two values.
+In this sense, the pausable timer is a function of these values.
+
+To define a pausable timer as a function of those values, we must define those
+values.
+But there is no ready-made Observable that gives us a number of opened or closed
+connections.
+In fact, the numbers are themselves functions of the `connection` and `close`
+event streams.
+
+Our definition of a pausable timer begins with these two event streams.
+RxJs gives us a `fromEvent` constructor that creates a stream of events emitted
+by any object implementing the EventEmitter interface.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -320,10 +340,11 @@ const { map, } = require(`rxjs/operators`);
 
 const head = xs => xs[0];
 
-const socket$ = Rx.fromEvent(server, `connection`).pipe(map(head));
+const connection$ = Rx.fromEvent(server, `connection`);
 {% endhighlight %}
 
-Opened connections are counted by summing the stream.
+Then the connections can be counted by summing the stream of `connection` 
+events.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -344,13 +365,14 @@ Since we already have a stream of sockets, we might be tempted to use `map`.
 
 {% highlight javascript %}
 const close$ = socket$.pipe(
+  map(head),
   map((socket) => Rx.fromEvent(socket, `close`)),
 );
 {% endhighlight %}
 
-The result is a stream of streams, one stream for each socket.
-But we want a single stream of close events.
-We should use `flatMap` instead of `map`.
+But the result is a stream of streams, one stream for each socket.
+We want a single stream of close events.
+So we should use `flatMap` instead of `map`.
 `flatMap` merges all of the sub-streams into one stream of close events.
 
 {% highlight javascript %}
@@ -372,7 +394,8 @@ const closeCount$ = Rx.merge(
 );
 {% endhighlight %}
 
-Count the number of current connections.
+The number of current connections is the difference between the number of opened 
+connections and closed connections.
 
 {% highlight javascript %}
 const subtract = (x, y) => x - y;
@@ -421,7 +444,7 @@ server.on(`connection`, () => {
 {% endhighlight %}
 <!--
 Representing value over time as a "thing" makes time concrete.
-Making time concrete is useful because concrete things can be combined with 
+Making time concrete is useful because concrete things can be combined with
 other concrete things to make more concrete things.
 -->
 
