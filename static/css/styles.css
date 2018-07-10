@@ -62,9 +62,19 @@
 }
 
 body {
-  color: #222;
+  background-color: #fdfdfd;
+  color: #333; /* I can't decide if #222 or #333 is more legible */
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 16px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #222;
 }
 
 a,
@@ -130,7 +140,7 @@ pre.highlight {
 }
 
 .post blockquote {
-  color:#6a737d;
+  color: #666;
   border-left: 0.262rem solid #dfe2e5;
   margin: 0 0 1.5rem;
   padding: 0 0 0 1rem
