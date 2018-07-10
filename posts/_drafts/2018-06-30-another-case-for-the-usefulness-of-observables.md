@@ -280,18 +280,19 @@ With apologies to Elliot and Hudak, let's continue.
 
 &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
 
-How do we do this?
-We have a timer Observable.
-We want a pausable timer Observable.
-RxJs doesn't give us a ready-made pausable timer.
-So we must create that Observable.
+We're using the Observable library RxJs.
+RxJs provides some ready-made Observables like `Rx.timer`.
+But RxJs does not provide a ready-made pausable timer.
+Somehow we must create that Observable ourselves.
+
 Observables are created in two ways.
-Observables can be created with Observables constructors.
-The constructor `of(1)` will create an Observable that produces the value 1.
-Or we can create Observables that are functions of other Observables.
-Or we can create Observables that are defined as functions of other Observables.
+We can use a constructor to create an Observable.
+For example, the constructor [`Rx.of('foo')`](https://rxjs-dev.firebaseapp.com/api/index/of) 
+will create a stream of one value, `'foo'`.
+Or we can create an Observable by combining and transforming other Observables.
+<!--Or we can create an Observable by defining a function of one or more streams.-->
 This approach treats Observables as building blocks.
-Simple Observables are combined to create complex Observables.
+<!--Simple Observables are combined and transformed to create complex Observables.-->
 
 We are going to break the pausable timer into its smallest, time-dependent 
 components.
@@ -331,8 +332,9 @@ In fact, the numbers are themselves functions of the `connection` and `close`
 event streams.
 
 Our definition of a pausable timer begins with these two event streams.
-RxJs gives us a `fromEvent` constructor that creates a stream of events emitted
-by any object implementing the EventEmitter interface.
+RxJs gives us a [`fromEvent`](https://rxjs-dev.firebaseapp.com/api/index/fromEvent) 
+constructor that creates a stream of events emitted by any object implementing 
+the EventEmitter interface.
 
 {% highlight javascript %}
 const Rx = require(`rxjs`);
@@ -361,7 +363,8 @@ const connectionCount$ = socket$.pipe(scan(increment, 0));
 
 Counting closed connections is a little more complicated.
 The close event is emitted by the _socket_, not the server.
-Since we already have a stream of sockets, we might be tempted to use `map`.
+Since we already have a stream of sockets, we might be tempted to use 
+[`map`](https://rxjs-dev.firebaseapp.com/api/operators/map).
 
 {% highlight javascript %}
 const close$ = socket$.pipe(
@@ -372,7 +375,8 @@ const close$ = socket$.pipe(
 
 But the result is a stream of streams, one stream for each socket.
 We want a single stream of close events.
-So we should use `flatMap` instead of `map`.
+So we should use [`flatMap`](https://rxjs-dev.firebaseapp.com/api/operators/flatMap) 
+instead of `map`.
 `flatMap` merges all of the sub-streams into one stream of close events.
 
 {% highlight javascript %}
@@ -437,33 +441,34 @@ And a new timer instance was created each time the timer appeared to start.
 
 Conceptually, this approach is sound.
 But it led to some complicated state management.
-Every time we created or destroyed the timer Observable, we had to remember to 
-subscribe and unsubscribe the Observable.
+Every time we paused the Observable, we had to remember to unsubscribe.
 If we didn't, the timer would continue to run.
-We can use `switchMap` do to the same thing.
-The `switchMap` operator enables you to 
-<!--
-Define the condition for pausing the timer.
-Emphasize that we're moving logic out of the connection handler.
-The goal is a logic-less connection handler, one that doesn't know if the
-timer is paused or not.
-Doesn't know that the timer can be paused.
-Doesn't need to know about any of the other connections.
--->
-
-When the timer is paused, switch to an Observable that never produces a value.
-When the timer is not paused, switch to a new instance of the timer.
-Introduce `switchMap`.
-Introduce `Rx.NEVER`.
+We can use [`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap) 
+do to the same thing.
+The `switchMap` operator enables us to create a stream that switches between one
+or more Observables.
+When our pause condition is `false`, we'll switch from our timer Observable to 
+an Observable that never emits a value.
+One of the great advantages of `switchMap` is that it automatically unsubscribes
+from the timer Observable when we switch to the paused state.
 
 {% highlight javascript %}
 const tick$ = pause$.pipe(
   switchMap(isPaused => isPaused ? Rx.NEVER : Rx.timer(0, 10000)),
   multicast(new Subject()),
 );
+
+// start execution of the multicast Observable
+ticks$.connect();
 {% endhighlight %}
 
 Use pausable timer in the websocket session.
+Now each websocket session can subscribe to the pausable timer. 
+We've moved all of the logic out of the connection and close event handlers.
+The event handlers don't know anything about when the timer ticks.
+They don't know that the timer is pausable.
+And they don't know how the timer pauses.
+The event handlers just need to know they should react when a new tick occurs.
 
 {% highlight javascript %}
 server.on(`connection`, () => {
@@ -474,9 +479,3 @@ server.on(`connection`, () => {
   });
 });
 {% endhighlight %}
-<!--
-Representing value over time as a "thing" makes time concrete.
-Making time concrete is useful because concrete things can be combined with
-other concrete things to make more concrete things.
--->
-
