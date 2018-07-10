@@ -394,7 +394,18 @@ const closeCount$ = Rx.merge(
 );
 {% endhighlight %}
 
-The number of current connections is the difference between the number of opened 
+This code might look unexpectedly complicated.
+We must start with a stream of `0` to give `closeCount$` an initial value.
+If we define `closeCount$` as just `close$.pipe(scan(increment, 0))`, then 
+`closeCount$` will not emit a value until _after_ the first close event occurs.
+We need it to emit a value of `0` immediately, and increment this value by one
+for each close event.
+
+We have defined are two fundamental time-dependent values: `connectionCount$` 
+and `closeCount$`.
+Now we can start to define the pausable timer as a function of those values.
+The timer is should pause when the number of current connections is less than 1.
+The number of current connections is a function of the difference between opened
 connections and closed connections.
 
 {% highlight javascript %}
@@ -406,18 +417,39 @@ const currentCount$ = Rx.combineLatest(
 );
 {% endhighlight %}
 
-Define the condition for pausing the timer.
-Emphasize that we're moving logic out of the connection handler.
-The goal is a logic-less connection handler, one that doesn't know if the
-timer is paused or not.
-Doesn't know that the timer can be paused.
-Doesn't need to know about any of the other connections.
+The paused condition is then a function of the current connections count.
 
 {% highlight javascript %}
 const isPaused = (count) => 1 > count;
 
 const pause$ = currentCount$.pipe(map(isPaused));
 {% endhighlight %}
+
+`pause$` is a stream of booleans.
+The latest value in the stream is `true` when the timer is paused and `false` 
+when it is not.
+
+Now that we know when to pause the timer, how do we pause it?
+Recall that our first iteration did not truly pause a timer.
+Instead, we created and destroyed timers whenever the paused state changed.
+The last timer instance was destroyed every time the timer appeared to pause.
+And a new timer instance was created each time the timer appeared to start.
+
+Conceptually, this approach is sound.
+But it led to some complicated state management.
+Every time we created or destroyed the timer Observable, we had to remember to 
+subscribe and unsubscribe the Observable.
+If we didn't, the timer would continue to run.
+We can use `switchMap` do to the same thing.
+The `switchMap` operator enables you to 
+<!--
+Define the condition for pausing the timer.
+Emphasize that we're moving logic out of the connection handler.
+The goal is a logic-less connection handler, one that doesn't know if the
+timer is paused or not.
+Doesn't know that the timer can be paused.
+Doesn't need to know about any of the other connections.
+-->
 
 When the timer is paused, switch to an Observable that never produces a value.
 When the timer is not paused, switch to a new instance of the timer.
