@@ -259,7 +259,7 @@ Behaviors are continuous over time and Events are discrete.
 
 Our pausable timer problem contains examples of both Behaviors and Events.
 The connection and close events are both discrete values over time.
-The number of current websocket connections is a continuous value over time.
+The number of current connections is a continuous value over time.
 The former have last occurrences.
 The latter has a current value.
 The most precise definition of these things would treat them as different types.
@@ -280,19 +280,64 @@ With apologies to Elliot and Hudak, let's continue.
 
 &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
 
-We're using the Observable library RxJs.
-RxJs provides some ready-made Observables like `Rx.timer`.
-But RxJs does not provide a ready-made pausable timer.
-Somehow we must create that Observable ourselves.
+Our strategy is to replace instructions with definitions.
+Definitions are expressed as functions, one value being defined as the function
+of another value.
+The pausable timer is a function of two time-dependent values: connection counts
+and connection ends.
+To define the timer, we must first define those values.
 
+<!--
+Our strategy is to replace instructions with definitions.
+Our definitions will be expressed as functions, one value being defined as a 
+function of another value.
+Some of our values are time-dependent.
+So any 
+The value we want to define is a pausable timer.
+Our pausable timer is a function of two time-dependent values: connection counts
+and connections ends.
+How do we define a pausable timer as a function of some values?
+-->
+
+<!--
+How do we define a pausable timer as a thing?
+The timer is already an Observable.
+How do we define a pausable timer Observable?
+Shift from being to doing, from instructions to definitions, we must now ask 
+how do we define a pausable timer?
+The pausable timer is a time-based value
+We define values as functions of other values.
+Observables are values over time.
+We can defines Observables as functions of other Observables.
+Observables can be defined as functions of other Observables.
+How do we define a pausable timer as a function of some values?
+Our pausable timer is a function of two time-dependent values: connection counts
+and connection ends.
+To define the pausable timer as a function of these values, we must define 
+those values first.
+-->
+
+<!--
+How do we replace our instructions with a definition of a thing?
+
+How do we define a pausable timer as a "thing" and not as instructions?
+
+Our goal is to define a pausable timer as a function of some time-dependent
+values.
+We can shift our program from doing to being by modeling time-dependent values 
+as Observables.
+
+The Observable library RxJs provides some ready-made Observables like 
+`Rx.timer`.
+But RxJs does not provide a ready-made _pausable_ timer.
+Somehow we must create that Observable ourselves.
 Observables are created in two ways.
 We can use a constructor to create an Observable.
 For example, the constructor [`Rx.of('foo')`](https://rxjs-dev.firebaseapp.com/api/index/of) 
 will create a stream of one value, `'foo'`.
-Or we can create an Observable by combining and transforming other Observables.
-<!--Or we can create an Observable by defining a function of one or more streams.-->
+Or we can create a new Observable by combining and transforming other 
+Observables.
 This approach treats Observables as building blocks.
-<!--Simple Observables are combined and transformed to create complex Observables.-->
 
 We are going to break the pausable timer into its smallest, time-dependent 
 components.
@@ -323,42 +368,28 @@ Our first iteration of the pausable timer started with two values:
 
 The entire pausable behavior was based on these two values.
 In this sense, the pausable timer is a function of these values.
+-->
 
-To define a pausable timer as a function of those values, we must define those
-values.
-But there is no ready-made Observable that gives us a number of opened or closed
-connections.
-In fact, the numbers are themselves functions of the `connection` and `close`
-event streams.
-
-Our definition of a pausable timer begins with these two event streams.
+There is no ready-made Observable that counts opened and closed connections.
+Those numbers are themselves functions of the `'connection'` and `'close'` 
+events. 
 RxJs gives us a [`fromEvent`](https://rxjs-dev.firebaseapp.com/api/index/fromEvent) 
 constructor that creates a stream of events emitted by any object implementing 
 the EventEmitter interface.
+We can use `fromEvent` to create a stream of `'connection'` events.
 
 {% highlight javascript %}
-const Rx = require(`rxjs`);
-const { map, } = require(`rxjs/operators`);
-
-const head = xs => xs[0];
-
 const connection$ = Rx.fromEvent(server, `connection`);
 {% endhighlight %}
 
-Then the connections can be counted by summing the stream of `connection` 
-events.
+Then the socket connections can be counted by summing that stream.
 
 {% highlight javascript %}
-const Rx = require(`rxjs`);
-const { map, scan, } = require(`rxjs/operators`);
-
-// ...
-
 const add = (n1) => (n2) => n1 + n2;
 
-const increment = add(1);
+const addOne = add(1);
 
-const connectionCount$ = socket$.pipe(scan(increment, 0));
+const connectionCount$ = connection$.pipe(scan(addOne, 0));
 {% endhighlight %}
 
 Counting closed connections is a little more complicated.
@@ -367,7 +398,9 @@ Since we already have a stream of sockets, we might be tempted to use
 [`map`](https://rxjs-dev.firebaseapp.com/api/operators/map).
 
 {% highlight javascript %}
-const close$ = socket$.pipe(
+const head = xs => xs[0];
+
+const close$ = connections$.pipe(
   map(head),
   map((socket) => Rx.fromEvent(socket, `close`)),
 );
@@ -380,8 +413,6 @@ instead of `map`.
 `flatMap` merges all of the sub-streams into one stream of close events.
 
 {% highlight javascript %}
-const { flatMap, map, scan, } = require(`rxjs/operators`);
-
 const close$ = socket$.pipe(
   flatMap((socket) => Rx.fromEvent(socket, `close`)),
 );
