@@ -423,3 +423,116 @@ server.on(`connection`, () => {
   });
 });
 {% endhighlight %}
+
+<!--
+Connect
+Disconnect
+Explorable explanation ideas
+
+- visualize the difference between an Event and a Behavior
+  - Use some kind of timeline
+- visualize continuous versus discontinuous execution context
+- do something to make the code examples more explorable
+    - can open up the context of the code example (like github diffs)
+- visualize the building block approach to modeling the pausable timer
+- in any of the code examples, you can see the whole file
+- what about running the file and seeing the state?
+- push a button to add a connection to the stream
+- see what effect that has on each of the downstream Observables
+-->
+
+<!--
+// hide everything within the code tag
+// fetch the source code
+// render only the lines between start and stop
+// when clicked on button, render lines above
+// when clicked on button, render lines below
+// "show context" button
+// "show context" button
+// does it show the whole file? it should, i think
+// but isn't showing data more important here than showing the whole code?
+// both are important, i think
+// this is one good thing to prototype while i think about how to show more data
+// marble diagrams are a good way to show this
+// do something with marble diagrams
+// is it possible to have too many marble diagrams?
+// basically have a stream of connection and close events
+// user can click these streams to add an event
+// when the user clicks the stream, then they can see the data change within the 
+// stream
+// maybe it's not inline but floating on the side
+// as you pass through different sections, you start to accumulate different
+// stuff
+// these Observables start to stack
+// maybe show data in and data out?
+
+build this in a sidebar
+maybe a sidebar that pulls out?
+
+------------------------------------
+14:00:01 [ EventEmitter {...}, Server {...} ]
+14:00:02 [ EventEmitter {...}, Server {...} ]
+14:00:03 [ EventEmitter {...}, Server {...} ] <- latest occurrence
+------------------------------------
+...
+3
+4
+5
+6
+7 <- latest occurrence
+-----------------------------------
+...
+2
+3
+4
+5 <- latest occurrence
+-----------------------------------
+0
+1
+2
+2
+2 <- latest occurrence
+-----------------------------------
+true
+false
+false
+false
+false <- latest occurrence
+------------------------------------
+Rx.None
+Rx.Timer
+Rx.Timer
+Rx.Timer
+Rx.Timer <- latest occurrence
+Rx.None
+-----------------------------------
+tick
+tick
+tick
+-----------------------------------
+
+`connection`
++ ------------------------------|->
+
+`close`
++ ------------------------------|->
+const foo = connection$.pipe(scan(addOne, 0));
+-----------------------------------
+
+<div id="1">
+  <code></code
+</div>
+<script>
+  React.insert(
+    <App start={1} stop={20} />
+    document.querySelectorAll('#1')
+  );
+  React.insert(
+    <App 
+      documentHref='/scripts/foo/bar/baz'
+      theme='foobarbaz'
+      lines=['1', '21-200']
+    document.querySelectorAll('#1')
+  );
+</script>
+-->
