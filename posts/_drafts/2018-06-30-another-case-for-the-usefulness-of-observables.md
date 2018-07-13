@@ -519,6 +519,10 @@ tick
 const foo = connection$.pipe(scan(addOne, 0));
 -----------------------------------
 
+visualize the data flow as a graph
+allow to increment the number of connection and close events
+make the data of each node in the graph visible
+
 <div id="1">
   <code></code
 </div>
