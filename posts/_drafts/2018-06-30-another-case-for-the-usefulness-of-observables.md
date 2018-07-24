@@ -198,7 +198,7 @@ server.on(`connection`, (socket) => {
 });
 {% endhighlight %}
 
-When the last connection closes, the timer is disposed by calling
+When the last connection closes, the timer is destroyed by calling
 `Subscription#unsubscribe`.
 If `unsubscribe` is not called, the timer will continue to run in the
 background.
