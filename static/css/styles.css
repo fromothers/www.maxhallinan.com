@@ -101,8 +101,28 @@ pre.highlight {
   padding: 1rem;
 }
 
+/*
 .post {
   max-width: 53.291em;
+  padding: 1.953rem 0;
+}
+*/
+
+.post-container,
+.post-plain h1, 
+.post-plain h2, 
+.post-plain h3, 
+.post-plain h4, 
+.post-plain h5, 
+.post-plain h6, 
+.post-plain p, 
+.post-plain blockquote,
+.post-plain figure,
+.post-plain pre {
+  max-width: 53.291rem;
+}
+
+.post {
   padding: 1.953rem 0;
 }
 
@@ -113,7 +133,7 @@ pre.highlight {
 .post h5, 
 .post h6 {
   border-bottom: 1px solid #eee;
-  line-height: 1.2em;
+  line-height: 1.2rem;
   margin: 0 0 1rem;
   padding: 0 0 0.492rem;
 }
@@ -131,7 +151,7 @@ pre.highlight {
 }
 
 .post p {
-  line-height: 1.5em;
+  line-height: 1.5rem;
   margin: 0 0 1.5rem;
 }
 
@@ -147,9 +167,9 @@ pre.highlight {
 }
 
 .post pre {
-  max-width: 100%;
   overflow: hidden;
   overflow-x: scroll;
+  width: 100%;
 }
 
 .post p code {
@@ -185,4 +205,8 @@ pre.highlight {
 
 .license-icon {
   text-decoration: none;
+}
+
+#observables-explorable-1 {
+  margin: 0 0 1.5rem;
 }
