@@ -15,7 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: Max Hallinan 
 author: Max Hallinan
-email: maxhallinan@riseup.net
+email: contact@maxhallinan.com
 description: ""
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
