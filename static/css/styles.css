@@ -101,28 +101,8 @@ pre.highlight {
   padding: 1rem;
 }
 
-/*
 .post {
   max-width: 53.291em;
-  padding: 1.953rem 0;
-}
-*/
-
-.post-container,
-.post-plain h1, 
-.post-plain h2, 
-.post-plain h3, 
-.post-plain h4, 
-.post-plain h5, 
-.post-plain h6, 
-.post-plain p, 
-.post-plain blockquote,
-.post-plain figure,
-.post-plain pre {
-  max-width: 53.291rem;
-}
-
-.post {
   padding: 1.953rem 0;
 }
 

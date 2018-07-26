@@ -1,5 +1,5 @@
 ---
-layout: post-plain
+layout: post
 published: true
 title: "Another case for the usefulness of Observables"
 tags: [explorable, javascript, programming]
@@ -423,8 +423,6 @@ server.on(`connection`, () => {
   });
 });
 {% endhighlight %}
-
-## Watch it work
 
 <div style="margin: 0 0 1.5rem;" id="observables-explorable-1"></div>
 
