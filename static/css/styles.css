@@ -29,32 +29,6 @@
   0.41em
   0.328em
   0.262em
-
-  1.5:1.25
-
-  53.291em
-  42.633em
-  34.106em
-  27.285em
-  21.828em
-  17.462em
-  13.97em
-  11.176em
-  8.941em
-  7.153em
-  5.722em
-  4.578em
-  3.662em
-  2.93em
-  2.344em
-  1.875em
-  1.5em
-  1.2em
-  0.96em
-  0.768em
-  0.614em
-  0.492em
-  0.393em
 */
 
 /*
@@ -96,6 +70,11 @@ pre,
   background: #f1f1f1;
   font-family: Menlo, monospace;
   font-size: 0.8rem;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 .container {
@@ -179,6 +158,10 @@ pre,
 
 .post-body figure {
   margin: 0 0 1.5rem;
+}
+
+.post-body img {
+  margin: 0 auto;
 }
 
 .post-body pre {
