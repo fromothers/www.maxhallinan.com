@@ -1,0 +1,14 @@
+- name: ascott1/bigSlide.js 
+  url: https://github.com/ascott1/bigSlide.js/commit/903b68643f492590c2ebbc5f963250c9bae80981
+- name: corysimmons/scrollTrigger.js
+  url: https://github.com/corysimmons/scrollTrigger.js/commit/9894d854077666f1f65ebc237ec10fadf2cadecb
+- name: reactjs/redux
+  url: https://github.com/reactjs/redux/commits?author=maxhallinan
+- name: sindresorhus/split-at
+  url: https://github.com/sindresorhus/split-at/commit/a5c2a4fe65c1cad96600c8826daf4a6339dc2c1b
+- name: sindresorhus/strip-css-comments
+  url: https://github.com/sindresorhus/strip-css-comments/commit/130c41cf66dfee858b5426a05c0d45f8e9afddbb
+- name: steveukx/git-js
+  url: https://github.com/steveukx/git-js/commits?author=maxhallinan
+- name: yeoman/configstore
+  url: https://github.com/yeoman/configstore/commits?author=maxhallinan

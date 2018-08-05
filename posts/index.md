@@ -5,5 +5,4 @@ title: Posts
 
 ## Posts
 
-{% include post-list.html %}
-
+{% include posts-list.html %}

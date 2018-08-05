@@ -102,6 +102,7 @@ pre,
 
 .post {
   max-width: 100%;
+  padding: 0.512rem 0;
 }
 
 .post-header {
@@ -237,9 +238,14 @@ pre.highlight {
   padding: 1px 5px;
 }
 
-@media only screen and (min-width: 40.063rem) {}
+@media only screen and (min-width: 40.063rem) {
+}
 
 @media only screen and (min-width: 64.063rem) {
+  .post {
+    padding: 0.8rem 0;
+  }
+
   .post-title {
     font-size: 1.563rem;
     line-height: 1.25em;

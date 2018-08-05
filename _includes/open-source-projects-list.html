@@ -1,0 +1,10 @@
+<ul>
+{% for project in site.data.open-source-projects %}
+  <li>
+    <a href="{{project.url}}">
+      {{project.name}}
+    </a>
+    &ndash; {{project.description}}
+  </li>
+{% endfor %}
+</ul>

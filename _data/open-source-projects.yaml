@@ -1,0 +1,24 @@
+- description: A Brainfuck interpeter implemented in JavaScript. 
+  name: brunfaick
+  url: https://github.com/maxhallinan/brunfaick 
+- description: An interactive CLI for batch deleting local branches.
+  name: git-chipper
+  url: https://github.com/maxhallinan/git-chipper
+- description: A higher-order function that proxies context to context-free functions.
+  name: kontext
+  url: https://github.com/maxhallinan/kontext
+- description: A utility for generating Redux action creators.
+  name: kreighter
+  url: https://github.com/maxhallinan/kreighter
+- description: Format Kindle clippings as JSON.
+  name: my-clippings-to-json
+  url: https://github.com/maxhallinan/my-clippings-to-json
+- description: A utility for creating terse Redux reducers.
+  name: redeuceur
+  url: https://github.com/maxhallinan/redeuceur
+- description: https://github.com/maxhallinan/reshep
+  name: reshep
+  url: A higher-order component that "reshapes" a React component props object. 
+- description: Embed selectors in a Redux state tree. 
+  name: zelektree
+  url: https://github.com/maxhallinan/zelektree
