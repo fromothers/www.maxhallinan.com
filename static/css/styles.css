@@ -57,13 +57,17 @@
   0.393em
 */
 
+/*
+ * Base
+ */
+
 * {
   box-sizing: border-box;
 }
 
 body {
   background-color: #fdfdfd;
-  color: #333; /* I can't decide if #222 or #333 is more legible */
+  color: #333;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 16px;
 }
@@ -80,7 +84,7 @@ h6 {
 a,
 a:active,
 a:visited {
-  color: #222;
+  color: #333;
   text-decoration: underline;
 }
 
@@ -92,6 +96,118 @@ pre,
   font-size: 0.8rem;
 }
 
+/*
+ * Post
+ */
+
+.post {
+  max-width: 100%;
+}
+
+.post-header {
+  margin: 0 0 1.5rem;
+}
+
+.post-title {
+  border-bottom: 1px solid #dfe2e5;
+  font-size: 1.25rem;
+  line-height: 1.25em;
+  margin: 0 0 0.8rem;
+  padding: 0 0 0.492rem;
+}
+
+.post-date {
+  font-size: 1rem;
+  line-height: 1em;
+  margin: 0;
+}
+
+.post-body {
+  padding-bottom: 1rem;
+}
+
+.post-body h1, 
+.post-body h2, 
+.post-body h3, 
+.post-body h4, 
+.post-body h5, 
+.post-body h6 {
+  border-bottom: 1px solid #dfe2e5;
+  margin: 0 0 1rem;
+  padding: 0 0 0.492rem;
+}
+
+.post-body h1 {
+  font-size: 1.25rem;
+  line-height: 1.25em;
+}
+
+.post-body h2, 
+.post-body h3, 
+.post-body h4, 
+.post-body h5, 
+.post-body h6 {
+  font-size: 1rem;
+  line-height: 1.25em;
+}
+
+.post-body p {
+  font-size: 1rem;
+  line-height: 1.5em;
+  margin: 0 0 1.5rem;
+}
+
+.post-body p code {
+  background-color: #eff0f1;
+  padding: 1px 2px;
+}
+
+.post-body blockquote {
+  color: #333;
+  border-left: 0.262rem solid #dfe2e5;
+  margin: 0 0 1.5rem;
+  padding: 0 0 0 1rem
+}
+
+.post-body figure {
+  margin: 0 0 1.5rem;
+}
+
+.post-body pre {
+  max-width: 100%;
+  overflow: hidden;
+  overflow-x: scroll;
+}
+
+.post-footer {
+  border-top: 1px solid #dfe2e5;
+  font-size: 0.96rem;
+  padding: 1rem 0 0 0;
+}
+
+/*
+ * Site Header
+ */
+
+.header-title {
+  font-size: 1.25rem;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.header-nav {
+  display: block;
+  font-size: 1rem;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Syntax Highlighting
+ */
+
 .highlight {
   margin-left: 0;
   margin-right: 0;
@@ -101,61 +217,9 @@ pre.highlight {
   padding: 1rem;
 }
 
-.post {
-  max-width: 53.291em;
-  padding: 1.953rem 0;
-}
-
-.post h1, 
-.post h2, 
-.post h3, 
-.post h4, 
-.post h5, 
-.post h6 {
-  border-bottom: 1px solid #eee;
-  line-height: 1.2em;
-  margin: 0 0 1rem;
-  padding: 0 0 0.492rem;
-}
-
-.post h1 {
-  font-size: 1.563rem;
-}
-
-.post h2 {
-  font-size: 1.25rem;
-}
-
-.post h3 {
-  font-size: 1rem;
-}
-
-.post p {
-  line-height: 1.5em;
-  margin: 0 0 1.5rem;
-}
-
-.post figure {
-  margin: 0 0 1.5rem;
-}
-
-.post blockquote {
-  color: #666;
-  border-left: 0.262rem solid #dfe2e5;
-  margin: 0 0 1.5rem;
-  padding: 0 0 0 1rem
-}
-
-.post pre {
-  max-width: 100%;
-  overflow: hidden;
-  overflow-x: scroll;
-}
-
-.post p code {
-  background-color: #eff0f1;
-  padding: 1px 2px;
-}
+/*
+ * Homepage
+ */
 
 .post-list__item > * {
   display: inline-block;
@@ -173,16 +237,39 @@ pre.highlight {
   padding: 1px 5px;
 }
 
-.post-body {
-  padding-bottom: 1rem;
-}
+@media only screen and (min-width: 40.063rem) {}
 
-.post-footer {
-  border-top: 1px solid #eff0f1;
-  font-size: 0.96rem;
-  padding: 1rem 0 0 0;
-}
+@media only screen and (min-width: 64.063rem) {
+  .post-title {
+    font-size: 1.563rem;
+    line-height: 1.25em;
+    margin: 0 0 0.8rem;
+  }
 
-.license-icon {
-  text-decoration: none;
+  .post-body h1,
+  .post-body h2,
+  .post-body h3,
+  .post-body h4,
+  .post-body h5,
+  .post-body h6 {
+    margin: 0 0 1.25rem;
+  }
+
+  .post-body h1 {
+    font-size: 1.563rem;
+    line-height: 1.25em;
+  }
+
+  .post-body h2 {
+    font-size: 1.25rem;
+    line-height: 1.25em;
+  }
+
+  .post-body h3,
+  .post-body h4,
+  .post-body h5,
+  .post-body h6 {
+    font-size: 1rem;
+    line-height: 1.25em;
+  }
 }

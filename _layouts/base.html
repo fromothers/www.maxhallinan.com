@@ -2,9 +2,12 @@
 <html lang="en">
   {% include head.html %}
   <body>
-    <header>
-      <h1>Max Hallinan</h1>
-      <nav>
+    <div class="grid">
+    <header class="column grid header small-12">
+      <h1 class="column header-title large-2 medium-4 small-12">
+        Max Hallinan
+      </h1>
+      <nav class="column header-nav large-10 medium-8 medium-end small-12">
         <a href="/">Home</a> /
         <a href="/posts">Posts</a> /
         {% comment %}
@@ -14,6 +17,9 @@
         <a href="/feed.xml">RSS</a>
       </nav>
     </header>
-    {{content}}
+    <div class="column small-12">
+      {{content}}
+    </div>
+    </div>
   </body>
 </html>
