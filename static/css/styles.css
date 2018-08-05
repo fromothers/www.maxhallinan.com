@@ -102,11 +102,10 @@ pre,
 
 .post {
   max-width: 100%;
-  padding: 0.512rem 0;
 }
 
 .post-header {
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.563rem;
 }
 
 .post-title {
@@ -190,6 +189,10 @@ pre,
  * Site Header
  */
 
+.header {
+  padding: 0 0 0.512rem;
+}
+
 .header-title {
   font-size: 1.25rem;
   line-height: 1;
@@ -222,28 +225,49 @@ pre.highlight {
  * Homepage
  */
 
-.post-list__item > * {
-  display: inline-block;
-  vertical-align: middle;
+.content-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
-.post-list__title {
+.content-list__title {
   font-weight: 700;
 }
 
-.post-tag {
+.content-list__item {
+  margin: 0 0 1.25rem;
+}
+
+.content-list__tag {
   background-color: #eff0f1;
   color: #222;
   font-size: 0.8rem;
   padding: 1px 5px;
 }
 
-@media only screen and (min-width: 40.063rem) {
+/*
+ *
+ */
+
+.section {
+  margin: 0 0 1.563rem;
+  padding: 0;
 }
 
+.section__title {
+  border-bottom: 1px solid #dfe2e5;
+  font-size: 1.25rem;
+  line-height: 1.25em;
+  margin: 0 0 1.563rem;
+  padding: 0 0 0.492rem;
+}
+
+@media only screen and (min-width: 40.063rem) {}
+
 @media only screen and (min-width: 64.063rem) {
-  .post {
-    padding: 0.8rem 0;
+  .header {
+    padding: 0 0 0.8rem;
   }
 
   .post-title {
@@ -276,6 +300,11 @@ pre.highlight {
   .post-body h5,
   .post-body h6 {
     font-size: 1rem;
+    line-height: 1.25em;
+  }
+
+  .section__title {
+    font-size: 1.563rem;
     line-height: 1.25em;
   }
 }

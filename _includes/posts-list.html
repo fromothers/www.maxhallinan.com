@@ -1,19 +1,17 @@
-<ul>
+<ul class="content-list">
 {% for post in site.categories.posts %}
-  <li>
-    <p class="post-list__item">
+  <li class="content-list__item">
       <span>
         {{ post.date | date_to_string }} &ndash; 
       </span>
 
       <a href="{{post.url}}">
-        <span class="post-list__title">{{post.title}}</span>
+        <span class="content-list__title">{{post.title}}</span>
       </a>
 
       {% for tag in post.tags %}
-      <span class="post-tag">{{tag}}</span>
+      <span class="content-list__tag">{{tag}}</span>
       {% endfor %}
-    </p>
   </li>
 {% endfor %}
 </ul>
