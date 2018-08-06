@@ -1,10 +1,14 @@
 <ul class="content-list">
 {% for project in site.data.open-source-projects %}
   <li class="content-list__item">
-    <a class="content-list__title" href="{{project.url}}">
-      {{project.name}}
-    </a>
-    &ndash; {{project.description}}
+    <span class="content-list__title-group">
+      <a class="content-list__title" href="{{project.url}}">{{project.name}}</a><!--
+   --><span class="small-hide medium-hide">&nbsp;&ndash;&nbsp;</span>
+    </span>
+
+    <span class="content-list__description">
+      {{project.description}}
+    </span>
   </li>
 {% endfor %}
 </ul>

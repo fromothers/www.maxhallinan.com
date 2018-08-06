@@ -1,6 +1,6 @@
-- description: A Brainfuck interpeter implemented in JavaScript. 
+- description: A Brainfuck interpeter implemented in JavaScript.
   name: brunfaick
-  url: https://github.com/maxhallinan/brunfaick 
+  url: https://github.com/maxhallinan/brunfaick
 - description: An interactive CLI for batch deleting local branches.
   name: git-chipper
   url: https://github.com/maxhallinan/git-chipper
@@ -16,9 +16,9 @@
 - description: A utility for creating terse Redux reducers.
   name: redeuceur
   url: https://github.com/maxhallinan/redeuceur
-- description: https://github.com/maxhallinan/reshep
+- description: A higher-order component that "reshapes" a React component props object.
   name: reshep
-  url: A higher-order component that "reshapes" a React component props object. 
-- description: Embed selectors in a Redux state tree. 
+  url: https://github.com/maxhallinan/reshep
+- description: Embed selectors in a Redux state tree.
   name: zelektree
   url: https://github.com/maxhallinan/zelektree

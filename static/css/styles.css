@@ -39,11 +39,15 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 18px;
+  line-height: 1.563em;
+}
+
 body {
   background-color: #fdfdfd;
   color: #333;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 16px;
   margin: 0;
   padding: 0;
 }
@@ -85,6 +89,40 @@ img {
   margin: 0 auto;
   max-width: calc(44.408rem + 2rem);
   padding: 1.563rem 1rem;
+}
+
+/*
+ * Utility
+ */
+
+@media only screen and (max-width: 40.063rem) {
+  .small-hide {
+    height: 0px;
+    opacity: 0;
+    position: absolute;
+    visibility: hidden;
+    width: 0px;
+  }
+}
+
+@media only screen and (min-width: 40.064rem) and (max-width: 64.063rem) {
+  .medium-hide {
+    height: 0px;
+    opacity: 0;
+    position: absolute;
+    visibility: hidden;
+    width: 0px;
+  }
+}
+
+@media only screen and (min-width: 64.064rem) {
+  .large-hide {
+    height: 0px;
+    opacity: 0;
+    position: absolute;
+    visibility: hidden;
+    width: 0px;
+  }
 }
 
 /*
@@ -227,20 +265,56 @@ pre.highlight {
   padding: 0;
 }
 
+.content-list__item {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 1.25rem;
+}
+
+.content-list__date {
+  font-size: 1rem;
+  line-height: 1em;
+  margin: 0 0 0.328rem;
+  order: 2;
+}
+
 .content-list__title {
   color: #222;
   font-weight: 700;
+  line-height: 1.25em;
+  margin: 0 0 0.328rem;
+  order: 1;
+  width: 100%;
 }
 
-.content-list__item {
-  margin: 0 0 1.25rem;
+.content-list__title-group {
+  line-height: 1em;
+  margin: 0 0 0.328rem;
+}
+
+.content-list__tag-list {
+  line-height: 1;
+  list-style-type: none;
+  margin: 0;
+  order: 3;
+  padding: 0;
+  width: 100%;
 }
 
 .content-list__tag {
   background-color: #eff0f1;
+  display: inline;
   color: #222;
   font-size: 0.8rem;
+  line-height: 1em;
   padding: 1px 5px;
+}
+
+.content-list__description {
+  display: block;
+  order: 3;
+  width: 100%;
 }
 
 /*
@@ -260,9 +334,24 @@ pre.highlight {
   padding: 0 0 0.492rem;
 }
 
-@media only screen and (min-width: 40.063rem) {}
+@media only screen and (min-width: 40.063rem) {
+  .post-title {
+    font-size: 1.563rem;
+    line-height: 1.25em;
+    margin: 0 0 0.8rem;
+  }
+
+  .section__title {
+    font-size: 1.563rem;
+    line-height: 1.25em;
+  }
+}
 
 @media only screen and (min-width: 64.063rem) {
+  html {
+    font-size: 16px;
+  }
+
   .header {
     padding: 0 0 0.8rem;
   }
@@ -300,9 +389,34 @@ pre.highlight {
     line-height: 1.25em;
   }
 
-  .section__title {
-    font-size: 1.563rem;
-    line-height: 1.25em;
+  .content-list__date {
+    line-height: 1em;
+    margin: 0;
+    order: 1;
+    width: auto;
+  }
+
+  .content-list__description {
+    line-height: 1em;
+    margin: 0;
+    width: auto;
+  }
+
+  .content-list__tag-list {
+    line-height: 1em;
+    padding-left: 0.512rem;
+    width: auto;
+  }
+
+  .content-list__title {
+    line-height: 1em;
+    margin: 0;
+    order: 2;
+    width: auto;
+  }
+
+  .content-list__title-group {
+    margin: 0;
   }
 }
 
