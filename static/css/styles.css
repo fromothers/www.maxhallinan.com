@@ -70,7 +70,7 @@ a:visited {
 
 code, 
 pre {
-  font-family: monospace;
+  font-family: "Menlo", monospace;
   font-size: 0.8rem;
   line-height: 1.25rem;
 }
@@ -183,8 +183,8 @@ img {
 
 .post-body pre,
 .post-body code {
-  font-size: 1rem;
-  line-height: 1.563rem;
+  font-size: 0.8rem;
+  line-height: 1.25rem;
 }
 
 .post-body pre {
@@ -257,8 +257,8 @@ img {
   border: 1px solid #999;
   color: #333;
   display: block;
-  font-size: 1rem;
-  line-height: 1.563rem;
+  font-size: 0.8rem;
+  line-height: 1.25rem;
   max-width: 100%;
   overflow-x: scroll;
   padding: 0.512em 0.64rem;
