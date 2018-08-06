@@ -330,7 +330,7 @@ pre.highlight {
   border-bottom: 1px solid #dfe2e5;
   font-size: 1.25rem;
   line-height: 1.25em;
-  margin: 0 0 1.563rem;
+  margin: 0 0 1.25rem;
   padding: 0 0 0.492rem;
 }
 
@@ -402,6 +402,10 @@ pre.highlight {
     width: auto;
   }
 
+  .content-list__item {
+    margin: 0 0 1.563rem;
+  }
+
   .content-list__tag-list {
     line-height: 1em;
     padding-left: 0.512rem;
@@ -417,6 +421,10 @@ pre.highlight {
 
   .content-list__title-group {
     margin: 0;
+  }
+
+  .section {
+    margin: 0 0 2.441rem;
   }
 }
 
