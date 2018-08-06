@@ -214,10 +214,10 @@ doing to being.
 ## II. Being instead of doing
 
 > For me, functional programming is not about doing. It's about being.
-
-&mdash; Conal Elliot ["The Essence and Origins of Functional Reactive
-Programming"](https://www.youtube.com/watch?v=j3Q32brCUAI&feature=youtu.be&t=4m21s),
-Lambda Jam 2015
+>
+> &mdash; Conal Elliot ["The Essence and Origins of Functional Reactive
+> Programming"](https://www.youtube.com/watch?v=j3Q32brCUAI&feature=youtu.be&t=4m21s),
+> Lambda Jam 2015
 
 If doing means instructing the computer, then being means describing the result.
 A description of the result is a definition of a thing.
@@ -277,8 +277,8 @@ With apologies to Elliot and Hudak, let's continue.
 > ...events may be combined with others, to an arbitrary degree of
 > complexity, thus factoring complex animation logic into semantically rich,
 > modular building blocks.
-
-&mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
+>
+> &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
 
 Our strategy is to replace instructions with definitions.
 Definitions are expressed as functions, one value being defined as the function

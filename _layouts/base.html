@@ -2,18 +2,26 @@
 <html lang="en">
   {% include head.html %}
   <body>
-    <header>
-      <h1>Max Hallinan</h1>
-      <nav>
-        <a href="/">Home</a> /
-        <a href="/posts">Posts</a> /
-        {% comment %}
-        <a href="/stories">Stories</a> /
-        {% endcomment %}
-        <a href="mailto:{{site.email}}">Email</a> /
-        <a href="/feed.xml">RSS</a>
-      </nav>
-    </header>
-    {{content}}
+    <div class="container">
+      <div class="grid">
+        <header class="column grid header small-12">
+          <h1 class="column header-title large-3 medium-4 small-12">
+            Max Hallinan
+          </h1>
+          <nav class="column header-nav large-9 medium-8 medium-end small-12">
+            <a href="/">Home</a> /
+            <a href="/posts">Posts</a> /
+            {% comment %}
+            <a href="/stories">Stories</a> /
+            {% endcomment %}
+            <a href="mailto:{{site.email}}">Email</a> /
+            <a href="/feed.xml">RSS</a>
+          </nav>
+        </header>
+        <div class="column small-12">
+          {{content}}
+        </div>
+      </div>
+    </div>
   </body>
 </html>
