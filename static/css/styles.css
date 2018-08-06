@@ -69,10 +69,8 @@ a:visited {
 }
 
 code, 
-pre,
-.highlight {
-  background: #f1f1f1;
-  font-family: Menlo, monospace;
+pre {
+  font-family: monospace;
   font-size: 0.8rem;
   line-height: 1.25rem;
 }
@@ -183,6 +181,16 @@ img {
   margin: 0 0 1.563rem;
 }
 
+.post-body pre,
+.post-body code {
+  font-size: 1rem;
+  line-height: 1.563rem;
+}
+
+.post-body pre {
+  margin: 0 0 1.563rem;
+}
+
 .post-body p code {
   background-color: #eff0f1;
   padding: 1px 2px;
@@ -201,13 +209,6 @@ img {
 
 .post-body img {
   margin: 0 auto;
-}
-
-.post-body pre {
-  max-width: 100%;
-  overflow: hidden;
-  overflow-x: scroll;
-  width: 100%;
 }
 
 .post-footer {
@@ -248,8 +249,20 @@ img {
   margin-right: 0;
 }
 
-pre.highlight {
-  padding: 1rem;
+.highlight pre {
+  margin: 0;
+}
+
+.highlight code {
+  border: 1px solid #999;
+  color: #333;
+  display: block;
+  font-size: 1rem;
+  line-height: 1.563rem;
+  max-width: 100%;
+  overflow-x: scroll;
+  padding: 0.512em 0.64rem;
+  width: 100%;
 }
 
 /*
