@@ -1,7 +1,7 @@
 ---
 layout: post
 published: false
-title: "A word on container port configuration"
+title: "A Word on Container Port Configuration"
 tags: [containers]
 ---
 

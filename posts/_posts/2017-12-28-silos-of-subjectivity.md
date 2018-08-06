@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Silos of subjectivity"
+title: "Silos of Subjectivity"
 tags: [peer-to-peer, web]
 ---
 

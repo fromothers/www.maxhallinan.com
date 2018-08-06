@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: "Changing state over time without mutation"
+title: "Changing State Over Time Without Mutation"
 tags: [ javascript, programming]
 ---
 

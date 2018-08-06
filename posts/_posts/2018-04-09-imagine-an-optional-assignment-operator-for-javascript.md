@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Imagine an optional assignment operator for JavaScript"
+title: "Imagine an Optional Assignment Operator for JavaScript"
 tags: [javascript, plt]
 ---
 

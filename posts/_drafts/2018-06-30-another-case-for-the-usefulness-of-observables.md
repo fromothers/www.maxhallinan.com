@@ -1,8 +1,8 @@
 ---
 layout: post
 published: true
-title: "Another case for the usefulness of Observables"
-tags: [explorable, javascript, programming]
+title: "Another Case for the Usefulness of Observables"
+tags: [explorable, programming]
 ---
 
 I recently [wrote](/posts/2018/06/02/changing-state-over-time-without-mutation/)

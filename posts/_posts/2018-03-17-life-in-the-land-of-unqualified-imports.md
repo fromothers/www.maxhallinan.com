@@ -1,7 +1,7 @@
 ---
 layout: post
 tags: [elm, programming]
-title: "Life in the land of unqualified imports"
+title: "Life in the Land of Unqualified Imports"
 ---
 
 ## I.
