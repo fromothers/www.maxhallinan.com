@@ -70,7 +70,7 @@ a:visited {
 
 code, 
 pre {
-  font-family: "Menlo", monospace;
+  font-family: "Roboto Mono", monospace;
   font-size: 0.8rem;
   line-height: 1.25rem;
 }
@@ -191,11 +191,6 @@ img {
   margin: 0 0 1.563rem;
 }
 
-.post-body p code {
-  background-color: #eff0f1;
-  padding: 1px 2px;
-}
-
 .post-body blockquote {
   color: #333;
   border-left: 0.262rem solid #dfe2e5;
@@ -255,7 +250,7 @@ img {
 
 .highlight code {
   border: 1px solid #999;
-  color: #333;
+  color: #222;
   display: block;
   font-size: 0.8rem;
   line-height: 1.25rem;
@@ -363,7 +358,7 @@ img {
   }
 
   .post-title {
-    font-size: 1.953rem;
+    font-size: 1.563rem;
     line-height: 1.25em;
     margin: 0 0 0.8rem;
   }
