@@ -65,7 +65,11 @@ server.on(`connection`, (socket) => {
 
 If we know the number of opened and closed connections, we can work out the
 number of current connections with a little math:
-`current connections = opened connections - closed connections`.
+
+```
+current connections = opened connections - closed connections
+```
+
 Having determined the number of current connections, we know when to start and
 stop the timer.
 
@@ -293,7 +297,12 @@ events.
 RxJs provides a [`fromEvent`](https://rxjs-dev.firebaseapp.com/api/index/fromEvent) 
 constructor that creates an event stream.
 We can use `fromEvent` to create a stream of `'connection'` events emitted by 
-the server: `const connection$ = Rx.fromEvent(server, 'connection');`.
+the server: 
+
+{% highlight javascript %}
+const connection$ = Rx.fromEvent(server, 'connection');.
+{% endhighlight %}
+
 Then the connections can be counted by summing that stream.
 
 {% highlight javascript %}
@@ -306,12 +315,16 @@ const connectionCount$ = connection$.pipe(scan(addOne, 0));
 
 Counting closed connections is a little more complicated.
 The close event is emitted by the _socket_, not the server.
-In our first iteration, the socket is exposed through the `'connection'` event
+In our first iteration, the socket is exposed through the `connection` event
 as the first argument to the event handler.
-Now the `connection$` Observable is handling the event, pushing a value into the
-stream for each occurrence of that event.
-The value pushed into the stream is an array of the arguments received by the 
-event handler.
+But now the `connection$` Observable is handling the event. 
+How can we access the arguments to the event handler without an event handler?
+
+As it happens, the Observable passes those values along to us.
+The stream of `connection` events is really a stream of arguments to the event 
+handler.
+Each time the `connection` event occurs, the Observable pushes an arguments
+array into the event stream.
 So the socket for each connection is the first item of each array in the stream.
 We can use [`map`](https://rxjs-dev.firebaseapp.com/api/operators/map) to 
 transform that stream of arrays into a stream of sockets.
@@ -322,12 +335,15 @@ const head = xs => xs[0];
 const socket$ = connection$.pipe(map(head));
 {% endhighlight %}
 
-We might be tempted to use `map((socket) => Rx.fromEvent(socket, 'close'))` to
-transform `socket$` into a stream of close events.
+Now we might be tempted to map the sockets stream to a stream of close events:
+
+{% highlight javascript %}
+map((socket) => Rx.fromEvent(socket, 'close'))
+{% endhighlight %}
+
 But the result is a stream of streams, one stream for each socket.
-We want a single stream of close events.
-So we should use [`flatMap`](https://rxjs-dev.firebaseapp.com/api/operators/flatMap) 
-instead.
+And we want a single stream of close events instead.
+So we should use [`flatMap`](https://rxjs-dev.firebaseapp.com/api/operators/flatMap).
 `flatMap` merges all of the sub-streams into one stream of close events.
 
 {% highlight javascript %}
@@ -344,6 +360,7 @@ When no `'close'` event has occurred, then there is only an empty stream.
 Observables naturally conform to this model of value over time.
 But the close event count _should_ have a current value and Observables have no 
 such concept.
+
 The best we can do is set an initial value in the stream.
 When no close event has occurred, then the value of the count should be zero.
 To set that initial value, we merge the count stream with a stream of `0`.
@@ -361,8 +378,8 @@ We have defined our two fundamental time-dependent values: `connectionCount$`
 and `closeCount$`.
 Now we can start to define the pausable timer as a function of those values.
 The timer should pause when the number of current connections is less than 1.
-The number of current connections is a function of the difference between opened
-connections and closed connections.
+That number is a function of the difference between opened connections and 
+closed connections.
 
 {% highlight javascript %}
 const subtract = (x, y) => x - y;

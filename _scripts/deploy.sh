@@ -36,8 +36,9 @@ s3cmd put \
   --no-preserve \
   --recursive \
   --exclude "*.*" \
-  --add-header="Cache-Control:public, max-age=604800" \
-  --mime-type="text/html" \
+  --add-header="Cache-Control:public, max-age=86400, must-revalidate" \
+  --add-header="Expires:access plus 1 day"  \
+  --mime-type="text/html; charset=utf-8" \
   --include "*.html" \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
@@ -86,16 +87,6 @@ s3cmd sync \
   --include "*.xml" \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
-
-echo "Overwriting index.html with short expires time..."
-s3cmd put \
-  --acl-public \
-  --no-preserve \
-  --add-header="Cache-Control:public, max-age=86400, must-revalidate" \
-  --add-header="Expires:access plus 1 day"  \
-  --mime-type="text/html; charset=utf-8" \
-  -c .s3cmd \
-  _site/index.html s3://maxhallinan.com
 
 echo "Syncing remaining and cleaning up..."
 s3cmd sync \

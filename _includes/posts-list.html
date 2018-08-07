@@ -5,16 +5,20 @@
       -->{{post.title}}<!--
     --></a>
 
+    <!--
     <span class="content-list__date">
       {{ post.date | date_to_string }}
       <span class="small-hide medium-hide">&ndash;&nbsp;</span>
     </span>
+    -->
 
+    <!--
     <ul class="content-list__tag-list">
     {% for tag in post.tags %}
       <li class="content-list__tag">{{tag}}</li>
     {% endfor %}
     </ul>
+    -->
   </li>
 {% endfor %}
 </ul>
