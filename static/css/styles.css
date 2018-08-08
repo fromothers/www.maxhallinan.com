@@ -405,6 +405,10 @@ img {
     padding: 0 0 0.8rem;
   }
 
+  .post-header {
+    margin: 0 0 1.953rem;
+  }
+
   .post-title {
     font-size: 1.563rem;
     line-height: 1.25em;
@@ -427,11 +431,13 @@ img {
   .post-body h1 {
     font-size: 1.563rem;
     line-height: 1.25em;
+    margin-top: 2.441rem;
   }
 
   .post-body h2 {
     font-size: 1.25rem;
     line-height: 1.25em;
+    margin-top: 2.441rem;
   }
 
   .post-body h3,
@@ -440,6 +446,7 @@ img {
   .post-body h6 {
     font-size: 1rem;
     line-height: 1.25em;
+    margin-top: 1.953rem;
   }
 
   .post-body ol,
