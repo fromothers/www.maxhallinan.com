@@ -241,7 +241,10 @@ img {
 }
 
 .post-body pre {
+  border: 1px solid #999;
   margin: 0 0 1.563rem;
+  overflow-x: scroll;
+  padding: 0.512em 0.64rem;
 }
 
 .post-body blockquote {
@@ -306,7 +309,10 @@ img {
 }
 
 .highlight pre {
+  border: none;
   margin: 0;
+  overflow: auto;
+  padding: 0;
 }
 
 .highlight code {
