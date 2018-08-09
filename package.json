@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "cssnano": "^4.0.5",
-    "postcss-cli": "^6.0.0"
+    "postcss-cli": "^6.0.0",
+    "postcss-easy-import": "^3.0.0"
   }
 }

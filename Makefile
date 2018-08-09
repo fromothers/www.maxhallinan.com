@@ -3,10 +3,9 @@ deploy : build
 
 build : clean build_jekyll build_css
 
-build_css :  
-	./node_modules/.bin/postcss ./static/css/**/*.css \
-		--base ./static/css \
-		--dir _site/static/css
+build_css : clean_css
+	./node_modules/.bin/postcss ./static/css/styles.css \
+		--output _site/static/css/styles.css
 
 build_jekyll :
 	bundle exec jekyll build \
@@ -15,5 +14,11 @@ build_jekyll :
 clean :
 	rm -rf _site
 
-install : 
-	yarn install 
+clean_css :
+	rm -rf _site/static/css
+
+install :
+	yarn install
+
+watch_jekyll :
+	bundle exec jekyll serve --watch --drafts
