@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
 
-echo "Building site locally..."
-pwd
-rm -rf _site
-bundle exec jekyll build \
-  --config "_config.yml,_config.maxhallinan.com.yml"
-
-# echo "Compressing the files..."
-# for i in `find ./_site | grep -E "\.html$|\.css$|\.js$|\.json|\.xml$"`;
-#   do gzip --verbose "$i"; \
-#   mv "$i.gz" "$i"; 
-# done
-
 echo "Syncing images and fonts..."
 s3cmd sync \
   --acl-public \

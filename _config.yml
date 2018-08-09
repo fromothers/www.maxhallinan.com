@@ -34,8 +34,14 @@ exclude:
   - deploy.sh
   - Gemfile
   - Gemfile.lock
+  - grid.html
+  - Makefile
   - node_modules
+  - package.json
+  - postcss.config.js
+  - README.md
   - vendor/bundle/
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+  - yarn.lock

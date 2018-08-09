@@ -1,11 +1,6 @@
 {
-  "scripts": {
-    "build:css": "postcss static/css/styles.css"
-  },
   "devDependencies": {
-    "cssnano": "^4.0.5"
-  },
-  "dependencies": {
+    "cssnano": "^4.0.5",
     "postcss-cli": "^6.0.0"
   }
 }
