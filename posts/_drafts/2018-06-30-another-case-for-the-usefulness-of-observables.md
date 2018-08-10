@@ -7,9 +7,9 @@ tags: [explorable, programming]
 
 I recently [wrote](/posts/2018/06/02/changing-state-over-time-without-mutation/)
 about building a websocket server.
-The server tracks the location of trains in the New York City subway.
-Location data is sourced from the MTA's [real-time data feeds](http://datamine.mta.info/)
-every 30 seconds.
+It tracks the location of trains running on New York City subway lines.
+Location data is sourced from the MTA's [real-time data feeds](http://datamine.mta.info/).
+The feeds are polled every 30 seconds.
 
 My last post failed to acknowledge a design flaw.
 The server _always_ asks for new location data, every 30 seconds, even when no 
@@ -21,8 +21,8 @@ Polling on demand gets messy fast.
 My first attempt made liberal use of mutable state.
 And mutable state is exactly what I want to avoid.
 In the last post, I replaced mutable state with Observables.
-Here is a second opportunity to use Observables as an escape from the mutable 
-state trap.
+Here is a second occasion when the Observable pattern helped me escape from the
+mutable state trap.
 
 ## I. Clarity through naivety
 
