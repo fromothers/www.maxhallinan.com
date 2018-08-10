@@ -113,8 +113,9 @@ Now that we know when to pause the timer, we need a timer that can be paused.
 ### An aside about pausable computations
 
 Is it possible to pause an Observable?
-Recall that Observables and Generators are both functions that produce one or
-more values.
+[Recall](/posts/2018/06/02/changing-state-over-time-without-mutation/#a-new-kind-of-function) 
+that Observables and Generators are both functions that produce one or more 
+values.
 A Generator is easily paused.
 In fact, the execution of a Generator is suspended each time a value is
 produced.
@@ -135,15 +136,13 @@ For example, a pausable function that counts infinitely up from one should
 preserve its execution context:
 
 ```
-1 2 3 pause 4 5 6
----------------->
+1 2 3 pause 4 5 6 pause 7 8 9 pause 10 11 12 
 ```
 
 If the context is not preserved, then pausing the function will reset the count:
 
 ```
-1 2 3 pause 1 2 3
----->       ---->
+1 2 3 pause 1 2 3 pause 1 2 3 pause 1 2 3
 ```
 
 But our timer (and polling) is stateless.

@@ -112,7 +112,7 @@ having to manually re-run the transformation and store state each time a new
 value is produced.
 For this I can use an Observable.
 
-## II. A new kind of function
+<h2 id="a-new-kind-of-function">A new kind of function</h2>
 
 An Observable is like a Generator, a function that can produce many values.
 But unlike a Generator, an Observable decides _when_ it will produce a value.
