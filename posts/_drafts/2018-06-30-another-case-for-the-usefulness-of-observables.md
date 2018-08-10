@@ -6,23 +6,22 @@ tags: [explorable, programming]
 ---
 
 I recently [wrote](/posts/2018/06/02/changing-state-over-time-without-mutation/)
-about a websocket server that tracks the current location of trains in the New
-York City subway.
-The server polls the MTA's real-time data feeds every 10 seconds.
+about building a websocket server.
+The server tracks train locations on New York City subway lines.
+Location data is sourced from the MTA's [real-time data feeds](http://datamine.mta.info/)
+every 30 seconds.
+
 My last post failed to acknowledge a design flaw.
-The server is _always_ polling, every 10 seconds, even when no one is listening.
-The latest data from the MTA is discarded when there are no open websocket
-connections.
+The server _always_ asks for new location data, every 30 seconds, even when no 
+one is listening.
 So bandwidth is wasted and unnecessary load is placed on a free service.
 Better to poll the MTA feeds only when the data is in demand.
 
 Polling on demand gets messy fast.
 My first attempt made liberal use of mutable state.
-And mutable state is exactly what I was working to avoid in the last post.
-The last post describes how I avoided mutable state by modeling that state with
-the Observable pattern.
-Polling on demand was a second opportunity to use the Observable pattern as an
-escape from the mutable state trap.
+And mutable state is exactly what I want to avoid.
+In the last post, I replaced mutable state with Observables.
+Here is a second opportunity to use that escape from the mutable state trap.
 
 ## I. Clarity through naivety
 
