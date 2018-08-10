@@ -46,12 +46,12 @@ mutating global state.
 To understand what that means, let's first consider my initial approach &mdash; 
 the approach that uses the mutable state we want to avoid.
 
-The pausable behavior has two parts: a timer that can be paused and knowing when
-to pause it.
-Let's start with knowing when to pause the timer.
-We should stop the timer when there are no current websocket connections.
-To know the number of current connections, we must track the number of opened
-connections and the number of closed connections.
+The pausable behavior has to parts: knowing _how_ to pause the timer and knowing
+_when_ to pause it.
+Let's start with knowing when to pause it.
+We should stop the timer when there are no websocket connections.
+To know the number of current connections, we must count opened connections and 
+closed connections.
 These are the first pieces of global mutable state: counters that are
 incremented by the connection and close event handlers.
 
