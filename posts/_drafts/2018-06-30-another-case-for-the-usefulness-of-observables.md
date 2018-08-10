@@ -7,7 +7,7 @@ tags: [explorable, programming]
 
 I recently [wrote](/posts/2018/06/02/changing-state-over-time-without-mutation/)
 about building a websocket server.
-The server tracks train locations on New York City subway lines.
+The server tracks the location of trains in the New York City subway.
 Location data is sourced from the MTA's [real-time data feeds](http://datamine.mta.info/)
 every 30 seconds.
 
@@ -15,17 +15,17 @@ My last post failed to acknowledge a design flaw.
 The server _always_ asks for new location data, every 30 seconds, even when no 
 one is listening.
 So bandwidth is wasted and unnecessary load is placed on a free service.
-Better to poll the MTA feeds only when the data is in demand.
+Better to ask for new data only when the data is in demand.
 
 Polling on demand gets messy fast.
 My first attempt made liberal use of mutable state.
 And mutable state is exactly what I want to avoid.
 In the last post, I replaced mutable state with Observables.
-Here is a second opportunity to use that escape from the mutable state trap.
+Here is a second opportunity to use Observables as an escape from mutable state.
 
 ## I. Clarity through naivety
 
-A problem that a pattern solves is a key to understanding that pattern.
+The problem that a pattern solves is the key to understanding that pattern.
 The problem here is how to share information across isolated contexts without
 mutating global state.
 To understand that problem, let's first consider my initial approach, the
