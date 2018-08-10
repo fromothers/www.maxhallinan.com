@@ -14,6 +14,7 @@ s3cmd sync \
   --include "*.svg" \
   --include "*.ttf" \
   --include "*.woff" \
+  --include "*.woff2" \
   --include "*.otf" \
   -c .s3cmd \
   _site/ s3://maxhallinan.com
