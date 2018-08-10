@@ -26,20 +26,25 @@ mutable state trap.
 
 ## I. Clarity through naivety
 
-The problem that a pattern solves is the key to understanding that pattern.
-The problem here is how to share information across isolated contexts without
-mutating global state.
-To understand that problem, let's first consider my initial approach, the
-approach that uses the mutable state we want to avoid.
+I will use a timer Observable as a placeholder for an Observable that polls the 
+MTA feeds.
+This keeps the discussion uncluttered by details like calling the MTA service.
+Whether timer ticks or a train locations, we're not concerned with the data 
+itself.
+Our concern is how the data flows through the application.
 
-For the sake of simplicity, I will represent the idea of polling with a timer
-that ticks every 10 seconds.
-The timer is a multicast Observable subscribed by each websocket connection.
-In the last
-[post](/posts/2018/06/02/changing-state-over-time-without-mutation/),
-the timer is always ticking in the background.
-We will replace this timer with one that ticks only when there are open
-connections.
+We begin with a timer that ticks every second.
+The timer is running as long as the server is running.
+Our task is to pause the timer when there are no websocket connections and start 
+the timer when a client connects.
+But we're not jumping into the Observable implementation just yet.
+
+The key to understanding a pattern is often understanding a problem that the
+pattern solves.
+The problem here is sharing information across isolated contexts without 
+mutating global state.
+To understand what that means, let's first consider my initial approach &mdash; 
+the approach that uses the mutable state we want to avoid.
 
 The pausable behavior has two parts: a timer that can be paused and knowing when
 to pause it.
