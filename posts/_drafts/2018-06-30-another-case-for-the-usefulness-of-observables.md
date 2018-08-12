@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: "Another Case for the Usefulness of Observables"
+title: "Another Case for the Usefulness of Abstracting Over Time"
 tags: [explorable, programming]
 ---
 
@@ -46,8 +46,8 @@ mutating global state.
 To understand what that means, let's first consider my initial approach &mdash; 
 the approach that uses the mutable state we want to avoid.
 
-The pausable behavior has to parts: knowing _how_ to pause the timer and knowing
-_when_ to pause it.
+The pausable behavior has two parts: knowing _how_ to pause the timer and 
+knowing _when_ to pause it.
 Let's start with knowing when to pause it.
 We should stop the timer when there are no websocket connections.
 To know the number of current connections, we must count opened connections and 
@@ -113,40 +113,42 @@ Now that we know when to pause the timer, we need a timer that can be paused.
 ### An aside about pausable computations
 
 Is it possible to pause an Observable?
+To answer this question, we must think about what an Observable is.
 [Recall](/posts/2018/06/02/changing-state-over-time-without-mutation/#a-new-kind-of-function) 
-that Observables and Generators are both functions that produce one or more 
+that Observables, like Generators, are both functions that produce one or more 
 values.
+
 A Generator is easily paused.
 In fact, the execution of a Generator is suspended each time a value is
 produced.
 Execution resumes only when the caller asks for the next value.
-But an Observable behaves differently.
-While consumers pull values from Generators, Observables push values out to
+
+An Observable behaves differently.
+While consumers _pull_ values from Generators, Observables _push_ values out to
 consumers.
 This means that the consumer does not determine when the value is produced.
-Thus, the consumer cannot suspend execution of the Observable.
+Thus the consumer cannot suspend execution of the Observable.
 
-Pausing an Observable cannot mean pausing its execution.
-This would be a problem if we required the pausable timer to maintain a
+This is only problematic if we require the pausable timer to maintain a
 continuous execution context.
-Continuous context is required when a paused computation needs to resume from
-its last state.
+Continuous context is required when a paused computation should resume from its 
+last state.
 
-For example, a pausable function that counts infinitely up from one should
-preserve its execution context:
+For example, a pausable function that counts infinitely up from one must
+preserve its execution context.
 
 ```
 1 2 3 pause 4 5 6 pause 7 8 9 pause 10 11 12 
 ```
 
-If the context is not preserved, then pausing the function will reset the count:
+If the context is not preserved, then pausing the function will reset the count.
 
 ```
 1 2 3 pause 1 2 3 pause 1 2 3 pause 1 2 3
 ```
 
 But our timer (and polling) is stateless.
-No context preservation is required to produce a tick every ten seconds.
+No context preservation is required to produce a tick every second.
 This means that we don't need a truly pausable timer.
 Instead, we can create a new timer when we need one and dispose of it when we
 don't.
