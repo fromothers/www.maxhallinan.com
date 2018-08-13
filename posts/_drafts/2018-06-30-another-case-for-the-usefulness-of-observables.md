@@ -156,21 +156,8 @@ don't.
 ### A "pausable" timer
 
 First, we define a function that creates an instance of the timer Observable.
-
-<!--
-The `multicast` operator enables us to broadcast the same timer ticks to all 
-consumers.
-A unicast Observable would start a separate timer for each consumer.
-
-[multicast](/posts/2018/06/02/changing-state-over-time-without-mutation/#sharing-the-work)
-We'll start by defining a function that creates an instance of the timer
-Observable.
-The `multicast` operator enables us to broadcast the same timer ticks to more 
-than one consumer.
-A unicast Observable would start a new timer for each websocket session.
-This might be trivial for a timer but sharing the work becomes important when
-the timer is replaced with polling.
--->
+The [`multicast`](/posts/2018/06/02/changing-state-over-time-without-mutation/#sharing-the-work) 
+operator enables us to share one timer with multiple consumers.
 
 {% highlight javascript %}
 const Rx = require(`rx`);
@@ -200,8 +187,7 @@ server.on(`connection`, (socket) => {
 });
 {% endhighlight %}
 
-Now that the timer is running, the connection handler is free to consume the 
-stream of ticks.
+Now the connection handler is free to consume the stream of ticks.
 
 {% highlight javascript %}
 let ticks = null;
@@ -226,8 +212,9 @@ server.on(`connection`, (socket) => {
 {% endhighlight %}
 
 To "pause" the timer, we destroy the timer Observable.
-The timer is destroyed by calling `Subscription#unsubscribe`.
-If `unsubscribe` is not called, the timer will continue to run in the
+The Observable is destroyed by calling `Subscription#unsubscribe`.
+Changing the reference of `ticks` is not enough.
+Unless `unsubscribe` is called, the timer will continue to run in the
 background.
 
 {% highlight javascript %}
