@@ -155,21 +155,34 @@ don't.
 
 ### A "pausable" timer
 
+First, we define a function that creates an instance of the timer Observable.
+
+<!--
+The `multicast` operator enables us to broadcast the same timer ticks to all 
+consumers.
+A unicast Observable would start a separate timer for each consumer.
+
+[multicast](/posts/2018/06/02/changing-state-over-time-without-mutation/#sharing-the-work)
 We'll start by defining a function that creates an instance of the timer
 Observable.
+The `multicast` operator enables us to broadcast the same timer ticks to more 
+than one consumer.
+A unicast Observable would start a new timer for each websocket session.
+This might be trivial for a timer but sharing the work becomes important when
+the timer is replaced with polling.
+-->
 
 {% highlight javascript %}
 const Rx = require(`rx`);
 const { multicast, } = require(`rx/operators`);
 
-const createTicks = () => Rx.timer(0, 10000).pipe(multicast(new Rx.Subject()));
+const createTicks = () => 
+  Rx.timer(0, 10000).pipe(multicast(new Rx.Subject()));
 {% endhighlight %}
 
-The Observable returned by `createTicks` is made multicast so that there is only
-ever one timer running on the server.
-A unicast Observable would start a new timer for each websocket session.
-This might be trivial for a timer but sharing the work becomes important when
-the timer is replaced with polling.
+Whenever the timer should start ticking, a new timer Observable is created. 
+Execution of the Observable is triggered by calling `connect`.
+The Subscription returned by `connect` is saved so we can stop the timer later.
 
 {% highlight javascript %}
 let ticks = null;
@@ -187,10 +200,35 @@ server.on(`connection`, (socket) => {
 });
 {% endhighlight %}
 
-To start the pausable timer, we create a new timer Observable and trigger its
-execution by calling `connect`.
-The Subscription returned by `connect` will be used to stop the timer when
-there are no more open connections.
+Now that the timer is running, the connection handler is free to consume the 
+stream of ticks.
+
+{% highlight javascript %}
+let ticks = null;
+let subscription = null;
+
+server.on(`connection`, (socket) => {
+  sessionStarts = sessionStarts + 1;
+
+  if (sessionStarts - sessionEnds === 1) {
+    ticks = createTicks();
+    subscription = ticks.connect();
+  }
+
+  ticks.subscribe({
+    next: (tick) => {
+      socket.push(tick);
+    }
+  });
+
+  // ...
+});
+{% endhighlight %}
+
+To "pause" the timer, we destroy the timer Observable.
+The timer is destroyed by calling `Subscription#unsubscribe`.
+If `unsubscribe` is not called, the timer will continue to run in the
+background.
 
 {% highlight javascript %}
 server.on(`connection`, (socket) => {
@@ -201,18 +239,28 @@ server.on(`connection`, (socket) => {
 
     if (sessionStarts - sessionEnds  1) {
       subscription.unsubscribe();
-      timer = null;
-      subscription = null;
     }
   });
 });
 {% endhighlight %}
 
-When the last connection closes, the timer is destroyed by calling
-`Subscription#unsubscribe`.
-If `unsubscribe` is not called, the timer will continue to run in the
-background.
-Then the state is reset until the next `connection` event starts a new timer.
+Finally, we reset all related state.
+
+{% highlight javascript %}
+server.on(`connection`, (socket) => {
+  // ...
+
+  socket.on(`close`, () => {
+    sessionEnds = sessionEnds + 1;
+
+    if (sessionStarts - sessionEnds  1) {
+      subscription.unsubscribe();
+      ticks = null;
+      subscription = null;
+    }
+  });
+});
+{% endhighlight %}
 
 So concludes the mutable state approach to pausing a timer.
 This approach is essentially about the concept of "doing".

@@ -266,7 +266,7 @@ const startSession = (ticks) => (websocket) => {
 server.on(`connect`, startSession(ticks));
 {% endhighlight %}
 
-## IV. Sharing the work
+<h2 id="sharing-the-work">Sharing the work</h2>
 
 There is one detail that hasn't been accounted for.
 We know that the timer does not start ticking until `subscribe` is called.
