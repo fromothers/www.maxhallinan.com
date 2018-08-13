@@ -26,8 +26,8 @@ mutable state trap.
 
 ## I. Clarity through naivety
 
-We'll will use a timer Observable as a placeholder for an Observable that polls 
-the MTA feeds.
+We'll use a timer Observable as a placeholder for an Observable that polls the 
+MTA feeds.
 This keeps the discussion uncluttered by details like calling the MTA service.
 Whether timer ticks or a train locations, we're not concerned with the data
 itself.
@@ -113,7 +113,7 @@ Now that we know when to pause the timer, we need a timer that can be paused.
 ### An aside about pausable computations
 
 Is it possible to pause an Observable?
-To answer this question, we must think about what an Observable is.
+To answer that question, we must think about what an Observable is.
 [Recall](/posts/2018/06/02/changing-state-over-time-without-mutation/#ii-a-new-kind-of-function)
 that Observables, like Generators, are both functions that produce one or more
 values.
@@ -336,7 +336,8 @@ The pausable timer is a function of two time-varying values: connection counts
 and connection ends.
 To define the timer, we must first define those values.
 
-There is no ready-made Observable that counts opened and closed connections.
+There is no ready-made Observable that counts opened and closed websocket 
+connections.
 Those numbers are themselves functions of the connection and close events.
 RxJs provides a [`fromEvent`](https://rxjs-dev.firebaseapp.com/api/index/fromEvent)
 constructor that creates an event stream.
@@ -492,8 +493,8 @@ ticks$.connect();
 
 All the instructions have been replaced with definitions.
 We are freed from the mutable state trap.
-Once again, the websocket session handler is free to observe the ticks stream
-without knowing how it should behave or directing that behavior.
+Once again, the websocket session handler can observe the ticks stream without 
+knowing how it should behave or directing that behavior.
 
 {% highlight javascript %}
 server.on(`connection`, () => {
