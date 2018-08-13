@@ -12,7 +12,7 @@ Location data is sourced from the MTA's [real-time data feeds](http://datamine.m
 The feeds are polled every 30 seconds.
 
 My last post failed to acknowledge a design flaw.
-The server _always_ asks for new location data, every 30 seconds, even when no 
+The server _always_ asks for new location data, every 30 seconds, even when no
 one is listening.
 So bandwidth is wasted and unnecessary load is placed on a free service.
 Better to ask for new data only when the data is in demand.
@@ -26,31 +26,31 @@ mutable state trap.
 
 ## I. Clarity through naivety
 
-I will use a timer Observable as a placeholder for an Observable that polls the 
-MTA feeds.
+We'll will use a timer Observable as a placeholder for an Observable that polls 
+the MTA feeds.
 This keeps the discussion uncluttered by details like calling the MTA service.
-Whether timer ticks or a train locations, we're not concerned with the data 
+Whether timer ticks or a train locations, we're not concerned with the data
 itself.
 Our concern is how the data flows through the application.
 
 We begin with a timer that ticks every second.
 The timer is running as long as the server is running.
-Our task is to pause the timer when there are no websocket connections and start 
+Our task is to pause the timer when there are no websocket connections and start
 the timer when a client connects.
 But we're not jumping into the Observable implementation just yet.
 
 The key to understanding a pattern is often understanding a problem that the
 pattern solves.
-The problem here is sharing information across isolated contexts without 
+The problem here is sharing information across isolated contexts without
 mutating global state.
-To understand what that means, let's first consider my initial approach &mdash; 
+To understand what that means, let's first consider my initial approach &mdash;
 the approach that uses the mutable state we want to avoid.
 
-The pausable behavior has two parts: knowing _how_ to pause the timer and 
+The pausable behavior has two parts: knowing _how_ to pause the timer and
 knowing _when_ to pause it.
 Let's start with knowing when to pause it.
 We should stop the timer when there are no websocket connections.
-To know the number of current connections, we must count opened connections and 
+To know the number of current connections, we must count opened connections and
 closed connections.
 These are the first pieces of global mutable state: counters that are
 incremented by the connection and close event handlers.
@@ -114,8 +114,8 @@ Now that we know when to pause the timer, we need a timer that can be paused.
 
 Is it possible to pause an Observable?
 To answer this question, we must think about what an Observable is.
-[Recall](/posts/2018/06/02/changing-state-over-time-without-mutation/#a-new-kind-of-function) 
-that Observables, like Generators, are both functions that produce one or more 
+[Recall](/posts/2018/06/02/changing-state-over-time-without-mutation/#ii-a-new-kind-of-function)
+that Observables, like Generators, are both functions that produce one or more
 values.
 
 A Generator is easily paused.
@@ -131,14 +131,14 @@ Thus the consumer cannot suspend execution of the Observable.
 
 This is only problematic if we require the pausable timer to maintain a
 continuous execution context.
-Continuous context is required when a paused computation should resume from its 
+Continuous context is required when a paused computation should resume from its
 last state.
 
 For example, a pausable function that counts infinitely up from one must
 preserve its execution context.
 
 ```
-1 2 3 pause 4 5 6 pause 7 8 9 pause 10 11 12 
+1 2 3 pause 4 5 6 pause 7 8 9 pause 10 11 12
 ```
 
 If the context is not preserved, then pausing the function will reset the count.
@@ -156,18 +156,18 @@ don't.
 ### A "pausable" timer
 
 First, we define a function that creates an instance of the timer Observable.
-The [`multicast`](/posts/2018/06/02/changing-state-over-time-without-mutation/#sharing-the-work) 
+The [`multicast`](/posts/2018/06/02/changing-state-over-time-without-mutation/#iv-sharing-the-work)
 operator enables us to share one timer with multiple consumers.
 
 {% highlight javascript %}
 const Rx = require(`rx`);
 const { multicast, } = require(`rx/operators`);
 
-const createTicks = () => 
+const createTicks = () =>
   Rx.timer(0, 10000).pipe(multicast(new Rx.Subject()));
 {% endhighlight %}
 
-Whenever the timer should start ticking, a new timer Observable is created. 
+Whenever the timer should start ticking, a new timer Observable is created.
 Execution of the Observable is triggered by calling `connect`.
 The Subscription returned by `connect` is saved so we can stop the timer later.
 
@@ -330,19 +330,18 @@ With apologies to Elliot and Hudak, let's continue.
 > &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
 
 Our goal is to replace instructions with definitions.
-The definitions will be expressed as functions, one value being defined as the 
+The definitions will be expressed as functions, one value being defined as the
 function of another value.
-The pausable timer is a function of two time-dependent values: connection counts
+The pausable timer is a function of two time-varying values: connection counts
 and connection ends.
 To define the timer, we must first define those values.
 
 There is no ready-made Observable that counts opened and closed connections.
-Those numbers are themselves functions of the `'connection'` and `'close'` 
-events. 
-RxJs provides a [`fromEvent`](https://rxjs-dev.firebaseapp.com/api/index/fromEvent) 
+Those numbers are themselves functions of the connection and close events.
+RxJs provides a [`fromEvent`](https://rxjs-dev.firebaseapp.com/api/index/fromEvent)
 constructor that creates an event stream.
-We can use `fromEvent` to create a stream of `'connection'` events emitted by 
-the server: 
+We can use `fromEvent` to create a stream of connection events emitted by the
+server.
 
 {% highlight javascript %}
 const connection$ = Rx.fromEvent(server, 'connection');.
@@ -360,18 +359,18 @@ const connectionCount$ = connection$.pipe(scan(addOne, 0));
 
 Counting closed connections is a little more complicated.
 The close event is emitted by the _socket_, not the server.
-In our first iteration, the socket is exposed through the `connection` event
-as the first argument to the event handler.
-But now the `connection$` Observable is handling the event. 
-How can we access the arguments to the event handler without an event handler?
+In our first iteration, the socket is exposed through the connection event as
+the first argument to the event handler.
+But now the `connection$` Observable is handling the event.
+How can we access arguments to the event handler without an event handler?
 
-As it happens, the Observable passes those values along to us.
-The stream of `connection` events is really a stream of arguments to the event 
+The Observable passes those values along to us.
+The stream of connection events is really a stream of arguments to the event
 handler.
-Each time the `connection` event occurs, the Observable pushes an arguments
+Each time the connection event occurs, the Observable pushes an arguments
 array into the event stream.
 So the socket for each connection is the first item of each array in the stream.
-We can use [`map`](https://rxjs-dev.firebaseapp.com/api/operators/map) to 
+We can use [`map`](https://rxjs-dev.firebaseapp.com/api/operators/map) to
 transform that stream of arrays into a stream of sockets.
 
 {% highlight javascript %}
@@ -380,15 +379,18 @@ const head = xs => xs[0];
 const socket$ = connection$.pipe(map(head));
 {% endhighlight %}
 
-Now we might be tempted to map the sockets stream to a stream of close events:
+Now we might be tempted to map the sockets stream to a stream of close events.
 
 {% highlight javascript %}
-map((socket) => Rx.fromEvent(socket, 'close'))
+const close$ = socket$.pipe(
+  map((socket) => Rx.fromEvent(socket, 'close')),
+);
 {% endhighlight %}
 
 But the result is a stream of streams, one stream for each socket.
-And we want a single stream of close events instead.
-So we should use [`flatMap`](https://rxjs-dev.firebaseapp.com/api/operators/flatMap).
+And we want a flat stream of close events.
+So we should use [`flatMap`](https://rxjs-dev.firebaseapp.com/api/operators/flatMap)
+instead.
 `flatMap` merges all of the sub-streams into one stream of close events.
 
 {% highlight javascript %}
@@ -398,16 +400,33 @@ const close$ = socket$.pipe(
 {% endhighlight %}
 
 Again, we can count occurrences of the event by summing the stream.
-This is one moment where the imprecision of using an Event to model a Behavior 
+
+{% highlight javascript %}
+const closeCount$ = Rx.merge(
+  close$.pipe(scan(increment, 0)),
+);
+{% endhighlight %}
+
+This definition exhibits some unexpected behavior.
+If we observe `closeCount$`, we might notice that the first value in the stream
+is eventually `1`.
+There is no value `0` preceding the first close event.
+
+Values in the `closeCount$` stream are defined as a function of values in the
+`close$` stream.
+When there are no values in the first stream, then there is nothing to compute.
+So when `close$` is an empty stream, `closeCount$` is also an empty stream.
+
+This is one moment where the imprecision of using an Event to model a Behavior
 leads to unexpectedly complicated code.
-`'close'` events have only a last occurrence and not a current value.
-When no `'close'` event has occurred, then there is only an empty stream.
-Observables naturally conform to this model of value over time.
-But the close event count _should_ have a current value and Observables have no 
+Close events have only a last occurrence and not a current value.
+Observables naturally conform to this model of time-varying value.
+But the close event count _should_ have a current value and Observables have no
 such concept.
 
 The best we can do is set an initial value in the stream.
-When no close event has occurred, then the value of the count should be zero.
+The value of the close event count should be zero when no close event has
+occurred.
 To set that initial value, we merge the count stream with a stream of `0`.
 
 {% highlight javascript %}
@@ -415,15 +434,16 @@ const zero$ = Rx.of(0);
 
 const closeCount$ = Rx.merge(
   zero$,
-  close$.pipe(scan(increment, 0))
+  close$.pipe(scan(increment, 0)),
 );
 {% endhighlight %}
 
-We have defined our two fundamental time-dependent values: `connectionCount$` 
-and `closeCount$`.
-Now we can start to define the pausable timer as a function of those values.
+We have finished defining our foundational time-varying values:
+`connectionCount$` and `closeCount$`.
+Now we can start to define the timer as a function of those values.
+
 The timer should pause when the number of current connections is less than 1.
-That number is a function of the difference between opened connections and 
+That number is a function of the difference between opened connections and
 closed connections.
 
 {% highlight javascript %}
@@ -435,9 +455,8 @@ const currentCount$ = Rx.combineLatest(
 );
 {% endhighlight %}
 
-Then the paused condition can be defined as a function of the current 
-connections count.
-The latest value in the stream should be `true` when the timer is paused and 
+Then the paused condition can be defined as a function of `currentCount$`.
+The latest value in the stream should be `true` when the timer is paused and
 `false` when it is not.
 
 {% highlight javascript %}
@@ -452,10 +471,10 @@ Instead, we created and destroyed timers whenever the paused state changed.
 The latest timer instance was destroyed when the timer appeared to pause.
 And a new timer instance was created each time the timer appeared to start.
 
-Conceptually, this approach is sound and we can use [`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap) 
+Conceptually, this approach is sound and we can use [`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap)
 to do the same thing.
 `switchMap` enables us to change the source of a stream's values.
-When the pause condition is `false`, we'll switch the source from the timer 
+When the pause condition is `false`, we'll switch the source from the timer
 to an Observable that never produces a value.
 When the pause condition is `true`, we'll switch the source back to a timer.
 `switchMap` automatically cleans up the timer each time we switch to the paused

@@ -112,7 +112,7 @@ having to manually re-run the transformation and store state each time a new
 value is produced.
 For this I can use an Observable.
 
-<h2 id="a-new-kind-of-function">A new kind of function</h2>
+## II. A new kind of function
 
 An Observable is like a Generator, a function that can produce many values.
 But unlike a Generator, an Observable decides _when_ it will produce a value.
@@ -266,7 +266,8 @@ const startSession = (ticks) => (websocket) => {
 server.on(`connect`, startSession(ticks));
 {% endhighlight %}
 
-<h2 id="sharing-the-work">Sharing the work</h2>
+<!--<h2 id="sharing-the-work">Sharing the work</h2>-->
+## IV. Sharing the work
 
 There is one detail that hasn't been accounted for.
 We know that the timer does not start ticking until `subscribe` is called.
