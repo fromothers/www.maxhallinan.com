@@ -101,7 +101,7 @@ server.on(`connection`, (socket) => {
   socket.on(`close`, () => {
     sessionEnds = sessionEnds + 1;
 
-    if (sessionStarts - sessionEnds  1) {
+    if (sessionStarts - sessionEnds > 1) {
       // stop the timer
     }
   });
@@ -267,29 +267,32 @@ doing to being.
 If doing means instructing the computer, then being means describing the result.
 A description of the result is a definition of a thing.
 Being means expressing program behavior by defining things.
+
 What are things in programming?
 Values are things.
 Functional programming uses functions to define things.
 A function `Foo -> Bar` is one way to define `Bar`.
 Ultimately, the output of a program is defined as a function of the input.
 
-Our program already defines some things, values like `sessionStarts` and
-`sessionEnds`.
+We have defined some things, values like `sessionStarts` and `sessionEnds`.
 But those definitions have not made our code less about doing.
-That is because `sessionStarts` and `sessionEnds` are imperfectly defined.
-We have defined them as numbers but they are numbers that vary over time.
-`sessionStarts` is incremented each time a connection event occurs.
-`sessionEnds` is incremented each time a close event occurs.
+That is because many things are imperfectly defined.
+
+Our definitions ignore an essential connection between value and time.
+For example, we defined `sessionStarts` as a number.
+Then that number is incremented for each connection event.
+So this is not just a number.
+This is a number that varies over time.
+
 All of the doing in our program is an attempt to confront time-varying value.
 And all of the timer's behavior flows from that variance.
-`sessionStarts` and `sessionEnds` should not be defined simply as "number".
-They must be defined as "number that varies over time".
+To exchange doing for being, we must seek an abstraction of value over time.
 
 Functional reactive programming (FRP) is an approach to working with
-time-dependent values.
+time-varying values.
 FRP was first formulated by Conal Elliot and Paul Hudak in a paper that
 proposed two abstractions: Behavior and Event.
-Behavior and Event both model time-dependent values.
+Behavior and Event both model time-varying values.
 The difference between a Behavior and an Event is a distinction of _when_ the
 value exists.
 
@@ -297,19 +300,20 @@ A Behavior exists always and an Event exists sometimes.
 The classic example of this distinction is mouse position and mouse clicks.
 There is always a current value of the mouse position but there is only a last
 occurrence of the mouse click.
+
 When the presence of value is unbroken over time, then the value is said to be
 continuous.
 Values that are not continuous over time are said to be discrete.
-Behaviors are continuous over time and Events are discrete.
+Behaviors are continuous and Events are discrete.
 
-Our pausable timer problem contains examples of both Behaviors and Events.
-The connection and close events are both discrete values over time.
-The number of current connections is a continuous value over time.
-The former have last occurrences.
+We have the opportunity to use both Behaviors and Events.
+A connection event is discrete.
+The number of current connections is continuous.
+The former has only a last occurrence.
 The latter has a current value.
 The most precise definition of these things would treat them as different types.
 
-We are going to use one abstraction, the Observable, to represent both.
+Instead, we will use one abstraction to represent both.
 An Observable is a stream of discrete values over time, practically equivalent
 to an Event.
 Conflating continuous and discrete values is imprecise.
@@ -325,9 +329,9 @@ With apologies to Elliot and Hudak, let's continue.
 >
 > &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
 
-Our strategy is to replace instructions with definitions.
-Definitions are expressed as functions, one value being defined as the function
-of another value.
+Our goal is to replace instructions with definitions.
+The definitions will be expressed as functions, one value being defined as the 
+function of another value.
 The pausable timer is a function of two time-dependent values: connection counts
 and connection ends.
 To define the timer, we must first define those values.
