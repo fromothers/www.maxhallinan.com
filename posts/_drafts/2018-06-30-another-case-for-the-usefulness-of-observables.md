@@ -8,7 +8,7 @@ tags: [explorable, programming]
 I recently [wrote](/posts/2018/06/02/changing-state-over-time-without-mutation/)
 about building a websocket server.
 It tracks the location of trains running on New York City subway lines.
-Location data is sourced from the MTA's [real-time data feeds](http://datamine.mta.info/).
+Location data is sourced from the MTA [data feeds](http://datamine.mta.info/).
 The feeds are polled every 30 seconds.
 
 My last post failed to acknowledge a design flaw.
@@ -26,18 +26,16 @@ mutable state trap.
 
 ## I. Clarity through naivety
 
-We'll use a timer Observable as a placeholder for an Observable that polls the 
-MTA feeds.
-This keeps the discussion uncluttered by details like calling the MTA service.
+We'll use a timer in place of polling the MTA feeds.
+This will keep the discussion uncluttered by details specific to the MTA.
 Whether timer ticks or a train locations, we're not concerned with the data
 itself.
 Our concern is how the data flows through the application.
 
 We begin with a timer that ticks every second.
-The timer is running as long as the server is running.
 Our task is to pause the timer when there are no websocket connections and start
 the timer when a client connects.
-But we're not jumping into the Observable implementation just yet.
+But we're not jumping into the Observable implementation yet.
 
 The key to understanding a pattern is often understanding a problem that the
 pattern solves.
@@ -336,7 +334,7 @@ The pausable timer is a function of two time-varying values: connection counts
 and connection ends.
 To define the timer, we must first define those values.
 
-There is no ready-made Observable that counts opened and closed websocket 
+There is no ready-made Observable that counts opened and closed websocket
 connections.
 Those numbers are themselves functions of the connection and close events.
 RxJs provides a [`fromEvent`](https://rxjs-dev.firebaseapp.com/api/index/fromEvent)
@@ -365,7 +363,7 @@ the first argument to the event handler.
 But now the `connection$` Observable is handling the event.
 How can we access arguments to the event handler without an event handler?
 
-The Observable passes those values along to us.
+Fortunately, the Observable passes those values along to us.
 The stream of connection events is really a stream of arguments to the event
 handler.
 Each time the connection event occurs, the Observable pushes an arguments
@@ -456,7 +454,7 @@ const currentCount$ = Rx.combineLatest(
 );
 {% endhighlight %}
 
-Then the paused condition can be defined as a function of `currentCount$`.
+Then the paused condition is defined as a function of `currentCount$`.
 The latest value in the stream should be `true` when the timer is paused and
 `false` when it is not.
 
@@ -472,29 +470,36 @@ Instead, we created and destroyed timers whenever the paused state changed.
 The latest timer instance was destroyed when the timer appeared to pause.
 And a new timer instance was created each time the timer appeared to start.
 
-Conceptually, this approach is sound and we can use [`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap)
-to do the same thing.
+Conceptually, this approach is sound and we can use 
+[`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap) to do 
+the same thing.
 `switchMap` enables us to change the source of a stream's values.
-When the pause condition is `false`, we'll switch the source from the timer
+Each time the source is changed, `switchMap` cancels the previous subscription.
+
+When the paused condition is `true`, we'll switch the source from the timer
 to an Observable that never produces a value.
-When the pause condition is `true`, we'll switch the source back to a timer.
+When the pause condition is `false`, we'll switch the source back to a timer.
+We're no longer burdened by managing the timer Subscription.
 `switchMap` automatically cleans up the timer each time we switch to the paused
 state.
 
 {% highlight javascript %}
 const tick$ = pause$.pipe(
-  switchMap(isPaused => isPaused ? Rx.NEVER : Rx.timer(0, 10000)),
+  switchMap(isPaused => isPaused ? Rx.NEVER : Rx.timer(0, 1000)),
   multicast(new Subject()),
 );
+{% endhighlight %}
 
-// start execution of the multicast Observable
+Finally, we start execution of the timer Observable. 
+But the timer itself will not start ticking until a client connects to the 
+server.
+
+{% highlight javascript %}
 ticks$.connect();
 {% endhighlight %}
 
-All the instructions have been replaced with definitions.
+And now all the instructions have been replaced with definitions.
 We are freed from the mutable state trap.
-Once again, the websocket session handler can observe the ticks stream without 
-knowing how it should behave or directing that behavior.
 
 {% highlight javascript %}
 server.on(`connection`, () => {
