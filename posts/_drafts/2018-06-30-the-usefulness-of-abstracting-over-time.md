@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: "Another Case for the Usefulness of Abstracting Over Time"
+title: "The Usefulness of Abstracting Over Time"
 tags: [explorable, programming]
 ---
 
@@ -27,7 +27,7 @@ mutable state trap.
 ## I. Clarity through naivety
 
 We'll use a timer in place of polling the MTA feeds.
-This will keep the discussion uncluttered by details specific to the MTA.
+This keeps the discussion uncluttered by details specific to the MTA.
 Whether timer ticks or a train locations, we're not concerned with the data
 itself.
 Our concern is how the data flows through the application.
@@ -476,9 +476,9 @@ the same thing.
 `switchMap` enables us to change the source of a stream's values.
 Each time the source is changed, `switchMap` cancels the previous subscription.
 
-When the paused condition is `true`, we'll switch the source from the timer
-to an Observable that never produces a value.
-When the pause condition is `false`, we'll switch the source back to a timer.
+When the paused condition is `true`, the sources switches from the timer to an
+Observable that never produces a value.
+When the pause condition is `false`, the source switches back to a timer.
 We're no longer burdened by managing the timer Subscription.
 `switchMap` automatically cleans up the timer each time we switch to the paused
 state.
@@ -490,9 +490,8 @@ const tick$ = pause$.pipe(
 );
 {% endhighlight %}
 
-Finally, we start execution of the timer Observable. 
-But the timer itself will not start ticking until a client connects to the 
-server.
+Finally, we start the timer Observable. 
+But now the timer will not start ticking until a client connects to the server.
 
 {% highlight javascript %}
 ticks$.connect();
