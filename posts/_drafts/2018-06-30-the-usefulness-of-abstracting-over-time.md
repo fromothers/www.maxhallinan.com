@@ -21,8 +21,8 @@ Polling on demand gets messy fast.
 My first attempt made liberal use of mutable state.
 And mutable state is exactly what I want to avoid.
 In the last post, I replaced mutable state with Observables.
-Here is a second occasion when the Observable pattern helped me escape from the
-mutable state trap.
+Here is a second occasion when the Observable pattern freed from the mutable 
+state trap.
 
 ## I. Clarity through naivety
 
