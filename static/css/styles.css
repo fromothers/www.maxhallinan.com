@@ -38,30 +38,30 @@
 
 @font-face {
   font-family: "TiemposText";
-  src: url("/static/fonts/TiemposTextWeb-Regular.woff2") format("woff2"),
-       url("/static/fonts/TiemposTextWeb-Regular.woff") format("woff");
+  src: url("https://static.maxhallinan.com/fonts/klim/TiemposTextWeb-Regular.woff2") format("woff2"),
+       url("https://static.maxhallinan.com/fonts/klim/TiemposTextWeb-Regular.woff") format("woff");
   font-weight: 400;
 }
 
 @font-face {
   font-family: "TiemposText";
-  src: url("/static/fonts/TiemposTextWeb-RegularItalic.woff2") format("woff2"),
-       url("/static/fonts/TiemposTextWeb-RegularItalic.woff") format("woff");
+  src: url("https://static.maxhallinan.com/fonts/klim/TiemposTextWeb-RegularItalic.woff2") format("woff2"),
+       url("https://static.maxhallinan.com/fonts/klim/TiemposTextWeb-RegularItalic.woff") format("woff");
   font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
   font-family: "TiemposHeadline";
-  src: url("/static/fonts/TiemposHeadlineWeb-Semibold.woff2") format("woff2"),
-       url("/static/fonts/TiemposHeadlineWeb-Semibold.woff") format("woff");
+  src: url("https://static.maxhallinan.com/fonts/klim/TiemposHeadlineWeb-Semibold.woff2") format("woff2"),
+       url("https://static.maxhallinan.com/fonts/klim/TiemposHeadlineWeb-Semibold.woff") format("woff");
   font-weight: 800;
 }
 
 @font-face {
   font-family: "Pitch";
-  src: url("/static/fonts/PitchWeb-Regular.woff2") format("woff2"),
-       url("/static/fonts/PitchWeb-Regular.woff") format("woff");
+  src: url("https://static.maxhallinan.com/fonts/klim/PitchWeb-Regular.woff2") format("woff2"),
+       url("https://static.maxhallinan.com/fonts/klim/PitchWeb-Regular.woff") format("woff");
   font-weight: 400;
 }
 
