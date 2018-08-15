@@ -70,7 +70,6 @@
  */
 
 * {
-  -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
 
@@ -457,6 +456,12 @@ img {
   .post-body blockquote {
     font-size: 1.25rem;
     line-height: 1.563em;
+  }
+
+  .post-body blockquote cite {
+    font-size: 1rem;
+    font-style: initial;
+    line-height: 1.25em;
   }
 
   .post-body code,

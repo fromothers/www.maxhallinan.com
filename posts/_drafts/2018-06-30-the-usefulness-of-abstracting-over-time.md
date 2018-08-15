@@ -7,7 +7,7 @@ tags: [explorable, programming]
 
 I recently [wrote](/posts/2018/06/02/changing-state-over-time-without-mutation/)
 about building a websocket server.
-It tracks the location of trains running on New York City subway lines.
+It tracks the location of trains in the New York City subway.
 Location data is sourced from the MTA [data feeds](http://datamine.mta.info/).
 The feeds are polled every 30 seconds.
 
@@ -48,6 +48,7 @@ The pausable behavior has two parts: knowing _how_ to pause the timer and
 knowing _when_ to pause it.
 Let's start with knowing when to pause it.
 We should stop the timer when there are no websocket connections.
+
 To know the number of current connections, we must count opened connections and
 closed connections.
 These are the first pieces of global mutable state: counters that are
@@ -117,8 +118,7 @@ that Observables, like Generators, are both functions that produce one or more
 values.
 
 A Generator is easily paused.
-In fact, the execution of a Generator is suspended each time a value is
-produced.
+In fact, execution of a Generator is suspended each time a value is produced.
 Execution resumes only when the caller asks for the next value.
 
 An Observable behaves differently.
@@ -211,7 +211,6 @@ server.on(`connection`, (socket) => {
 
 To "pause" the timer, we destroy the timer Observable.
 The Observable is destroyed by calling `Subscription#unsubscribe`.
-Changing the reference of `ticks` is not enough.
 Unless `unsubscribe` is called, the timer will continue to run in the
 background.
 
@@ -256,11 +255,14 @@ doing to being.
 
 ## II. Being instead of doing
 
-> For me, functional programming is not about doing. It's about being.
->
-> &mdash; Conal Elliot ["The Essence and Origins of Functional Reactive
-> Programming"](https://www.youtube.com/watch?v=j3Q32brCUAI&feature=youtu.be&t=4m21s),
-> Lambda Jam 2015
+<blockquote>
+  <p>
+    For me, functional programming is not about doing. It's about being.
+  </p>
+  <cite>
+    &mdash; Conal Elliot, <a href="https://www.youtube.com/watch?v=j3Q32brCUAI&feature=youtu.be&t=4m21s"><em>The Essence and Origins of Functional Reactive Programming</em></a>
+  </cite>
+</blockquote>
 
 If doing means instructing the computer, then being means describing the result.
 A description of the result is a definition of a thing.
@@ -321,11 +323,19 @@ With apologies to Elliot and Hudak, let's continue.
 
 ## III. Making time concrete
 
-> ...events may be combined with others, to an arbitrary degree of
-> complexity, thus factoring complex animation logic into semantically rich,
-> modular building blocks.
->
-> &mdash; Conal Elliot and Paul Hudak, [_Functional Reactive Animation_](http://conal.net/papers/icfp97/)
+<blockquote>
+  <p>
+    &hellip; events may be combined with others, to an arbitrary degree of
+    complexity, thus factoring complex animation logic into semantically rich,
+    modular building blocks.
+  </p>
+  <cite>
+    &mdash; Conal Elliot and Paul Hudak, 
+    <a href="http://conal.net/papers/icfp97/">
+      <em>Functional Reactive Animation</em>
+    </a>
+  </cite>
+</blockquote>
 
 Our goal is to replace instructions with definitions.
 The definitions will be expressed as functions, one value being defined as the
@@ -366,8 +376,7 @@ How can we access arguments to the event handler without an event handler?
 Fortunately, the Observable passes those values along to us.
 The stream of connection events is really a stream of arguments to the event
 handler.
-Each time the connection event occurs, the Observable pushes an arguments
-array into the event stream.
+For each connection event, an arguments array is pushed into the event stream.
 So the socket for each connection is the first item of each array in the stream.
 We can use [`map`](https://rxjs-dev.firebaseapp.com/api/operators/map) to
 transform that stream of arrays into a stream of sockets.
@@ -467,21 +476,18 @@ const pause$ = currentCount$.pipe(map(isPaused));
 Now that we know when to pause the timer, how do we pause it?
 Recall that our first iteration did not truly pause the timer.
 Instead, we created and destroyed timers whenever the paused state changed.
-The latest timer instance was destroyed when the timer appeared to pause.
-And a new timer instance was created each time the timer appeared to start.
 
 Conceptually, this approach is sound and we can use 
 [`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap) to do 
 the same thing.
-`switchMap` enables us to change the source of a stream's values.
-Each time the source is changed, `switchMap` cancels the previous subscription.
+`switchMap` changes the source of the values in a stream.
+Each time the source changes, `switchMap` destroys the previous source.
 
-When the paused condition is `true`, the sources switches from the timer to an
-Observable that never produces a value.
-When the pause condition is `false`, the source switches back to a timer.
-We're no longer burdened by managing the timer Subscription.
-`switchMap` automatically cleans up the timer each time we switch to the paused
-state.
+When paused, we switch from the timer to an Observable that never produces a 
+value.
+When resumed, we switch to a new timer instance.
+And we're no longer burdened by managing the timer Subscription.
+`switchMap` destroys the timer each time we switch to the paused state.
 
 {% highlight javascript %}
 const tick$ = pause$.pipe(
@@ -491,13 +497,13 @@ const tick$ = pause$.pipe(
 {% endhighlight %}
 
 Finally, we start the timer Observable. 
-But now the timer will not start ticking until a client connects to the server.
+But now the timer won't start ticking until a client connects to the server.
 
 {% highlight javascript %}
 ticks$.connect();
 {% endhighlight %}
 
-And now all the instructions have been replaced with definitions.
+All the instructions have been replaced with definitions.
 We are freed from the mutable state trap.
 
 {% highlight javascript %}
@@ -510,7 +516,7 @@ server.on(`connection`, () => {
 });
 {% endhighlight %}
 
-<div style="margin: 0 0 1.5rem;" id="observables-explorable-1"></div>
+<div style="margin: 0 0 1.563rem;" id="observables-explorable-1"></div>
 
 <script src="https://static.maxhallinan.com/observables-explorable-1.js"></script>
 
