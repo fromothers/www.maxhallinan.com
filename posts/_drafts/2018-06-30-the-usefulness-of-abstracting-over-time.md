@@ -516,7 +516,7 @@ server.on(`connection`, () => {
 });
 {% endhighlight %}
 
-<div style="margin: 0 0 1.563rem;" id="observables-explorable-1"></div>
+<div id="observables-explorable-1"></div>
 
 <script src="https://static.maxhallinan.com/observables-explorable-1.js"></script>
 
