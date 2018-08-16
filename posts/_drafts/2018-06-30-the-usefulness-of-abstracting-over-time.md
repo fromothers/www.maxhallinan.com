@@ -483,9 +483,9 @@ the same thing.
 `switchMap` changes the source of the values in a stream.
 Each time the source changes, `switchMap` destroys the previous source.
 
-When paused, we switch from the timer to an Observable that never produces a 
-value.
-When resumed, we switch to a new timer instance.
+When the ticking is paused, we switch from the timer to an Observable that never 
+produces a value.
+When the ticking is resumed, we switch to a new timer instance.
 And we're no longer burdened by managing the timer Subscription.
 `switchMap` destroys the timer each time we switch to the paused state.
 
@@ -496,25 +496,29 @@ const tick$ = pause$.pipe(
 );
 {% endhighlight %}
 
-Finally, we start the timer Observable. 
-But now the timer won't start ticking until a client connects to the server.
+Finally, we trigger the Observable's execution by calling `connect`.
+Our first timer started ticking immediately.
+This timer won't start ticking until a client connects to the server.
 
 {% highlight javascript %}
 ticks$.connect();
-{% endhighlight %}
 
-All the instructions have been replaced with definitions.
-We are freed from the mutable state trap.
-
-{% highlight javascript %}
 server.on(`connection`, () => {
   tick$.subscribe({
-    next: () => {
+    next: (tick) => {
       // ...
     }
   });
 });
 {% endhighlight %}
+
+All the instructions have been replaced with definitions.
+We are freed from the mutable state trap.
+
+## IV.
+
+We've covered a lot of ground.
+It might help to see the flow of data on a higher level.
 
 <div id="observables-explorable-1"></div>
 
