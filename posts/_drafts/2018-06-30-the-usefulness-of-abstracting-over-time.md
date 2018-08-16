@@ -525,7 +525,7 @@ It might help to see the flow of data on a higher level.
 <script src="https://static.maxhallinan.com/observables-explorable-1.js"></script>
 
 <script>
-  window.addEventListener('load', () => {
+  (function () {
     window.ObservablesExplorable1.run('#observables-explorable-1');
-  });
+  }());
 </script>
