@@ -1,7 +1,7 @@
 ---
 layout: post
 published: false
-title: "The debuggable body"
+title: "The Debuggable Body"
 tags: [thoughts]
 ---
 
@@ -49,3 +49,6 @@ tags: [thoughts]
 - it is this line of thought which explains why i would prefer to be a human
   simulation and not a biological human
 - if i am simulated, then i am debuggable.
+- a computer system reduces to boolean logic
+- all the outcomes of a computer system are theoretically knoweable.
+- there is no unexpected outcome (bug) that cannot be understood

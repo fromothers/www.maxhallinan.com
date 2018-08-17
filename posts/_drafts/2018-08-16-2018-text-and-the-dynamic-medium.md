@@ -1,6 +1,6 @@
 ---
 layout: post
-published: true
+published: false
 title: "Text and the Dynamic Medium"
 tags: [explorable, programming]
 ---

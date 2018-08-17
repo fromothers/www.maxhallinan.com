@@ -535,7 +535,8 @@ connections to ticks.
 </script>
 
 I've emphasized the removal of global mutable state.
-But the usefulness of abstraction over time is more fundamental.
+But the usefulness of abstracting over time is more fundamental.
 An adequate vocabulary is required to make precise definitions.
-Abstracting over time supplies the vocabulary required to define our timer 
-precisely.
+And precise definitions are required to build reasonable systems.
+Abstracting over time supplies the vocabulary required to build a system that
+interacts with time.
