@@ -505,3 +505,9 @@ img {
 #observables-explorable-1 {
   margin: 2.441rem 0;
 }
+
+@media only screen and (max-width: 64.063rem) {
+  .hide-below-medium {
+    display: none;
+  }
+}

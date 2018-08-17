@@ -521,7 +521,10 @@ We defined a timer that ticks only when a client is connected to the server.
 The timer is defined as a function of websocket connections, an arrow from 
 connections to ticks.
 
-<div id="observables-explorable-1"></div>
+<div 
+  class="hide-below-medium"
+  id="observables-explorable-1">
+</div>
 
 <script src="https://static.maxhallinan.com/observables-explorable-1.js"></script>
 
