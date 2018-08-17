@@ -8,7 +8,7 @@ build_css : clean_css
 		--output _site/static/css/styles.css
 
 build_jekyll :
-	bundle exec jekyll build \
+	JEKYLL_ENV="production" bundle exec jekyll build \
 		--config "_config.yml,_config.maxhallinan.com.yml"
 
 clean :
