@@ -21,7 +21,7 @@ Polling on demand gets messy fast.
 My first attempt made liberal use of mutable state.
 And mutable state is exactly what I want to avoid.
 In the last post, I replaced mutable state with Observables.
-Here is a second occasion when the Observable pattern freed me from the mutable 
+Here is a second occasion when the Observable pattern freed me from the mutable
 state trap.
 
 ## I. Clarity through naivety
@@ -330,7 +330,7 @@ With apologies to Elliot and Hudak, let's continue.
     modular building blocks.
   </p>
   <cite>
-    &mdash; Conal Elliot and Paul Hudak, 
+    &mdash; Conal Elliot and Paul Hudak,
     <a href="http://conal.net/papers/icfp97/">
       <em>Functional Reactive Animation</em>
     </a>
@@ -477,13 +477,13 @@ Now that we know when to pause the timer, how do we pause it?
 Recall that our first iteration did not truly pause the timer.
 Instead, we created and destroyed timers whenever the paused state changed.
 
-Conceptually, this approach is sound and we can use 
-[`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap) to do 
+Conceptually, this approach is sound and we can use
+[`switchMap`](https://rxjs-dev.firebaseapp.com/api/operators/switchMap) to do
 the same thing.
 `switchMap` changes the source of the values in a stream.
 Each time the source changes, `switchMap` destroys the previous source.
 
-When the ticking is paused, we switch from the timer to an Observable that never 
+When the ticking is paused, we switch from the timer to an Observable that never
 produces a value.
 When the ticking is resumed, we switch to a new timer instance.
 And we're no longer burdened by managing the timer Subscription.
@@ -515,9 +515,11 @@ server.on(`connection`, () => {
 All the instructions have been replaced with definitions.
 We are freed from the mutable state trap.
 
-## IV.
+## IV. Finding the words to say what you mean
 
-Let's conclude by thinking about what we've done.
+We defined a timer that ticks only when a client is connected to the server.
+The timer is defined as a function of websocket connections, an arrow from 
+connections to ticks.
 
 <div id="observables-explorable-1"></div>
 
@@ -529,34 +531,8 @@ Let's conclude by thinking about what we've done.
   }());
 </script>
 
-A diagram of the mutable state approach would show arrows moving in many 
-directions.
-Abstracting over time 
-
-Abstracting over time enabled us to treat a series of values ordered in time as 
-one static value.
-Without having to think about when the value changes, we can then combine these
-values to create new values that are automatically updated when their source
-values change.
-
-The usefulness of abstracting over time is the ability to combine values that 
-vary over time.
-
-- Logically one value representing a series of values ordered in time.
-- Abstracting over time enables us to combine a series of values ordered in time
-  as if each were logically a single, static value.
-- Re-running computations is removed.
-- The biggest affordance is the simplicity of our thinking.
-- Abstracting over time simplifies our thinking.
-- We can think in simpler terms about our program.
-- Diagramming the mutable state example would involve lots of arrows going 
-  between scopes.
-
-In this example, there is only one arrow moving in one direction. 
-The arrow goes from websocket connection to ticks.
-We set out to define a timer that starts ticking when a client connects to the
-server.
-An arrow from connection event to ticks is a very precise definition of that 
-behavior.
-Abstracting over time enabled us to be that precise, that clear.
-The usefulness of abstracting over time is the ability to something something
+I've emphasized the removal of global mutable state.
+But the usefulness of abstraction over time is more fundamental.
+An adequate vocabulary is required to make precise definitions.
+Abstracting over time supplies the vocabulary required to define our timer 
+precisely.
