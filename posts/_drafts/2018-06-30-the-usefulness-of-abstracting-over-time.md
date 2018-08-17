@@ -253,7 +253,7 @@ creating timers, and cleaning up state.
 To achieve the same behavior without mutable state, we must shift our focus from
 doing to being.
 
-## II. Being instead of doing
+## II. Be instead of do
 
 <blockquote>
   <p>
@@ -321,7 +321,7 @@ Nonetheless, we can model everything as an Observable and still manage to derive
 the desired behavior.
 With apologies to Elliot and Hudak, let's continue.
 
-## III. Making time concrete
+## III. Make time concrete
 
 <blockquote>
   <p>
@@ -518,10 +518,10 @@ We are freed from the mutable state trap.
 ## IV. Say what you mean
 
 We defined a timer that ticks only when a client is connected to the server.
-The timer is defined as a function of websocket connections, an arrow from 
+The timer is defined as a function of websocket connections, an arrow from
 connections to ticks.
 
-<div 
+<div
   class="hide-below-medium"
   id="observables-explorable-1">
 </div>
