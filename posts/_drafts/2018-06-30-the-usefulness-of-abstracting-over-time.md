@@ -21,7 +21,7 @@ Polling on demand gets messy fast.
 My first attempt made liberal use of mutable state.
 And mutable state is exactly what I want to avoid.
 In the last post, I replaced mutable state with Observables.
-Here is a second occasion when the Observable pattern freed from the mutable 
+Here is a second occasion when the Observable pattern freed me from the mutable 
 state trap.
 
 ## I. Clarity through naivety
@@ -517,8 +517,7 @@ We are freed from the mutable state trap.
 
 ## IV.
 
-We've covered a lot of ground.
-It might help to see the flow of data on a higher level.
+Let's conclude by thinking about what we've done.
 
 <div id="observables-explorable-1"></div>
 
@@ -529,3 +528,35 @@ It might help to see the flow of data on a higher level.
     window.ObservablesExplorable1.run('#observables-explorable-1');
   }());
 </script>
+
+A diagram of the mutable state approach would show arrows moving in many 
+directions.
+Abstracting over time 
+
+Abstracting over time enabled us to treat a series of values ordered in time as 
+one static value.
+Without having to think about when the value changes, we can then combine these
+values to create new values that are automatically updated when their source
+values change.
+
+The usefulness of abstracting over time is the ability to combine values that 
+vary over time.
+
+- Logically one value representing a series of values ordered in time.
+- Abstracting over time enables us to combine a series of values ordered in time
+  as if each were logically a single, static value.
+- Re-running computations is removed.
+- The biggest affordance is the simplicity of our thinking.
+- Abstracting over time simplifies our thinking.
+- We can think in simpler terms about our program.
+- Diagramming the mutable state example would involve lots of arrows going 
+  between scopes.
+
+In this example, there is only one arrow moving in one direction. 
+The arrow goes from websocket connection to ticks.
+We set out to define a timer that starts ticking when a client connects to the
+server.
+An arrow from connection event to ticks is a very precise definition of that 
+behavior.
+Abstracting over time enabled us to be that precise, that clear.
+The usefulness of abstracting over time is the ability to something something
