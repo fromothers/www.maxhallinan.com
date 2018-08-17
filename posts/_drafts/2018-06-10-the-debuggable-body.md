@@ -48,3 +48,4 @@ tags: [thoughts]
   subject, one might find that a human has not merely been modelled but simulated
 - it is this line of thought which explains why i would prefer to be a human
   simulation and not a biological human
+- if i am simulated, then i am debuggable.

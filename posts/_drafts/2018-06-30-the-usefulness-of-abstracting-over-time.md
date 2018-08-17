@@ -515,7 +515,7 @@ server.on(`connection`, () => {
 All the instructions have been replaced with definitions.
 We are freed from the mutable state trap.
 
-## IV. Finding the words to say what you mean
+## IV. Say what you mean
 
 We defined a timer that ticks only when a client is connected to the server.
 The timer is defined as a function of websocket connections, an arrow from 
