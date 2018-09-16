@@ -20,7 +20,7 @@ tags: [thoughts]
   the causes of the disease
 - understanding the causes of the disease means having an accurate model of the 
   human organism
-- thus it would seem that making progress in the field of medicine is a matter
+- thus it would seem that making progress in the field of medicine is a matter of
   making and improving these models
 - if this is true, the question becomes how accurate do these models need to be?
 - it is possible that the human organism is so complex that understanding certain

@@ -6,7 +6,7 @@ tags: [programming]
 ---
 
 The question is not "should I use React or Vue?"
-The question is "what are the fundamental ideas of React and Vue?"
+The question is "what are the ideas in React and Vue?"
 And then "what do I think about those ideas?"
 
 The good idea I found in React is the notion that the view is a function of 
@@ -15,8 +15,8 @@ The same idea is found in other places.
 Elm expresses this idea as `view : Model -> Html`.
 
 I use React because it enables me to put a good idea into practice.
-I would use anything that enables me to use this good idea.
-And I would avoid something that made the good idea hard to use.
+I would use anything that enables me to use a good idea.
+And I would avoid something that made a good idea hard to use.
 I am invested in ideas, not in languages or the libraries.
 
 {% comment %}
