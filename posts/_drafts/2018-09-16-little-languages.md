@@ -10,16 +10,16 @@ Learning a programming language means learning to apply the ideas found in the
 language.
 But sometimes it is hard to isolate the ideas.
 
-Language details can cloud perception of the ideas in the language.
-For example, algebraic laws are used to describe many common typeclasses in
-Haskell.
-After exposure to typeclasses like Monoid and Functor, I misunderstood the idea
-of typeclasses as a way to group types by the laws they obey.
+<!--Language details can cloud perception of the ideas in the language.-->
+Language details can obscure ideas in the language.
+For example, many common typeclasses in Haskell are described by algebraic laws.
+After exposure to these typeclasses, I misunderstood the idea of a typeclass as 
+a way to group types by the laws they obey.
 
 I had actually come into contact with two ideas.
 First, types can be grouped by operations on those types.
 Second, _sometimes_ those groups are principled.
-Only the first idea is essential to understanding the idea of a typeclass.
+Only the first is essential to the idea of a typeclass.
 Because of the frequent coincidence of both ideas in Haskell, I didn't perceive
 them as separate ideas.
 
@@ -47,15 +47,6 @@ The little language need not be specific to any single large language.
 Using objects to model entities is a practice found in many languages.
 Programming in Isla yields an intuition for this practice that can be ported to 
 any large language.
-
-New large languages appear on a regular basis. 
-But I would prefer a new little language, and even better, a collection of 
-little languages.
-
-A little lan
-A little language that demonstrates the platonic form of an idea becomes helpful
-to the person who encounters that idea in a more complex setting, regardless of 
-the setting.
 
 {% comment %}
 - A lot of the understanding of programming languages is an intuitive
