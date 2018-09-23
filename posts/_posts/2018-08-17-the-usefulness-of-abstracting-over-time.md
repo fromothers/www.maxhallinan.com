@@ -28,9 +28,9 @@ state trap.
 
 We'll use a timer in place of polling the MTA feeds.
 This keeps the discussion uncluttered by details specific to the MTA.
-Whether timer ticks or a train locations, we're not concerned with the data
+Whether timer ticks or train locations, we're not concerned with the data
 itself.
-Our concern is how the data flows through the application.
+We're concerned with how the data flows through the application.
 
 We begin with a timer that ticks every second.
 Our task is to pause the timer when there are no websocket connections and start
