@@ -47,7 +47,6 @@ The language has no control flow, no booleans, no numbers.
 An Isla programmer defines things like shapes, planets, or people, and describes
 those things by giving them attributes.
 
-The little language need not be specific to any single large language.
 Using objects to model entities is a practice found in many languages.
 Programming in Isla yields an intuition for this practice that can be ported to 
 any large language.
@@ -90,11 +89,11 @@ anything.
 
 When Daniel Friedman and David Christiansen sought to explain dependent types, 
 they did not point to a dependently typed language like [Idris](https://www.idris-lang.org/).
-Instead, they designed a "very small language" called [Pie](https://github.com/the-little-typer/pie), 
-a dependently typed language designed specifically for the purpose of explaining 
-dependent types.
+Instead, they designed a "very small language" called [Pie](https://github.com/the-little-typer/pie).
+Pie exists just for the purpose of explaining dependent types.
 
-We programmers produce a lot of commentary on programming languages.
+We programmers produce a lot of commentary.
 This commentary takes the form of blog posts and books, talks and workshops.
-We consume this commentary in part to understand the ideas the languages contain.
-Perhaps it would be interesting to design more languages for this purpose too.
+We consume this commentary in part to understand ideas found in programming 
+languages.
+Perhaps it would be interesting to design more languages for this purpose.
