@@ -65,71 +65,36 @@ Playing with the toy yields an intuition for the idea.
 With these toys, one can say 
 "Here's how tetrahedra combine to form a cube. Here's how the oloid rolls."
 
-I wish for more languages like these toys. 
-I don't want to install and provision a database just to play with an outer join.
+I wish for more computer languages like these toys. 
+I want to play with an outer join without installing and provisioning a 
+database.
 
 # IV.
 
-{% comment %}
+But I'm skeptical that there can be little languages.
+Do the ideas in programming languages have Platonic forms that can be isolated 
+in languages of their own?
 
-Programming languages are tools that we use to employee the computer in the 
-completion of other tasks.
+A little language for typeclasses would need to include other ideas.
+The idea of a typeclass depends on the idea of types.
+Some typeclasses imply the idea of type kinds.
+Is it possible to play with these ideas without a fully-featured language?
 
-A programming language is a tool.
-A tool exists to help a human do something.
-Programming languages are tools that are commonly used to write programs.
-Books, lectures, and exercises are some tools that are commonly used to learn how
-to use programming languages to write programs.
+And a little language should be interesting to interact with.
+The toys at the Deutsches Museum behave in curious ways.
+That behavior draws the visitor into the mathematical insight.
+It's not clear to me that a language devoted to a single idea would do much of 
+anything.
 
+# V.
 
-And it seems that the tools we use to learn programming languages
+When Daniel Friedman and David Christiansen sought to explain dependent types, 
+they did not point to a dependently typed language like [Idris](https://www.idris-lang.org/).
+Instead, they designed a "very small language" called [Pie](https://github.com/the-little-typer/pie), 
+a dependently typed language designed specifically for the purpose of explaining 
+dependent types.
 
-Programming languages are not always 
-The job that humans 
-is not always to write a computer program.
-
-meant to extend human capability.
-
-We need not assume that all languages must be fully-featured.
-
-
-And someday, one can imagine a room like that room in the Deutsches Museum, 
-a virtual room lined with shelves filled with little languages.
-
-When Daniel Friedman and David Christiansen sought to explain dependent typing,
-they did not point to a large, dependently typed language like Idris.
-Instead they designed a language called [Pie](https://github.com/the-little-typer/pie) 
-just for the purpose of demonstrating the idea.
-
-I wish for a virtual room where programmers can play with ideas isolated from 
-the complexity of the large languages.
-
-I wish for a room like this, a virtual room filled with little languages.
-
-where I can find the little language
-of a programming idea.
-
-Each toy is accompanied by a summary of the math it models.
-The toys make the math concrete and playing with the toys is meant to yield an 
-intuition for the underlying abstractions.
-
-
-I wish for a virtual room filled with little languages.
-
-This is what a little language could be, a limited context in which a single 
-abstraction is made concrete.
-
-These toys are like little languages.
-
-I wish for a virtual room filled with little languages.
-A virtual cabinet of drawers, each labeled with the name of an idea in 
-programming. 
-When I am engaging with that idea, 
-
-- A lot of the understanding of programming languages is an intuitive
-  understanding of how to apply the ideas, a feel for how they work.
-- You should be able to use the language to do something. There should be some
-  interesting outcome of using the language, just as LOGO was used to instruct
-  the Turtle to draw pictures.
-- So you could have a whole toy chest of these little languages.
-{% endcomment %}
+We programmers produce a lot of commentary on programming languages.
+This commentary takes the form of blog posts and books, talks and workshops.
+We consume this commentary in part to understand the ideas the languages contain.
+Perhaps it would be interesting to design more languages for this purpose too.
