@@ -61,10 +61,10 @@ Others have strange forms that cause the object to roll in unexpected ways.
 Each toy models a mathematical idea.
 The toy makes the idea concrete.
 Playing with the toy yields an intuition for the idea.
-With these toys, one can say 
+With those toys, one can say 
 "Here's how tetrahedra combine to form a cube. Here's how the oloid rolls."
 
-I wish for more computer languages like these toys. 
+I wish for more computer languages like those toys. 
 I want to play with an outer join without installing and provisioning a 
 database.
 
