@@ -16,9 +16,11 @@ tags: [programming]
 </blockquote>
 
 What makes user interface code easy to understand?
+Steven Krouse argues that locating all transitions of a piece of state in a 
+single place makes the code more comprehensible.
 In his paper ["Explicitly Comprehensible Functional Reactive Programming"](https://futureofcoding.org/papers/comprehensible-frp/comprehensible-frp.pdf), 
-Steven Krouse argues that a cyclic graph of sub-state streams is superior to the 
-Elm architecture, which is oriented around a single stream of states.
+Steven Krouse argues that a graph of sub-state streams is superior to the Elm 
+architecture, which is oriented around a single stream of states.
 I understand Steven's argument in favor of de-composing Elm's monolithic state
 stream as being primarily about enabling local reasoning about transformations
 of those substates.

@@ -15,7 +15,7 @@ than most to take the test.
 But suddenly I felt the old clumsiness, was taken back to my first day behind 
 the wheel.
 
-It's time for me to take Haskell out on the open road.
+The moment has come to take Haskell out on the open road.
 I've worked through much of the [Haskell book](http://haskellbook.com/).
 In doing so, I've written many lines of Haskell code.
 Now it is time to write Haskell programs.
