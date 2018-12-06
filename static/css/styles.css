@@ -230,6 +230,10 @@ img {
   margin: 0 0 1.563rem;
 }
 
+.post-body video {
+  margin: 0 0 1.563rem;
+}
+
 .post-body em {
   font-family: "TiemposText", serif;
   font-style: italic;
